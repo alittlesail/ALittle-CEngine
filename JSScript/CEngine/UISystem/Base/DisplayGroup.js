@@ -154,12 +154,6 @@ ALittle.DisplayGroup = JavaScript.Class(ALittle.DisplayObject, {
 		}
 		return child._show_parent === this || child._logic_parent === this;
 	},
-	get parent() {
-		if (this._logic_parent !== undefined) {
-			return this._logic_parent;
-		}
-		return this._show_parent;
-	},
 	RemoveAllChild : function() {
 		let ___OBJECT_3 = this._childs;
 		for (let index = 1; index <= ___OBJECT_3.length; ++index) {

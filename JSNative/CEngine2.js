@@ -5829,6 +5829,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		if (this._scroll_linear.AddChild(child, index) === false) {
 			return false;
 		}
+		child._logic_parent = this;
 		this.RefreshChild(false);
 		return true;
 	},

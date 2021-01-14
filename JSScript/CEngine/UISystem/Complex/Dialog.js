@@ -231,11 +231,6 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		if (child._show_parent === this._body || child._logic_parent === this) {
 			return true;
 		}
-		if (child._logic_parent !== undefined) {
-			child._logic_parent.RemoveChild(child);
-		} else if (child._show_parent !== undefined) {
-			child._show_parent.RemoveChild(child);
-		}
 		let result = this._body.AddChild(child, index);
 		child._logic_parent = this;
 		return result;
