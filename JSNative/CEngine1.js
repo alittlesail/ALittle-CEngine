@@ -755,13 +755,13 @@ let JSystem_KeyDown = function(event) {
 	}
 	let mod = 0;
 	if (event.altKey) {
-		mod = 0x0300 | mod;
+		mod = (0x0300 | mod);
 	}
 	if (event.ctrlKey) {
-		mod = 0x00c0 | mod;
+		mod = (0x00c0 | mod);
 	}
 	if (event.shiftKey) {
-		mod = 0x0003 | mod;
+		mod = (0x0003 | mod);
 	}
 	let key_code = KEY_CODE_MAP.get(event.keyCode);
 	if (key_code === undefined) {
@@ -781,13 +781,13 @@ let JSystem_KeyUp = function(event) {
 	}
 	let mod = 0;
 	if (event.altKey) {
-		mod = 0x0300 | mod;
+		mod = (0x0300 | mod);
 	}
 	if (event.ctrlKey) {
-		mod = 0x00c0 | mod;
+		mod = (0x00c0 | mod);
 	}
 	if (event.shiftKey) {
-		mod = 0x0003 | mod;
+		mod = (0x0003 | mod);
 	}
 	let key_code = KEY_CODE_MAP.get(event.keyCode);
 	if (key_code === undefined) {
@@ -1831,6 +1831,9 @@ JavaScript.JTextEdit = JavaScript.Class(JavaScript.JDisplayObject, {
 		style.input.multiline = true;
 		this._native = new PIXI.TextInput(style);
 		this._native.disabled = true;
+		this.SetRed(1);
+		this.SetGreen(1);
+		this.SetBlue(1);
 	},
 	SetDisabled : function(value) {
 		this._native.disabled = value;
@@ -2224,9 +2227,9 @@ ALittle.System_CalcPortrait = function(src_width, src_height, flag) {
 		let screen_width = ALittle.System_GetScreenWidth();
 		let screen_height = ALittle.System_GetScreenHeight();
 		src_height = ALittle.Math_Floor(screen_height / screen_width * src_width);
-		flag = flag | 0x00000001;
+		flag = (flag | 0x00000001);
 	} else if (platform === "Web") {
-		if (flag & 0x00000020 > 0) {
+		if ((flag & 0x00000020) > 0) {
 			src_width = ALittle.System_GetScreenWidth();
 			src_height = ALittle.System_GetScreenHeight();
 		} else {
@@ -2252,9 +2255,9 @@ ALittle.System_CalcLandscape = function(src_width, src_height, flag) {
 		let screen_width = ALittle.System_GetScreenWidth();
 		let screen_height = ALittle.System_GetScreenHeight();
 		src_width = ALittle.Math_Floor(screen_width / screen_height * src_height);
-		flag = flag | 0x00000001;
+		flag = (flag | 0x00000001);
 	} else if (platform === "Web") {
-		if (flag & 0x00000020 > 0) {
+		if ((flag & 0x00000020) > 0) {
 			src_width = ALittle.System_GetScreenWidth();
 			src_height = ALittle.System_GetScreenHeight();
 		} else {
@@ -6753,7 +6756,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 				event.handled = true;
 			}
 		} else if (event.sym === 1073741904) {
-			if (event.mod & 0x0003 === 0) {
+			if ((event.mod & 0x0003) === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetLR(true);
 			} else {
@@ -6762,7 +6765,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741903) {
-			if (event.mod & 0x0003 === 0) {
+			if ((event.mod & 0x0003) === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetLR(false);
 			} else {
@@ -6771,7 +6774,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741906) {
-			if (event.mod & 0x0003 === 0) {
+			if ((event.mod & 0x0003) === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetUD(true);
 			} else {
@@ -6780,7 +6783,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741905) {
-			if (event.mod & 0x0003 === 0) {
+			if ((event.mod & 0x0003) === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetUD(false);
 			} else {
@@ -7296,7 +7299,7 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 	HandleKeyDown : function(event) {
 		let is_change = false;
 		if (event.sym === 1073741904) {
-			if (event.mod & 0x0003 === 0) {
+			if ((event.mod & 0x0003) === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffset(true);
 			} else {
@@ -7305,7 +7308,7 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741903) {
-			if (event.mod & 0x0003 === 0) {
+			if ((event.mod & 0x0003) === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffset(false);
 			} else {

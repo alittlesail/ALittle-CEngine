@@ -2061,7 +2061,7 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 		let is_change = false;
 		if (event.sym === 1073741904) {
 			if (this._multi_cursor === false) {
-				if (event.mod & 0x0003 === 0) {
+				if ((event.mod & 0x0003) === 0) {
 					this._is_selecting = false;
 					this.CursorOffsetLR(true);
 				} else {
@@ -2072,7 +2072,7 @@ ALittle.RichInput = JavaScript.Class(ALittle.DisplayLayout, {
 			event.handled = true;
 		} else if (event.sym === 1073741903) {
 			if (this._multi_cursor === false) {
-				if (event.mod & 0x0003 === 0) {
+				if ((event.mod & 0x0003) === 0) {
 					this._is_selecting = false;
 					this.CursorOffsetLR(false);
 				} else {

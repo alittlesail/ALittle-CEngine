@@ -195,13 +195,13 @@ let JSystem_KeyDown = function(event) {
 	}
 	let mod = 0;
 	if (event.altKey) {
-		mod = 0x0300 | mod;
+		mod = (0x0300 | mod);
 	}
 	if (event.ctrlKey) {
-		mod = 0x00c0 | mod;
+		mod = (0x00c0 | mod);
 	}
 	if (event.shiftKey) {
-		mod = 0x0003 | mod;
+		mod = (0x0003 | mod);
 	}
 	let key_code = KEY_CODE_MAP.get(event.keyCode);
 	if (key_code === undefined) {
@@ -221,13 +221,13 @@ let JSystem_KeyUp = function(event) {
 	}
 	let mod = 0;
 	if (event.altKey) {
-		mod = 0x0300 | mod;
+		mod = (0x0300 | mod);
 	}
 	if (event.ctrlKey) {
-		mod = 0x00c0 | mod;
+		mod = (0x00c0 | mod);
 	}
 	if (event.shiftKey) {
-		mod = 0x0003 | mod;
+		mod = (0x0003 | mod);
 	}
 	let key_code = KEY_CODE_MAP.get(event.keyCode);
 	if (key_code === undefined) {

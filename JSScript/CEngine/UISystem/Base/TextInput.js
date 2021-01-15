@@ -305,7 +305,7 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 	HandleKeyDown : function(event) {
 		let is_change = false;
 		if (event.sym === 1073741904) {
-			if (event.mod & 0x0003 === 0) {
+			if ((event.mod & 0x0003) === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffset(true);
 			} else {
@@ -314,7 +314,7 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741903) {
-			if (event.mod & 0x0003 === 0) {
+			if ((event.mod & 0x0003) === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffset(false);
 			} else {

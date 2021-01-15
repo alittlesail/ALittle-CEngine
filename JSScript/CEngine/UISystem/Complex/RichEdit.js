@@ -3114,7 +3114,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			}
 		} else if (event.sym === 1073741904) {
 			if (this._multi_cursor === false) {
-				if (event.mod & 0x0003 === 0) {
+				if ((event.mod & 0x0003) === 0) {
 					this._is_selecting = false;
 					this.CursorOffsetLR(true);
 					this.UpdateFontText();
@@ -3126,7 +3126,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			event.handled = true;
 		} else if (event.sym === 1073741903) {
 			if (this._multi_cursor === false) {
-				if (event.mod & 0x0003 === 0) {
+				if ((event.mod & 0x0003) === 0) {
 					this._is_selecting = false;
 					this.CursorOffsetLR(false);
 					this.UpdateFontText();
@@ -3138,7 +3138,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			event.handled = true;
 		} else if (event.sym === 1073741906) {
 			if (this._multi_cursor === false) {
-				if (event.mod & 0x0003 === 0) {
+				if ((event.mod & 0x0003) === 0) {
 					this._is_selecting = false;
 					this.CursorOffsetUD(true);
 					this.UpdateFontText();
@@ -3150,7 +3150,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			event.handled = true;
 		} else if (event.sym === 1073741905) {
 			if (this._multi_cursor === false) {
-				if (event.mod & 0x0003 === 0) {
+				if ((event.mod & 0x0003) === 0) {
 					this._is_selecting = false;
 					this.CursorOffsetUD(false);
 					this.UpdateFontText();

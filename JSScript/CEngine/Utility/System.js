@@ -9,9 +9,9 @@ ALittle.System_CalcPortrait = function(src_width, src_height, flag) {
 		let screen_width = ALittle.System_GetScreenWidth();
 		let screen_height = ALittle.System_GetScreenHeight();
 		src_height = ALittle.Math_Floor(screen_height / screen_width * src_width);
-		flag = flag | 0x00000001;
+		flag = (flag | 0x00000001);
 	} else if (platform === "Web") {
-		if (flag & 0x00000020 > 0) {
+		if ((flag & 0x00000020) > 0) {
 			src_width = ALittle.System_GetScreenWidth();
 			src_height = ALittle.System_GetScreenHeight();
 		} else {
@@ -37,9 +37,9 @@ ALittle.System_CalcLandscape = function(src_width, src_height, flag) {
 		let screen_width = ALittle.System_GetScreenWidth();
 		let screen_height = ALittle.System_GetScreenHeight();
 		src_width = ALittle.Math_Floor(screen_width / screen_height * src_height);
-		flag = flag | 0x00000001;
+		flag = (flag | 0x00000001);
 	} else if (platform === "Web") {
-		if (flag & 0x00000020 > 0) {
+		if ((flag & 0x00000020) > 0) {
 			src_width = ALittle.System_GetScreenWidth();
 			src_height = ALittle.System_GetScreenHeight();
 		} else {

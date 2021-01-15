@@ -335,7 +335,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 				event.handled = true;
 			}
 		} else if (event.sym === 1073741904) {
-			if (event.mod & 0x0003 === 0) {
+			if ((event.mod & 0x0003) === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetLR(true);
 			} else {
@@ -344,7 +344,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741903) {
-			if (event.mod & 0x0003 === 0) {
+			if ((event.mod & 0x0003) === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetLR(false);
 			} else {
@@ -353,7 +353,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741906) {
-			if (event.mod & 0x0003 === 0) {
+			if ((event.mod & 0x0003) === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetUD(true);
 			} else {
@@ -362,7 +362,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741905) {
-			if (event.mod & 0x0003 === 0) {
+			if ((event.mod & 0x0003) === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetUD(false);
 			} else {
