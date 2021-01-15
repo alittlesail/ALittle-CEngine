@@ -936,6 +936,9 @@ JavaScript.JTextEdit = JavaScript.Class(JavaScript.JDisplayObject, {
 		style.input.multiline = true;
 		this._native = new PIXI.TextInput(style);
 		this._native.disabled = true;
+		this.SetRed(1);
+		this.SetGreen(1);
+		this.SetBlue(1);
 	},
 	SetDisabled : function(value) {
 		this._native.disabled = value;
