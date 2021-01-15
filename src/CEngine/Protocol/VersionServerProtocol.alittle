@@ -53,3 +53,184 @@ public struct QDownloadVersionFile
 
 [HttpDownload]
 public await static HandleHttpQDownloadVersionFile(ALittle.IHttpReceiver client, QDownloadVersionFile msg) : string, int {}
+
+public struct QVersionInfo
+{
+    string __account_id;     // 账号ID
+    string __session_id;     // 会话ID
+    string module_name;		// 模块名
+    string platform;		// 终端平台
+}
+
+public struct D_VersionClose
+{
+    string account_id;	        // 账号ID
+    string module_name;			// 模块名
+    string platform;            // 终端平台
+    string close_version;       // 关闭的版本
+    string submit_platform;     // 提交的平台，比如taptap，ios
+    int create_time;            // 创建时间
+    int create_index;           // 创建时间序列
+    int update_time;            // 更新时间
+    int update_index;           // 更新时间序列
+}
+
+public struct D_VersionLog
+{
+    string version_id;	        // 账号ID
+    string account_id;	        // 账号ID
+    string module_name;			// 模块名
+    string platform;            // 终端平台
+    string content;             // 日志内容
+    int create_time;            // 创建时间
+    int create_index;           // 创建时间序列
+    int update_time;            // 更新时间
+    int update_index;           // 更新时间序列
+}
+
+// 应答版本信息
+public struct AVersionInfo
+{
+    List<D_VersionInfo> version_list;	// 版本信息列表
+    List<D_VersionClose> close_list;	// 版本屏蔽列表
+    List<D_VersionLog> log_list;		// 版本日志列表
+}
+
+[Http]
+public await static HandleHttpQVersionInfo(ALittle.IHttpReceiver client, QVersionInfo msg) : AVersionInfo { }
+
+// 添加屏蔽版本
+public struct QAddVersionClose
+{
+    string __account_id;
+    string __session_id;
+    string platform;		// 平台
+    string module_name;		// 模块名
+    string close_version;	// 屏蔽的版本号
+    string submit_platform; // 提交的平台
+}
+
+public struct AAddVersionClose
+{
+
+}
+
+[Http]
+public await static HandleHttpQAddVersionClose(ALittle.IHttpReceiver client, QAddVersionClose msg) : AAddVersionClose { }
+
+// 请求删除屏蔽版本
+public struct QDeleteVersionClose
+{
+    string __account_id;
+    string __session_id;
+    string platform;		// 平台
+    string module_name;		// 模块名
+    string close_version;	// 屏蔽的版本号
+}
+
+public struct ADeleteVersionClose
+{
+
+}
+
+[Http]
+public await static HandleHttpQDeleteVersionClose(ALittle.IHttpReceiver client, QDeleteVersionClose msg) : ADeleteVersionClose { }
+
+public struct QNewUpdateTimeIndex
+{
+    string __account_id;
+    string __session_id;
+}
+
+public struct ANewUpdateTimeIndex
+{
+    int update_time;
+    int update_index;
+}
+
+[Http]
+public await static HandleHttpQNewUpdateTimeIndex(ALittle.IHttpReceiver client, QNewUpdateTimeIndex msg) : ANewUpdateTimeIndex { }
+
+public struct QNewCurVersion
+{
+    string __account_id;
+    string __session_id;
+    string platform;
+    string module_name;
+}
+
+public struct ANewCurVersion
+{
+    D_VersionInfo version_info;
+    string http_ip;
+    int http_port;
+}
+
+[Http]
+public await static HandleHttpQNewCurVersion(ALittle.IHttpReceiver client, QNewCurVersion msg) : ANewCurVersion { }
+
+public struct QNewVersionInfo
+{
+    string __account_id;
+    string __session_id;
+    string module_name;
+    string platform;
+    string big_version;
+    string version_number;
+    string install_version;
+    string plugin_list;
+    int install_size;
+    List<string> log_list;
+    int small_version_time;
+    int small_version_index;
+    int update_time;
+    int update_index;
+}
+
+public struct ANewVersionInfo
+{
+    string version_id;
+    int update_time;
+    int update_index;
+}
+
+[Http]
+public await static HandleHttpQNewVersionInfo(ALittle.IHttpReceiver client, QNewVersionInfo msg) : ANewVersionInfo { }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// 请求删除版本
+public struct QDeleteVersionInfo
+{
+    string __account_id;
+    string __session_id;
+    string platform;		// 平台
+    string module_name;		// 模块名
+    string version_id;		// 版本ID
+}
+
+public struct ADeleteVersionInfo
+{
+
+}
+
+[Http]
+public await static HandleHttpQDeleteVersionInfo(ALittle.IHttpReceiver client, QDeleteVersionInfo msg) : ADeleteVersionInfo { }
+
+public struct QUploadVersionFile
+{
+    string __account_id;
+    string __session_id;
+    string platform;
+    string module_name;
+    string version_id;
+    string file_path;
+}
+
+public struct AUploadVersionFile
+{
+
+}
+
+[HttpUpload]
+public await static HandleHttpQUploadVersionFile(ALittle.IHttpFileReceiver client, QUploadVersionFile msg) { }
