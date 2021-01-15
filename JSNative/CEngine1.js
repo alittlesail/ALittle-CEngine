@@ -2170,10 +2170,6 @@ ALittle.File_ExternalFilePath = function() {
 	return "";
 }
 
-ALittle.File_CopyFile = function(src_path, dst_path) {
-	return JavaScript.File_CopyFile(src_path, dst_path);
-}
-
 ALittle.File_CopyFileFromAsset = function(src_path, dst_path) {
 	return JavaScript.File_CopyFile(src_path, dst_path);
 }
@@ -2188,10 +2184,6 @@ ALittle.File_Md5 = function(path) {
 		return "";
 	}
 	return md5(content);
-}
-
-ALittle.File_CopyDeepDir = function(src_path, dest_path, ext, log) {
-	JavaScript.File_CopyDeepDir(src_path, dest_path, ext, log);
 }
 
 ALittle.File_ReadTextFromFile = function(file_path, crypt_mode) {
@@ -3852,6 +3844,8 @@ ALittle.UIEnumTypes = {
 	KEY_TAB : 9,
 	KEY_LSHIFT : 1073742049,
 	KEY_RSHIFT : 1073742053,
+	KEY_LCTRL : 1073742048,
+	KEY_RCTRL : 1073742052,
 	KEY_1 : 1073741913,
 	VIEW_FULLSCREEN : 0x00000001,
 	VIEW_OPENGL : 0x00000002,
@@ -4721,10 +4715,7 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		return [x, y];
 	},
 	RemoveFromParent : function() {
-		let parent = this._show_parent;
-		if (parent === undefined) {
-			parent = this._logic_parent;
-		}
+		let parent = this.parent;
 		if (parent === undefined) {
 			return;
 		}
@@ -5389,12 +5380,6 @@ ALittle.DisplayGroup = JavaScript.Class(ALittle.DisplayObject, {
 			return false;
 		}
 		return child._show_parent === this || child._logic_parent === this;
-	},
-	get parent() {
-		if (this._logic_parent !== undefined) {
-			return this._logic_parent;
-		}
-		return this._show_parent;
 	},
 	RemoveAllChild : function() {
 		let ___OBJECT_3 = this._childs;
@@ -12199,6 +12184,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 			++ child_list_count;
 			child_list[child_list_count - 1] = v;
 		}
+		this._scroll_content.RemoveAllChild();
 		this._scroll_content.RemoveEventListener(___all_struct.get(-431205740), this, this.HandleContainerResize);
 		this._scroll_view.RemoveChild(this._scroll_content);
 		this._scroll_content = value;
@@ -12208,17 +12194,12 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 			if (v === undefined) break;
 			value.AddChild(v);
 		}
-		this._scroll_content.AddEventListener(___all_struct.get(-431205740), this, this.HandleContainerResize);
-		this._scroll_view.AddChild(this._scroll_content, 1);
-		this.AdjustScrollBar();
-	},
-	SetContainer : function(value) {
-		if (value === undefined) {
-			value = ALittle.NewObject(ALittle.DisplayGroup, this._ctrl_sys);
+		let ___OBJECT_3 = value.childs;
+		for (let k = 1; k <= ___OBJECT_3.length; ++k) {
+			let child = ___OBJECT_3[k - 1];
+			if (child === undefined) break;
+			child._logic_parent = this;
 		}
-		this._scroll_content.RemoveEventListener(___all_struct.get(-431205740), this, this.HandleContainerResize);
-		this._scroll_view.RemoveChild(this._scroll_content);
-		this._scroll_content = value;
 		this._scroll_content.AddEventListener(___all_struct.get(-431205740), this, this.HandleContainerResize);
 		this._scroll_view.AddChild(this._scroll_content, 1);
 		this.AdjustScrollBar();
@@ -12323,6 +12304,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		if (this._scroll_content.AddChild(child, index) === false) {
 			return false;
 		}
+		child._logic_parent = this;
 		this.AdjustScrollBar();
 		return true;
 	},
@@ -13188,11 +13170,6 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		if (child._show_parent === this._body || child._logic_parent === this) {
 			return true;
-		}
-		if (child._logic_parent !== undefined) {
-			child._logic_parent.RemoveChild(child);
-		} else if (child._show_parent !== undefined) {
-			child._show_parent.RemoveChild(child);
 		}
 		let result = this._body.AddChild(child, index);
 		child._logic_parent = this;

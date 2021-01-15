@@ -64,10 +64,6 @@ ALittle.File_ExternalFilePath = function() {
 	return "";
 }
 
-ALittle.File_CopyFile = function(src_path, dst_path) {
-	return JavaScript.File_CopyFile(src_path, dst_path);
-}
-
 ALittle.File_CopyFileFromAsset = function(src_path, dst_path) {
 	return JavaScript.File_CopyFile(src_path, dst_path);
 }
@@ -82,10 +78,6 @@ ALittle.File_Md5 = function(path) {
 		return "";
 	}
 	return md5(content);
-}
-
-ALittle.File_CopyDeepDir = function(src_path, dest_path, ext, log) {
-	JavaScript.File_CopyDeepDir(src_path, dest_path, ext, log);
 }
 
 ALittle.File_ReadTextFromFile = function(file_path, crypt_mode) {

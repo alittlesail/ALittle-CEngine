@@ -321,10 +321,7 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		return [x, y];
 	},
 	RemoveFromParent : function() {
-		let parent = this._show_parent;
-		if (parent === undefined) {
-			parent = this._logic_parent;
-		}
+		let parent = this.parent;
 		if (parent === undefined) {
 			return;
 		}

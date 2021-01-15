@@ -83,6 +83,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 			++ child_list_count;
 			child_list[child_list_count - 1] = v;
 		}
+		this._scroll_content.RemoveAllChild();
 		this._scroll_content.RemoveEventListener(___all_struct.get(-431205740), this, this.HandleContainerResize);
 		this._scroll_view.RemoveChild(this._scroll_content);
 		this._scroll_content = value;
@@ -92,17 +93,12 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 			if (v === undefined) break;
 			value.AddChild(v);
 		}
-		this._scroll_content.AddEventListener(___all_struct.get(-431205740), this, this.HandleContainerResize);
-		this._scroll_view.AddChild(this._scroll_content, 1);
-		this.AdjustScrollBar();
-	},
-	SetContainer : function(value) {
-		if (value === undefined) {
-			value = ALittle.NewObject(ALittle.DisplayGroup, this._ctrl_sys);
+		let ___OBJECT_3 = value.childs;
+		for (let k = 1; k <= ___OBJECT_3.length; ++k) {
+			let child = ___OBJECT_3[k - 1];
+			if (child === undefined) break;
+			child._logic_parent = this;
 		}
-		this._scroll_content.RemoveEventListener(___all_struct.get(-431205740), this, this.HandleContainerResize);
-		this._scroll_view.RemoveChild(this._scroll_content);
-		this._scroll_content = value;
 		this._scroll_content.AddEventListener(___all_struct.get(-431205740), this, this.HandleContainerResize);
 		this._scroll_view.AddChild(this._scroll_content, 1);
 		this.AdjustScrollBar();
@@ -207,6 +203,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		if (this._scroll_content.AddChild(child, index) === false) {
 			return false;
 		}
+		child._logic_parent = this;
 		this.AdjustScrollBar();
 		return true;
 	},
