@@ -47,6 +47,10 @@ function ALittle.ControlSystem.__getter:info_map()
 	return self._name_map_info
 end
 
+function ALittle.ControlSystem.__getter:host()
+	return self._host
+end
+
 function ALittle.ControlSystem:RegisterFont(src, dst)
 	self._font_map[src] = dst
 end

@@ -58,6 +58,9 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 	get info_map() {
 		return this._name_map_info;
 	},
+	get host() {
+		return this._host;
+	},
 	RegisterFont : function(src, dst) {
 		this._font_map[src] = dst;
 	},
