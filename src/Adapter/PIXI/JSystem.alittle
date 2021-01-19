@@ -24,6 +24,9 @@ KEY_CODE_MAP[98] = 1073741914; SCAN_CODE_MAP[98] = 90;	// 2
 KEY_CODE_MAP[100] = 1073741916; SCAN_CODE_MAP[100] = 92;	// 4
 KEY_CODE_MAP[101] = 1073741917; SCAN_CODE_MAP[101] = 93;	// 5
 
+private var __last_button_down = 0;
+private var __last_button_count = 0;
+
 public static JSystem_GetDeviceID() : string
 {
     // 先从cookie获取，如果没有就随机生成一个
@@ -66,8 +69,12 @@ private static JSystem_FingerDown(javascript.DomElementOnTouchEvent event)
         offsetTop = event.srcElement.offsetTop;
     }
 
+    var cur_ms = javascript.Date.now();
+    if (cur_ms - __last_button_down > 500) __last_button_count = 0;
+    __last_button_down = cur_ms;
+    ++ __last_button_count;
     for (var index, touch in event.changedTouches)
-        func((touch.pageX - offsetLeft) / A_PixiApp.stage.scale.x * __pixel_ratio, (touch.pageY - offsetTop) / A_PixiApp.stage.scale.y * __pixel_ratio, touch.identifier, 1);
+        func((touch.pageX - offsetLeft) / A_PixiApp.stage.scale.x * __pixel_ratio, (touch.pageY - offsetTop) / A_PixiApp.stage.scale.y * __pixel_ratio, touch.identifier, __last_button_count);
 }
 
 private static JSystem_FingerUp(javascript.DomElementOnTouchEvent event)
@@ -123,7 +130,11 @@ private static JSystem_MouseDown(javascript.DomElementOnMouseEvent event)
         func = cast<Map<string, Functor<(double, double, int)>>>(window)["__ALITTLEAPI_RButtonDown"];
     if (func == null) return;
     
-    func((event.pageX - event.srcElement.offsetLeft) / A_PixiApp.stage.scale.x, (event.pageY - event.srcElement.offsetTop) / A_PixiApp.stage.scale.y, 1);
+    var cur_ms = javascript.Date.now();
+    if (cur_ms - __last_button_down > 500) __last_button_count = 0;
+    __last_button_down = cur_ms;
+    ++ __last_button_count;
+    func((event.pageX - event.srcElement.offsetLeft) / A_PixiApp.stage.scale.x, (event.pageY - event.srcElement.offsetTop) / A_PixiApp.stage.scale.y, __last_button_count);
 }
 
 private static JSystem_MouseUp(javascript.DomElementOnMouseEvent event)

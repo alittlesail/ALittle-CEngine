@@ -597,6 +597,8 @@ KEY_CODE_MAP.set(100, 1073741916);
 SCAN_CODE_MAP.set(100, 92);
 KEY_CODE_MAP.set(101, 1073741917);
 SCAN_CODE_MAP.set(101, 93);
+let __last_button_down = 0;
+let __last_button_count = 0;
 JavaScript.JSystem_GetDeviceID = function() {
 	let id = undefined;
 	let json = undefined;
@@ -637,11 +639,17 @@ let JSystem_FingerDown = function(event) {
 		offsetLeft = event.srcElement.offsetLeft;
 		offsetTop = event.srcElement.offsetTop;
 	}
+	let cur_ms = Date.now();
+	if (cur_ms - __last_button_down > 500) {
+		__last_button_count = 0;
+	}
+	__last_button_down = cur_ms;
+	++ __last_button_count;
 	let ___OBJECT_1 = event.changedTouches;
 	for (let index = 1; index <= ___OBJECT_1.length; ++index) {
 		let touch = ___OBJECT_1[index - 1];
 		if (touch === undefined) break;
-		func((touch.pageX - offsetLeft) / A_PixiApp.stage.scale.x * __pixel_ratio, (touch.pageY - offsetTop) / A_PixiApp.stage.scale.y * __pixel_ratio, touch.identifier, 1);
+		func((touch.pageX - offsetLeft) / A_PixiApp.stage.scale.x * __pixel_ratio, (touch.pageY - offsetTop) / A_PixiApp.stage.scale.y * __pixel_ratio, touch.identifier, __last_button_count);
 	}
 }
 
@@ -703,7 +711,13 @@ let JSystem_MouseDown = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func((event.pageX - event.srcElement.offsetLeft) / A_PixiApp.stage.scale.x, (event.pageY - event.srcElement.offsetTop) / A_PixiApp.stage.scale.y, 1);
+	let cur_ms = Date.now();
+	if (cur_ms - __last_button_down > 500) {
+		__last_button_count = 0;
+	}
+	__last_button_down = cur_ms;
+	++ __last_button_count;
+	func((event.pageX - event.srcElement.offsetLeft) / A_PixiApp.stage.scale.x, (event.pageY - event.srcElement.offsetTop) / A_PixiApp.stage.scale.y, __last_button_count);
 }
 
 let JSystem_MouseUp = function(event) {
