@@ -359,9 +359,13 @@ public class Rectangle
 {
     public ctor(double x, double y, double width, double height) {}
     public get width() : double {}
+    public set width(double value) {}
     public get height() : double {}
+    public set height(double value) {}
     public get x() : double {}
+    public set x(double value) {}
     public get y() : double {}
+    public set y(double value) {}
 }
 
 public struct TextInputStyleInput

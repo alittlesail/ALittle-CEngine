@@ -430,6 +430,7 @@ public class JSprite : JDisplayObject
     private int _tex_height;
 
     private PIXI.Texture _texture;
+    private PIXI.Rectangle _frame;
 
     public ctor()
     {
@@ -439,6 +440,7 @@ public class JSprite : JDisplayObject
         this._col = 0;
         this._tex_width = 0;
         this._tex_height = 0;
+        this._frame = new PIXI.Rectangle(0, 0, 1, 1);
         this._native = new PIXI.Sprite();
     }
 
@@ -464,8 +466,11 @@ public class JSprite : JDisplayObject
         if (row < 0 || row >= this._row_count) row = 0;
         if (col < 0 || col >= this._col_count) col = 0;
 
-        var frame = new PIXI.Rectangle(col*tile_width, row*tile_height, tile_width, tile_height);
-        this._texture = new PIXI.Texture(cast<JTexture>(texture).native.baseTexture, frame
+        this._frame.x = col*tile_width;
+        this._frame.y = row*tile_height;
+        this._frame.width = tile_width;
+        this._frame.height = tile_height;
+        this._texture = new PIXI.Texture(cast<JTexture>(texture).native.baseTexture, this._frame
                             , cast<JTexture>(texture).native.orig, cast<JTexture>(texture).native.trim
                             , cast<JTexture>(texture).native.rotate);
         cast<PIXI.Sprite>(this._native).texture = this._texture;
@@ -477,6 +482,8 @@ public class JSprite : JDisplayObject
 
     public fun SetRowColCount(int row_count, int col_count)
     {
+        if (this._row_count == row_count && this._col_count == col_count) return;
+
         this._row_count = row_count;
         if (this._row_count < 1) this._row_count = 1;
         this._col_count = col_count;
@@ -486,6 +493,8 @@ public class JSprite : JDisplayObject
     }
     public fun SetRowColIndex(int row, int col)
     {
+        if (this._row == row - 1 && this._col == col - 1) return;
+
         this._row = row - 1;
         this._col = col - 1;
 
@@ -503,7 +512,15 @@ public class JSprite : JDisplayObject
         var col = this._col;
         if (row < 0 || row >= this._row_count) row = 0;
         if (col < 0 || col >= this._col_count) col = 0;
-        this._texture.frame = new PIXI.Rectangle(col*tile_width, row*tile_height, tile_width, tile_height);
+
+        this._frame.x = col*tile_width;
+        this._frame.y = row*tile_height;
+        this._frame.width = tile_width;
+        this._frame.height = tile_height;
+        this._texture.frame = this._frame;
+        // 这里必须先设置为null，再设置一遍来更新内容
+        cast<PIXI.Sprite>(this._native).texture = null;
+        cast<PIXI.Sprite>(this._native).texture = this._texture;
     }
 }
 
