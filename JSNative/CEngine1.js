@@ -779,7 +779,7 @@ let JSystem_KeyDown = function(event) {
 	}
 	let key_code = KEY_CODE_MAP.get(event.keyCode);
 	if (key_code === undefined) {
-		key_code = 0;
+		key_code = event.keyCode;
 	}
 	let scan_code = SCAN_CODE_MAP.get(event.keyCode);
 	if (scan_code === undefined) {
@@ -1165,8 +1165,8 @@ JavaScript.JDisplayObjects = JavaScript.Class(JavaScript.JDisplayObject, {
 		this._native.addChild(value._native);
 	},
 	AddChildBefore : function(back, value) {
-		let index = this._native.getChildAt(value._native);
-		this._native.addChildAt(value._native, index - 1);
+		let index = this._native.getChildIndex(back._native);
+		this._native.addChildAt(value._native, index);
 	},
 	RemoveAllChild : function() {
 		this._native.removeChildren(0);
@@ -1205,8 +1205,8 @@ JavaScript.JDisplayView = JavaScript.Class(JavaScript.JDisplayObjects, {
 		this._container.addChild(value._native);
 	},
 	AddChildBefore : function(back, value) {
-		let index = this._container.getChildAt(value._native);
-		this._container.addChildAt(value._native, index - 1);
+		let index = this._container.getChildIndex(back._native);
+		this._container.addChildAt(value._native, index);
 	},
 	RemoveAllChild : function() {
 		this._container.removeChildren(0);
@@ -1234,8 +1234,8 @@ JavaScript.JDisplaySystem = JavaScript.Class(ALittle.IDisplaySystem, {
 		this._layer.addChild(value.native);
 	},
 	AddChildBefore : function(back, value) {
-		let index = this._layer.getChildAt(value.native);
-		this._layer.addChildAt(value.native, index - 1);
+		let index = this._layer.getChildIndex(back.native);
+		this._layer.addChildAt(value.native, index);
 	},
 	RemoveChild : function(value) {
 		this._layer.removeChild(value.native);
@@ -1792,6 +1792,12 @@ JavaScript.JTextInput = JavaScript.Class(JavaScript.JDisplayObject, {
 	},
 	SetDisabled : function(value) {
 		this._native.disabled = value;
+	},
+	SetVisible : function(value) {
+		this._visible = value;
+		let abs = value && !this._clip;
+		this._native.visible = abs;
+		this._native.substituteText = abs;
 	},
 	IsDefaultText : function() {
 		return this._is_default_text;
@@ -6495,9 +6501,24 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 		this._move_in = false;
 		this._focus_in = false;
 		this._show.native.htmlInput.onchange = this.HandleHtmlInputChanged.bind(this);
+		this._show.native.htmlInput.onkeydown = this.HandleHtmlInputKeyDown.bind(this);
+		this._show.native.htmlInput.onkeyup = this.HandleHtmlInputKeyUp.bind(this);
 	},
 	HandleHtmlInputChanged : function() {
+		this._show._is_default_text = false;
 		this.DispatchEvent(___all_struct.get(958494922), {});
+	},
+	HandleHtmlInputKeyDown : function(event) {
+		this._show._is_default_text = false;
+		let e = {};
+		e.sym = event.keyCode;
+		this.DispatchEvent(___all_struct.get(-1604617962), e);
+	},
+	HandleHtmlInputKeyUp : function(event) {
+		this._show._is_default_text = false;
+		let e = {};
+		e.sym = event.keyCode;
+		this.DispatchEvent(___all_struct.get(1213009422), e);
 	},
 	Redraw : function() {
 		this._show.NeedDraw();
@@ -7067,9 +7088,24 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 		this._move_in = false;
 		this._focus_in = false;
 		this._show.native.htmlInput.onchange = this.HandleHtmlInputChanged.bind(this);
+		this._show.native.htmlInput.onkeydown = this.HandleHtmlInputKeyDown.bind(this);
+		this._show.native.htmlInput.onkeyup = this.HandleHtmlInputKeyUp.bind(this);
 	},
 	HandleHtmlInputChanged : function() {
+		this._show._is_default_text = false;
 		this.DispatchEvent(___all_struct.get(958494922), {});
+	},
+	HandleHtmlInputKeyDown : function(event) {
+		this._show._is_default_text = false;
+		let e = {};
+		e.sym = event.keyCode;
+		this.DispatchEvent(___all_struct.get(-1604617962), e);
+	},
+	HandleHtmlInputKeyUp : function(event) {
+		this._show._is_default_text = false;
+		let e = {};
+		e.sym = event.keyCode;
+		this.DispatchEvent(___all_struct.get(1213009422), e);
 	},
 	Redraw : function() {
 		this._show.NeedDraw();

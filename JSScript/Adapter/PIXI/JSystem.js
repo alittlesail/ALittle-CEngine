@@ -219,7 +219,7 @@ let JSystem_KeyDown = function(event) {
 	}
 	let key_code = KEY_CODE_MAP.get(event.keyCode);
 	if (key_code === undefined) {
-		key_code = 0;
+		key_code = event.keyCode;
 	}
 	let scan_code = SCAN_CODE_MAP.get(event.keyCode);
 	if (scan_code === undefined) {

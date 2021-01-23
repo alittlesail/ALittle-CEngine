@@ -113,6 +113,7 @@ public class Container : DisplayObject
     public fun removeChildAt(DisplayObject value, int index) {}
     public fun removeChildren(int begin, [Nullable] int end) {}
     public get children() : List<DisplayObject> {}
+    public fun getChildIndex(DisplayObject value) : int {}
 }
 
 [Native]

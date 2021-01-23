@@ -102,6 +102,10 @@ public class TextInput : DisplayObject
         this._focus_in = false;
         [Language(JavaScript)]
         cast<PIXI.TextInput>(cast<JavaScript.JTextInput>(this._show).native).htmlInput.onchange = bind(this.HandleHtmlInputChanged, this);
+        [Language(JavaScript)]
+        cast<PIXI.TextInput>(cast<JavaScript.JTextInput>(this._show).native).htmlInput.onkeydown = bind(this.HandleHtmlInputKeyDown, this);
+        [Language(JavaScript)]
+        cast<PIXI.TextInput>(cast<JavaScript.JTextInput>(this._show).native).htmlInput.onkeyup = bind(this.HandleHtmlInputKeyUp, this);
 
         [Language(Lua)]
         A_LoadTextureManager.RegisterRedrawControl(this);
@@ -110,7 +114,26 @@ public class TextInput : DisplayObject
     [Language(JavaScript)]
     private fun HandleHtmlInputChanged()
     {
+        cast<JavaScript.JTextInput>(this._show)._is_default_text = false;
         this.DispatchEvent(new UIChangedEvent());
+    }
+
+    [Language(JavaScript)]
+    private fun HandleHtmlInputKeyDown(javascript.DomElementOnKeyEvent event)
+    {
+        cast<JavaScript.JTextInput>(this._show)._is_default_text = false;
+        var e = new UIKeyDownEvent();
+        e.sym = event.keyCode;
+        this.DispatchEvent(e);
+    }
+
+    [Language(JavaScript)]
+    private fun HandleHtmlInputKeyUp(javascript.DomElementOnKeyEvent event)
+    {
+        cast<JavaScript.JTextInput>(this._show)._is_default_text = false;
+        var e = new UIKeyUpEvent();
+        e.sym = event.keyCode;
+        this.DispatchEvent(e);
     }
     
     // 重新绘制

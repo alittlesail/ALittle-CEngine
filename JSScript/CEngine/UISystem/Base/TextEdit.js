@@ -44,9 +44,24 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 		this._move_in = false;
 		this._focus_in = false;
 		this._show.native.htmlInput.onchange = this.HandleHtmlInputChanged.bind(this);
+		this._show.native.htmlInput.onkeydown = this.HandleHtmlInputKeyDown.bind(this);
+		this._show.native.htmlInput.onkeyup = this.HandleHtmlInputKeyUp.bind(this);
 	},
 	HandleHtmlInputChanged : function() {
+		this._show._is_default_text = false;
 		this.DispatchEvent(___all_struct.get(958494922), {});
+	},
+	HandleHtmlInputKeyDown : function(event) {
+		this._show._is_default_text = false;
+		let e = {};
+		e.sym = event.keyCode;
+		this.DispatchEvent(___all_struct.get(-1604617962), e);
+	},
+	HandleHtmlInputKeyUp : function(event) {
+		this._show._is_default_text = false;
+		let e = {};
+		e.sym = event.keyCode;
+		this.DispatchEvent(___all_struct.get(1213009422), e);
 	},
 	Redraw : function() {
 		this._show.NeedDraw();

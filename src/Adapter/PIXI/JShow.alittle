@@ -137,8 +137,8 @@ public class JDisplayObjects : JDisplayObject
     public fun AddChild(ALittle.IDisplayObject value) { cast<PIXI.Container>(this._native).addChild(cast<JDisplayObject>(value)._native); }
     public fun AddChildBefore(ALittle.IDisplayObject back, ALittle.IDisplayObject value)
     {
-        var index = cast<PIXI.Container>(this._native).getChildAt(cast<JDisplayObject>(value)._native);
-        cast<PIXI.Container>(this._native).addChildAt(cast<JDisplayObject>(value)._native, index - 1);
+        var index = cast<PIXI.Container>(this._native).getChildIndex(cast<JDisplayObject>(back)._native);
+        cast<PIXI.Container>(this._native).addChildAt(cast<JDisplayObject>(value)._native, index);
     }
     public fun RemoveAllChild()
     {
@@ -191,8 +191,8 @@ public class JDisplayView : JDisplayObjects
     public fun AddChild(ALittle.IDisplayObject value) { this._container.addChild(cast<JDisplayObject>(value)._native); }
     public fun AddChildBefore(ALittle.IDisplayObject back, ALittle.IDisplayObject value)
     {
-        var index = this._container.getChildAt(cast<JDisplayObject>(value)._native);
-        this._container.addChildAt(cast<JDisplayObject>(value)._native, index - 1);
+        var index = this._container.getChildIndex(cast<JDisplayObject>(back)._native);
+        this._container.addChildAt(cast<JDisplayObject>(value)._native, index);
     }
     public fun RemoveAllChild()
     {
@@ -232,8 +232,8 @@ public class JDisplaySystem : ALittle.IDisplaySystem
     }
     public fun AddChildBefore(ALittle.IDisplayObject back, ALittle.IDisplayObject value)
     {
-        var index = this._layer.getChildAt(cast<JDisplayObject>(value).native);
-        this._layer.addChildAt(cast<JDisplayObject>(value).native, index - 1);
+        var index = this._layer.getChildIndex(cast<JDisplayObject>(back).native);
+        this._layer.addChildAt(cast<JDisplayObject>(value).native, index);
     }
     public fun RemoveChild(ALittle.IDisplayObject value)
     {
@@ -931,7 +931,7 @@ public class JTextArea : JDisplayObject
 
 public class JTextInput : JDisplayObject
 {
-    private bool _is_default_text;
+    public bool _is_default_text;
     private string _default_text;
     
     private int _red;
@@ -955,6 +955,14 @@ public class JTextInput : JDisplayObject
     public fun SetDisabled(bool value)
     {
         cast<PIXI.TextInput>(this._native).disabled = value;
+    }
+
+    public fun SetVisible(bool value)
+    {
+        this._visible = value;
+        var abs = value && !this._clip;
+        this._native.visible = abs;
+        cast<PIXI.TextInput>(this._native).substituteText = abs;
     }
 
     public fun IsDefaultText() : bool { return this._is_default_text; }
