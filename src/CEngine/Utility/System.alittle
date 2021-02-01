@@ -130,7 +130,7 @@ public static System_GetDeviceID() : string
     [Language(Lua)]
     return __CPPAPI_System.GetDeviceID();
     
-    // 先从cookie获取，如果没有就随机生成一个
+    // 先从本地获取，如果没有就随机生成一个
     [Language(JavaScript)]
     return JavaScript.JSystem_GetDeviceID();
 }

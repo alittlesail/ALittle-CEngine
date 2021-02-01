@@ -41,27 +41,25 @@ let __last_button_down = 0;
 let __last_button_count = 0;
 JavaScript.JSystem_GetDeviceID = function() {
 	let id = undefined;
-	let json = undefined;
-	if (document.cookie !== undefined && document.cookie !== "") {
-		let error = undefined;
-		[error, json] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, document.cookie); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } })();
-		if (error !== undefined) {
-			json = undefined;
+	if (window.wx !== undefined) {
+		let content = window.wx.getStorageSync("device_id");
+		if (typeof(content) === "string") {
+			id = content;
 		}
-	}
-	if (json !== undefined) {
-		id = json["device_id"];
+	} else if (window.localStorage !== undefined) {
+		let content = window.localStorage.getItem("device_id");
+		if (typeof(content) === "string") {
+			id = content;
+		}
 	}
 	if (id === undefined) {
 		let rand = ALittle.Math_RandomInt(0, 10000);
 		let time = ALittle.Time_GetCurTime();
-		if (json === undefined) {
-			json = {};
-		}
 		id = "device_id_" + rand + "_" + time;
-		json["device_id"] = id;
-		if (window.wx === undefined) {
-			document.cookie = ALittle.String_JsonEncode(json);
+		if (window.wx !== undefined) {
+			window.wx.setStorageSync("device_id", id);
+		} else if (window.localStorage !== undefined) {
+			window.localStorage.setItem("device_id", id);
 		}
 	}
 	return id;

@@ -29,27 +29,28 @@ private var __last_button_count = 0;
 
 public static JSystem_GetDeviceID() : string
 {
-    // 先从cookie获取，如果没有就随机生成一个
     var id:string = null;
-    var json:Map<string, any> = null;
-    if (document.cookie != null && document.cookie != "")
+    if (window.wx != null)
     {
-        var error:string = null;
-        error, json = tcall(ALittle.String_JsonDecode, document.cookie);
-        if (error != null) json = null;
+        var content = window.wx.getStorageSync("device_id");
+        if (javascript.typeof(content) == "string")
+        	id = content;
     }
-    if (json != null)
-        id = json["device_id"];
+    elseif (window.localStorage != null)
+    {
+        var content = window.localStorage.getItem("device_id");
+        if (javascript.typeof(content) == "string")
+        	id = content;
+    }
     if (id == null)
     {
         var rand = ALittle.Math_RandomInt(0, 10000);
         var time = ALittle.Time_GetCurTime();
-        if (json == null) json = new Map<string, any>();
         id = "device_id_"..rand.."_"..time;
-        json["device_id"] = id;
-
-        // 微信环境不能操作cookie
-        if (window.wx == null) document.cookie = ALittle.String_JsonEncode(json);
+        if (window.wx != null)
+            window.wx.setStorageSync("device_id", id);
+        elseif (window.localStorage != null)
+        	window.localStorage.setItem("device_id", id);
     }
     return id;
 }

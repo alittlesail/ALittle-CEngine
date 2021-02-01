@@ -601,27 +601,25 @@ let __last_button_down = 0;
 let __last_button_count = 0;
 JavaScript.JSystem_GetDeviceID = function() {
 	let id = undefined;
-	let json = undefined;
-	if (document.cookie !== undefined && document.cookie !== "") {
-		let error = undefined;
-		[error, json] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, document.cookie); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } })();
-		if (error !== undefined) {
-			json = undefined;
+	if (window.wx !== undefined) {
+		let content = window.wx.getStorageSync("device_id");
+		if (typeof(content) === "string") {
+			id = content;
 		}
-	}
-	if (json !== undefined) {
-		id = json["device_id"];
+	} else if (window.localStorage !== undefined) {
+		let content = window.localStorage.getItem("device_id");
+		if (typeof(content) === "string") {
+			id = content;
+		}
 	}
 	if (id === undefined) {
 		let rand = ALittle.Math_RandomInt(0, 10000);
 		let time = ALittle.Time_GetCurTime();
-		if (json === undefined) {
-			json = {};
-		}
 		id = "device_id_" + rand + "_" + time;
-		json["device_id"] = id;
-		if (window.wx === undefined) {
-			document.cookie = ALittle.String_JsonEncode(json);
+		if (window.wx !== undefined) {
+			window.wx.setStorageSync("device_id", id);
+		} else if (window.localStorage !== undefined) {
+			window.localStorage.setItem("device_id", id);
 		}
 	}
 	return id;
@@ -2547,19 +2545,27 @@ if (typeof ALittle === "undefined") window.ALittle = {};
 if (ALittle.IFileLoader === undefined) throw new Error(" extends class:ALittle.IFileLoader is undefined");
 ALittle.JClientFileLoader = JavaScript.Class(ALittle.IFileLoader, {
 	Load : function(file_path) {
-		let content = undefined;
-		let json = undefined;
-		if (document.cookie !== undefined && document.cookie !== "") {
-			let error = undefined;
-			[error, json] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, document.cookie); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
-			if (error !== undefined) {
-				json = undefined;
+		if (window.wx !== undefined) {
+			let content = window.wx.getStorageSync(file_path);
+			if (content === undefined) {
+				return undefined;
 			}
+			if (typeof(content) !== "string") {
+				return undefined;
+			}
+			return content;
 		}
-		if (json === undefined) {
-			return undefined;
+		if (window.localStorage !== undefined) {
+			let content = window.localStorage.getItem(file_path);
+			if (content === undefined) {
+				return undefined;
+			}
+			if (typeof(content) !== "string") {
+				return undefined;
+			}
+			return content;
 		}
-		return json[file_path];
+		return undefined;
 	},
 }, "ALittle.JClientFileLoader");
 
@@ -2567,22 +2573,14 @@ if (ALittle.IFileSaver === undefined) throw new Error(" extends class:ALittle.IF
 ALittle.JClientFileSaver = JavaScript.Class(ALittle.IFileSaver, {
 	Save : function(file_path, content) {
 		if (window.wx !== undefined) {
-			return false;
+			window.wx.setStorageSync(file_path, content);
+			return true;
 		}
-		let json = undefined;
-		if (document.cookie !== undefined && document.cookie !== "") {
-			let error = undefined;
-			[error, json] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, document.cookie); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
-			if (error !== undefined) {
-				json = undefined;
-			}
+		if (window.localStorage !== undefined) {
+			window.localStorage.setItem(file_path, content);
+			return true;
 		}
-		if (json === undefined) {
-			json = {};
-		}
-		json[file_path] = content;
-		document.cookie = ALittle.String_JsonEncode(json);
-		return true;
+		return false;
 	},
 }, "ALittle.JClientFileSaver");
 

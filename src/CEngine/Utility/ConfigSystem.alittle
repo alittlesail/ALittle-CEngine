@@ -32,17 +32,23 @@ public class JClientFileLoader : IFileLoader
 {
     public fun Load(string file_path) : string
     {
-        // 先从cookie获取，如果没有就随机生成一个
-        var content:string = null;
-        var json:Map<string, any> = null;
-        if (document.cookie != null && document.cookie != "")
+        if (window.wx != null)
         {
-            var error:string = null;
-            error, json = tcall(ALittle.String_JsonDecode, document.cookie);
-            if (error != null) json = null;
+            var content = window.wx.getStorageSync(file_path);
+            if (content == null) return null;
+            if (javascript.typeof(content) != "string") return null;
+            return content;
         }
-        if (json == null) return null;
-        return json[file_path];
+
+        if (window.localStorage != null)
+        {
+            var content = window.localStorage.getItem(file_path);
+            if (content == null) return null;
+            if (javascript.typeof(content) != "string") return null;
+            return content;
+        }
+
+        return null;
     }
 }
 
@@ -52,21 +58,19 @@ public class JClientFileSaver : IFileSaver
 {
     public fun Save(string file_path, string content) : bool
     {
-        // 如果是微信环境，那么不能保存cookie
-        if (window.wx != null) return false;
-
-        // 先从cookie获取，如果没有就随机生成一个
-        var json:Map<string, any> = null;
-        if (document.cookie != null && document.cookie != "")
+        if (window.wx != null)
         {
-            var error:string = null;
-            error, json = tcall(ALittle.String_JsonDecode, document.cookie);
-            if (error != null) json = null;
+            window.wx.setStorageSync(file_path, content);
+            return true;
         }
-        if (json == null) json = new Map<string, any>();
-        json[file_path] = content;
-        document.cookie = ALittle.String_JsonEncode(json);
-        return true;
+
+        if (window.localStorage != null)
+        {
+        	window.localStorage.setItem(file_path, content);
+            return true;
+        }
+
+        return false;
     }
 }
 
