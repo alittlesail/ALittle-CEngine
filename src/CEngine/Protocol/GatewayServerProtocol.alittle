@@ -1,0 +1,20 @@
+
+register namespace GatewayServer;
+
+public struct C2GW_QLogin
+{
+    string device_id;           // 如果device_id不为空，或者空串，那么就使用设备登录
+    string account_name;
+    string account_pwd;
+}
+
+public struct GW2C_ALogin
+{
+    string client_ip;   // GameServer的IP
+    int client_port;    // GameServer的端口
+    int account_id;     // 账号ID
+    string session_id;  // 会话ID
+}
+
+[Http]
+public await static HandleQLogin(ALittle.IHttpReceiver client, C2GW_QLogin msg) : GW2C_ALogin {}
