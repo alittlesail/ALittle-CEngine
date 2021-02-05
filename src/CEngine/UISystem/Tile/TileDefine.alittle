@@ -541,9 +541,7 @@ public static Tile_CalcRowColByPos(TileMap tile_map, double x, double y) : int, 
 
     // 处理垂直正六边形
     if (tile_type == TileType.HEX_V)
-    {
         return Tile_CalcRowColByPosInHexV(tile_map, x, y);
-    }
 
     return 0, 0;
 }
