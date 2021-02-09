@@ -44,4 +44,39 @@ function ALittle.Quad:HandleFLButtonUp(event)
 	end
 end
 
+function ALittle.Quad:SetPosAsLine(start_x, start_y, end_x, end_y)
+	self.x = start_x
+	self.y = start_y
+	local delta_x = end_x - start_x
+	local delta_y = end_y - start_y
+	local len = ALittle.Math_Sqrt(delta_x * delta_x + delta_y * delta_y)
+	if len < 0.0001 then
+		return
+	end
+	local rad = 0.0
+	if delta_x >= 0 then
+		if delta_y >= 0 then
+			rad = ALittle.Math_ASin(delta_y / len)
+		else
+			rad = -ALittle.Math_ASin(-delta_y / len)
+		end
+	else
+		if delta_y >= 0 then
+			rad = 3.14159265 - ALittle.Math_ASin(delta_y / len)
+		else
+			rad = 3.14159265 + ALittle.Math_ASin(-delta_y / len)
+		end
+	end
+	self.angle = rad / 3.14159265 * 180
+end
+
+function ALittle.Quad:SetSizeAsLine(line_size, start_x, start_y, end_x, end_y)
+	local delta_x = end_x - start_x
+	local delta_y = end_y - start_y
+	self.width = ALittle.Math_Sqrt(delta_x * delta_x + delta_y * delta_y)
+	self.height = line_size
+	self.center_x = 0
+	self.center_y = line_size / 2
+end
+
 end

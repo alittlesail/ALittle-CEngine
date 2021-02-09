@@ -46,4 +46,48 @@ public class Quad : DisplayObject
             this.DispatchEvent(c_event);
         }
     }
+
+    // 将quad当一条线来设置
+    public fun SetPosAsLine(double start_x, double start_y, double end_x, double end_y)
+    {
+        this.x = start_x;
+        this.y = start_y;
+
+        var delta_x = end_x - start_x;
+        var delta_y = end_y - start_y;
+        var len = ALittle.Math_Sqrt(delta_x * delta_x + delta_y * delta_y);
+        if (len < 0.0001) return;
+
+        var rad = 0.0;
+        if (delta_x >= 0)
+        {
+            // 第一象限
+            if (delta_y >= 0)
+                rad = ALittle.Math_ASin(delta_y / len);
+            // 第四象限
+            else
+                rad = -ALittle.Math_ASin(-delta_y / len);
+        }
+        else
+        {
+            // 第二象限
+            if (delta_y >= 0)
+                rad = 3.14159265 - ALittle.Math_ASin(delta_y / len);
+            // 第三象限
+            else
+                rad = 3.14159265 + ALittle.Math_ASin(-delta_y / len);
+        }
+
+        this.angle = rad / 3.14159265 * 180;
+    }
+
+    public fun SetSizeAsLine(double line_size, double start_x, double start_y, double end_x, double end_y)
+    {
+        var delta_x = end_x - start_x;
+        var delta_y = end_y - start_y;
+        this.width = ALittle.Math_Sqrt(delta_x * delta_x + delta_y * delta_y);
+        this.height = line_size;
+        this.center_x = 0;
+        this.center_y = line_size / 2;
+    }
 }

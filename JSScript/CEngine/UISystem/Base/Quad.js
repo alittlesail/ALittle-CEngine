@@ -33,6 +33,39 @@ ALittle.Quad = JavaScript.Class(ALittle.DisplayObject, {
 			this.DispatchEvent(___all_struct.get(286797479), c_event);
 		}
 	},
+	SetPosAsLine : function(start_x, start_y, end_x, end_y) {
+		this.x = start_x;
+		this.y = start_y;
+		let delta_x = end_x - start_x;
+		let delta_y = end_y - start_y;
+		let len = ALittle.Math_Sqrt(delta_x * delta_x + delta_y * delta_y);
+		if (len < 0.0001) {
+			return;
+		}
+		let rad = 0.0;
+		if (delta_x >= 0) {
+			if (delta_y >= 0) {
+				rad = ALittle.Math_ASin(delta_y / len);
+			} else {
+				rad = -ALittle.Math_ASin(-delta_y / len);
+			}
+		} else {
+			if (delta_y >= 0) {
+				rad = 3.14159265 - ALittle.Math_ASin(delta_y / len);
+			} else {
+				rad = 3.14159265 + ALittle.Math_ASin(-delta_y / len);
+			}
+		}
+		this.angle = rad / 3.14159265 * 180;
+	},
+	SetSizeAsLine : function(line_size, start_x, start_y, end_x, end_y) {
+		let delta_x = end_x - start_x;
+		let delta_y = end_y - start_y;
+		this.width = ALittle.Math_Sqrt(delta_x * delta_x + delta_y * delta_y);
+		this.height = line_size;
+		this.center_x = 0;
+		this.center_y = line_size / 2;
+	},
 }, "ALittle.Quad");
 
 }
