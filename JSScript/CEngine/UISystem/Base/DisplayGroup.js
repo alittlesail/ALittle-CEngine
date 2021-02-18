@@ -166,6 +166,9 @@ ALittle.DisplayGroup = JavaScript.Class(ALittle.DisplayObject, {
 		this._childs = [];
 		this._child_count = 0;
 	},
+	SetSortChild : function(value) {
+		this._show.SetSortChild(value);
+	},
 	set alpha(value) {
 		this._alpha = value;
 		if (this._show_parent !== undefined) {

@@ -264,6 +264,8 @@ ALittle.IDisplayObject = JavaScript.Class(undefined, {
 	},
 	SetY : function(value) {
 	},
+	SetZ : function(value) {
+	},
 	SetScaleX : function(value) {
 	},
 	SetScaleY : function(value) {
@@ -297,6 +299,8 @@ ALittle.IDisplayObject = JavaScript.Class(undefined, {
 	AddChildBefore : function(value1, value2) {
 	},
 	RemoveAllChild : function() {
+	},
+	SetSortChild : function(value) {
 	},
 	SetFont : function(path, size) {
 	},
@@ -957,6 +961,9 @@ JavaScript.JDisplayObject = JavaScript.Class(ALittle.IDisplayObject, {
 		this._y = y;
 		this._native.y = this._y;
 	},
+	SetZ : function(z) {
+		this._native.zIndex = z;
+	},
 	SetScaleX : function(value) {
 		this._scale.x = value;
 		this._native.scale = this._scale;
@@ -1168,6 +1175,9 @@ JavaScript.JDisplayObjects = JavaScript.Class(JavaScript.JDisplayObject, {
 	},
 	RemoveAllChild : function() {
 		this._native.removeChildren(0);
+	},
+	SetSortChild : function(value) {
+		this._native.sortableChildren = value;
 	},
 }, "JavaScript.JDisplayObjects");
 
@@ -4859,6 +4869,9 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 	get y_value() {
 		return this._y_value;
 	},
+	set z(value) {
+		this._show.SetZ(value);
+	},
 	set width(value) {
 		if (this._width === value) {
 			return;
@@ -5429,6 +5442,9 @@ ALittle.DisplayGroup = JavaScript.Class(ALittle.DisplayObject, {
 		this._show.RemoveAllChild();
 		this._childs = [];
 		this._child_count = 0;
+	},
+	SetSortChild : function(value) {
+		this._show.SetSortChild(value);
 	},
 	set alpha(value) {
 		this._alpha = value;

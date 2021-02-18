@@ -428,6 +428,9 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 	get y_value() {
 		return this._y_value;
 	},
+	set z(value) {
+		this._show.SetZ(value);
+	},
 	set width(value) {
 		if (this._width === value) {
 			return;

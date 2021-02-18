@@ -50,6 +50,9 @@ JavaScript.JDisplayObject = JavaScript.Class(ALittle.IDisplayObject, {
 		this._y = y;
 		this._native.y = this._y;
 	},
+	SetZ : function(z) {
+		this._native.zIndex = z;
+	},
 	SetScaleX : function(value) {
 		this._scale.x = value;
 		this._native.scale = this._scale;
@@ -261,6 +264,9 @@ JavaScript.JDisplayObjects = JavaScript.Class(JavaScript.JDisplayObject, {
 	},
 	RemoveAllChild : function() {
 		this._native.removeChildren(0);
+	},
+	SetSortChild : function(value) {
+		this._native.sortableChildren = value;
 	},
 }, "JavaScript.JDisplayObjects");
 

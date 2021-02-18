@@ -7,6 +7,8 @@ ALittle.IDisplayObject = JavaScript.Class(undefined, {
 	},
 	SetY : function(value) {
 	},
+	SetZ : function(value) {
+	},
 	SetScaleX : function(value) {
 	},
 	SetScaleY : function(value) {
@@ -40,6 +42,8 @@ ALittle.IDisplayObject = JavaScript.Class(undefined, {
 	AddChildBefore : function(value1, value2) {
 	},
 	RemoveAllChild : function() {
+	},
+	SetSortChild : function(value) {
 	},
 	SetFont : function(path, size) {
 	},
