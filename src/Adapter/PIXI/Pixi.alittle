@@ -75,6 +75,8 @@ public class DisplayObject
     public set x(double v) {}
     public get y() : double {}
     public set y(double v) {}
+    public get zIndex() : double {}
+    public set zIndex(double v) {}
     
     public get width() : double {}
     public set width(double v) {}
@@ -114,6 +116,7 @@ public class Container : DisplayObject
     public fun removeChildren(int begin, [Nullable] int end) {}
     public get children() : List<DisplayObject> {}
     public fun getChildIndex(DisplayObject value) : int {}
+    public set sortableChildren(bool value) {}
 }
 
 [Native]

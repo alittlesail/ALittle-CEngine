@@ -5,6 +5,7 @@ public class IDisplayObject
 {
     public fun SetX(double value) {}
     public fun SetY(double value) {}
+    public fun SetZ(double value) {}
     public fun SetScaleX(double value) {}
     public fun SetScaleY(double value) {}
     public fun SetCenterX(double value) {}
@@ -22,6 +23,7 @@ public class IDisplayObject
     public fun AddChild(IDisplayObject value) {}
     public fun AddChildBefore(IDisplayObject value1, IDisplayObject value2) {}
     public fun RemoveAllChild() {}
+    public fun SetSortChild(bool value) {}
     public fun SetFont(string path, int size) {}
     public fun ClearTexture() {}
     public fun SetTexture(ITexture texture) {}

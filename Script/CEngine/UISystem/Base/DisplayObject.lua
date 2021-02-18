@@ -515,6 +515,10 @@ function ALittle.DisplayObject.__getter:y_value()
 	return self._y_value
 end
 
+function ALittle.DisplayObject.__setter:z(value)
+	self._show:SetZ(value)
+end
+
 function ALittle.DisplayObject.__setter:width(value)
 	if self._width == value then
 		return

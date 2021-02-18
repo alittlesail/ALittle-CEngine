@@ -15,6 +15,9 @@ end
 function ALittle.IDisplayObject:SetY(value)
 end
 
+function ALittle.IDisplayObject:SetZ(value)
+end
+
 function ALittle.IDisplayObject:SetScaleX(value)
 end
 
@@ -64,6 +67,9 @@ function ALittle.IDisplayObject:AddChildBefore(value1, value2)
 end
 
 function ALittle.IDisplayObject:RemoveAllChild()
+end
+
+function ALittle.IDisplayObject:SetSortChild(value)
 end
 
 function ALittle.IDisplayObject:SetFont(path, size)

@@ -686,6 +686,12 @@ public class DisplayObject : UIEventDispatcher
         return this._y_value;
     }
 
+    // 设置z序列
+    public set z(double value)
+    {
+        this._show.SetZ(value);
+    }
+
     // 设置控件的宽
     public set width(double value)
     {

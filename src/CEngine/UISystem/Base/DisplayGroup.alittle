@@ -216,6 +216,13 @@ public class DisplayGroup : DisplayObject
         this._childs = new List<DisplayObject>();
         this._child_count = 0;
     }
+
+    // 是否对子控件显示上进行z排序
+    public fun SetSortChild(bool value)
+    {
+        this._show.SetSortChild(value);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////
     // 设置alpha值
     public set alpha(double value)

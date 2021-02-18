@@ -178,6 +178,10 @@ function ALittle.DisplayGroup:RemoveAllChild()
 	self._child_count = 0
 end
 
+function ALittle.DisplayGroup:SetSortChild(value)
+	self._show:SetSortChild(value)
+end
+
 function ALittle.DisplayGroup.__setter:alpha(value)
 	self._alpha = value
 	if self._show_parent ~= nil then

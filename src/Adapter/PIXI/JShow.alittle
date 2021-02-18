@@ -42,6 +42,7 @@ public class JDisplayObject : ALittle.IDisplayObject
     public get native() : PIXI.DisplayObject { return this._native; }
     public fun SetX(double x) { this._x = x; this._native.x = this._x; }
     public fun SetY(double y) { this._y = y; this._native.y = this._y; }
+    public fun SetZ(double z) { this._native.zIndex = z; }
     public fun SetScaleX(double value) { this._scale.x = value; this._native.scale = this._scale; }
     public fun SetScaleY(double value) { this._scale.y = value; this._native.scale = this._scale; }
     public fun SetCenterX(double value) { this._pivot.x = value; this._native.pivot = this._pivot; }
@@ -143,6 +144,10 @@ public class JDisplayObjects : JDisplayObject
     public fun RemoveAllChild()
     {
         cast<PIXI.Container>(this._native).removeChildren(0);
+    }
+    public fun SetSortChild(bool value)
+    {
+        cast<PIXI.Container>(this._native).sortableChildren = value;
     }
 }
 
