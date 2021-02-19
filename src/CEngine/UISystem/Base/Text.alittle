@@ -14,7 +14,6 @@ public class Text : DisplayObject
     private bool _deleteline;
     private string _font_path;
     private int _font_size;
-    private int _flip;
 
     public ctor(ControlSystem ctrl_sys)
     {
@@ -25,8 +24,6 @@ public class Text : DisplayObject
         this._deleteline = false;    // 是否显示删除线
         // this._font_path = null;
         // this._font_size = null;
-
-        this._flip = 0;
     
         // 创建text对象
         [Language(Lua)]
@@ -194,16 +191,5 @@ public class Text : DisplayObject
     public get font_height() : int
     {
         return this._show.GetFontHeight();
-    }
-    
-    public get flip() : int
-    {
-        return this._flip;
-    }
-    
-    public set flip(int value)
-    {
-        this._flip = value;
-        this._show.SetFlip(value);
     }
 }

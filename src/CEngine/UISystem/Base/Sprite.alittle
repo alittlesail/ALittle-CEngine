@@ -15,8 +15,6 @@ public class Sprite : DisplayObject
     private double _tex_coord_l;
     private double _tex_coord_r;
 
-    private int _flip;
-    
     private int _row_count;
     private int _col_count;
     private int _row_index;
@@ -49,8 +47,6 @@ public class Sprite : DisplayObject
         this._col_count = 1;
         this._row_index = 1;
         this._col_index = 1;
-    
-        this._flip = 0;
     
         [Language(Lua)]
         A_LoadTextureManager.RegisterRedrawControl(this);
@@ -260,16 +256,5 @@ public class Sprite : DisplayObject
         this._row_index = row;
         this._col_index = col;
         this._show.SetRowColIndex(this._row_index, this._col_index);
-    }
-    
-    public get flip() : int
-    {
-        return this._flip;
-    }
-    
-    public set flip(int value)
-    {
-        this._flip = value;
-        this._show.SetFlip(value);
     }
 }

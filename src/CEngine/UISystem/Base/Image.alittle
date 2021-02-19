@@ -15,8 +15,6 @@ public class Image : DisplayObject
     private double _tex_coord_l;
     private double _tex_coord_r;
     
-    private int _flip;
-    
     public ctor(ControlSystem ctrl_sys)
     {
         // 创建image显示对象
@@ -38,8 +36,6 @@ public class Image : DisplayObject
         this._tex_coord_b = 1;
         this._tex_coord_l = 0;
         this._tex_coord_r = 1;
-    
-        this._flip = 0;
     
         [Language(Lua)]
         A_LoadTextureManager.RegisterRedrawControl(this);
@@ -220,16 +216,5 @@ public class Image : DisplayObject
     public get texture_height() : int
     {
         return this._texture_height;
-    }
-    
-    public get flip() : int
-    {
-        return this._flip;
-    }
-    
-    public set flip(int value)
-    {
-        this._flip = value;
-        this._show.SetFlip(value);
     }
 }

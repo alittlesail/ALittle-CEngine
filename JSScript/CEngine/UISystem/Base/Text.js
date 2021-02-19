@@ -13,7 +13,6 @@ ALittle.Text = JavaScript.Class(ALittle.DisplayObject, {
 		this._italic = false;
 		this._underline = false;
 		this._deleteline = false;
-		this._flip = 0;
 		this._show = ALittle.NewObject(JavaScript.JText);
 	},
 	Redraw : function() {
@@ -140,13 +139,6 @@ ALittle.Text = JavaScript.Class(ALittle.DisplayObject, {
 	},
 	get font_height() {
 		return this._show.GetFontHeight();
-	},
-	get flip() {
-		return this._flip;
-	},
-	set flip(value) {
-		this._flip = value;
-		this._show.SetFlip(value);
 	},
 }, "ALittle.Text");
 

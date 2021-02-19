@@ -23,7 +23,6 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 		this._password_mode = false;
 		this._default_text = "";
 		this._default_text_alpha = 1;
-		this._flip = 0;
 		this._current_flash_alpha = 1;
 		this._current_flash_dir = -0.05;
 		this._is_selecting = false;
@@ -518,13 +517,6 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 	},
 	get cursor_blue() {
 		return this._cursor_blue;
-	},
-	get flip() {
-		return this._flip;
-	},
-	set flip(value) {
-		this._flip = value;
-		this._show.SetFlip(value);
 	},
 }, "ALittle.TextInput");
 

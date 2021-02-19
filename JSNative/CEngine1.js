@@ -310,8 +310,6 @@ ALittle.IDisplayObject = JavaScript.Class(undefined, {
 	},
 	SetTextureCoord : function(t, b, l, r) {
 	},
-	SetFlip : function(value) {
-	},
 	SetRowColCount : function(row_count, col_count) {
 	},
 	SetRowColIndex : function(row, col) {
@@ -1019,8 +1017,6 @@ JavaScript.JDisplayObject = JavaScript.Class(ALittle.IDisplayObject, {
 	SetTexture : function(texture) {
 	},
 	SetTextureCoord : function(t, b, l, r) {
-	},
-	SetFlip : function(value) {
 	},
 	SetRowColCount : function(row_count, col_count) {
 	},
@@ -4451,8 +4447,8 @@ option_map : {}
 })
 ALittle.RegStruct(-4982446, "ALittle.DisplayInfo", {
 name : "ALittle.DisplayInfo", ns_name : "ALittle", rl_name : "DisplayInfo", hash_code : -4982446,
-name_list : ["__target_class","__class_func","__base_attr","__show_attr","loop_map","__module","__class","__include","__extends","__childs","__event","__link","__shows_included","__childs_included","__extends_included","description","text","font_path","font_size","red","green","blue","alpha","bold","italic","underline","deleteline","x","y","x_type","x_value","y_type","y_value","width","height","width_type","width_value","height_type","height_value","scale_x","scale_y","center_x","center_y","angle","flip","hand_cursor","visible","disabled","left_size","right_size","top_size","bottom_size","texture_name","interval","play_loop_count","var_play","base_y","head_size","gap","up_size","down_size","cursor_red","cursor_green","cursor_blue","default_text_alpha","ims_padding","margin_left","margin_right","margin_top","margin_bottom","show_count","body_margin","screen_margin_left","screen_margin_right","screen_margin_top","screen_margin_bottom","start_degree","end_degree","line_spacing","max_line_count","font_red","font_green","font_blue","margin_halign","margin_valign","cursor_margin_up","cursor_margin_down","total_size","show_size","offset_rate","offset_step","grade","row_count","col_count","row_index","col_index","u1","v1","u2","v2","u3","v3","x1","y1","x2","y2","x3","y3","x_gap","y_gap","x_start_gap","y_start_gap","button_gap","button_start","button_margin","tab_index","view_margin","child_width_margin"],
-type_list : ["List<string>","any","Map<string,any>","Map<string,ALittle.DisplayInfo>","Map<string,ALittle.LoopGroupInfo>","string","string","string","string","List<ALittle.DisplayInfo>","List<ALittle.EventInfo>","string","bool","bool","bool","string","string","string","int","double","double","double","double","bool","bool","bool","bool","double","double","int","double","int","double","double","double","int","double","int","double","double","double","double","double","double","int","bool","bool","bool","double","double","double","double","string","int","int","bool","double","double","double","double","double","double","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","double","double","double","int","int","int","int","int","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double"],
+name_list : ["__target_class","__class_func","__base_attr","__show_attr","loop_map","__module","__class","__include","__extends","__childs","__event","__link","__shows_included","__childs_included","__extends_included","description","text","font_path","font_size","red","green","blue","alpha","bold","italic","underline","deleteline","x","y","x_type","x_value","y_type","y_value","width","height","width_type","width_value","height_type","height_value","scale_x","scale_y","center_x","center_y","angle","hand_cursor","visible","disabled","left_size","right_size","top_size","bottom_size","texture_name","interval","play_loop_count","var_play","base_y","head_size","gap","up_size","down_size","cursor_red","cursor_green","cursor_blue","default_text_alpha","ims_padding","margin_left","margin_right","margin_top","margin_bottom","show_count","body_margin","screen_margin_left","screen_margin_right","screen_margin_top","screen_margin_bottom","start_degree","end_degree","line_spacing","max_line_count","font_red","font_green","font_blue","margin_halign","margin_valign","cursor_margin_up","cursor_margin_down","total_size","show_size","offset_rate","offset_step","grade","row_count","col_count","row_index","col_index","u1","v1","u2","v2","u3","v3","x1","y1","x2","y2","x3","y3","x_gap","y_gap","x_start_gap","y_start_gap","button_gap","button_start","button_margin","tab_index","view_margin","child_width_margin"],
+type_list : ["List<string>","any","Map<string,any>","Map<string,ALittle.DisplayInfo>","Map<string,ALittle.LoopGroupInfo>","string","string","string","string","List<ALittle.DisplayInfo>","List<ALittle.EventInfo>","string","bool","bool","bool","string","string","string","int","double","double","double","double","bool","bool","bool","bool","double","double","int","double","int","double","double","double","int","double","int","double","double","double","double","double","double","bool","bool","bool","double","double","double","double","string","int","int","bool","double","double","double","double","double","double","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","double","double","double","int","int","int","int","int","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double"],
 option_map : {}
 })
 
@@ -5902,7 +5898,6 @@ ALittle.Image = JavaScript.Class(ALittle.DisplayObject, {
 		this._tex_coord_b = 1;
 		this._tex_coord_l = 0;
 		this._tex_coord_r = 1;
-		this._flip = 0;
 		this.AddEventListener(___all_struct.get(40651933), this, this.HandleLButtonUp);
 		this.AddEventListener(___all_struct.get(683647260), this, this.HandleMButtonUp);
 		this.AddEventListener(___all_struct.get(734860930), this, this.HandleFLButtonUp);
@@ -6034,13 +6029,6 @@ ALittle.Image = JavaScript.Class(ALittle.DisplayObject, {
 	get texture_height() {
 		return this._texture_height;
 	},
-	get flip() {
-		return this._flip;
-	},
-	set flip(value) {
-		this._flip = value;
-		this._show.SetFlip(value);
-	},
 }, "ALittle.Image");
 
 }
@@ -6063,7 +6051,6 @@ ALittle.Sprite = JavaScript.Class(ALittle.DisplayObject, {
 		this._col_count = 1;
 		this._row_index = 1;
 		this._col_index = 1;
-		this._flip = 0;
 		this.AddEventListener(___all_struct.get(40651933), this, this.HandleLButtonUp);
 		this.AddEventListener(___all_struct.get(683647260), this, this.HandleMButtonUp);
 		this.AddEventListener(___all_struct.get(734860930), this, this.HandleFLButtonUp);
@@ -6211,13 +6198,6 @@ ALittle.Sprite = JavaScript.Class(ALittle.DisplayObject, {
 		this._col_index = col;
 		this._show.SetRowColIndex(this._row_index, this._col_index);
 	},
-	get flip() {
-		return this._flip;
-	},
-	set flip(value) {
-		this._flip = value;
-		this._show.SetFlip(value);
-	},
 }, "ALittle.Sprite");
 
 }
@@ -6236,7 +6216,6 @@ ALittle.Text = JavaScript.Class(ALittle.DisplayObject, {
 		this._italic = false;
 		this._underline = false;
 		this._deleteline = false;
-		this._flip = 0;
 		this._show = ALittle.NewObject(JavaScript.JText);
 	},
 	Redraw : function() {
@@ -6364,13 +6343,6 @@ ALittle.Text = JavaScript.Class(ALittle.DisplayObject, {
 	get font_height() {
 		return this._show.GetFontHeight();
 	},
-	get flip() {
-		return this._flip;
-	},
-	set flip(value) {
-		this._flip = value;
-		this._show.SetFlip(value);
-	},
 }, "ALittle.Text");
 
 }
@@ -6387,7 +6359,6 @@ ALittle.TextArea = JavaScript.Class(ALittle.DisplayObject, {
 		this._italic = false;
 		this._underline = false;
 		this._deleteline = false;
-		this._flip = 0;
 		this._halign_type = 0;
 		this._valign_type = 0;
 		this._show = ALittle.NewObject(JavaScript.JTextArea);
@@ -6492,13 +6463,6 @@ ALittle.TextArea = JavaScript.Class(ALittle.DisplayObject, {
 	get real_height() {
 		return this._show.GetRealHeight();
 	},
-	get flip() {
-		return this._flip;
-	},
-	set flip(value) {
-		this._flip = value;
-		this._show.SetFlip(value);
-	},
 }, "ALittle.TextArea");
 
 }
@@ -6526,7 +6490,6 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 		this._deleteline = false;
 		this._default_text = "";
 		this._default_text_alpha = 1;
-		this._flip = 0;
 		this._current_flash_alpha = 1;
 		this._current_flash_dir = -0.05;
 		this._is_selecting = false;
@@ -7080,13 +7043,6 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 	get cursor_blue() {
 		return this._cursor_blue;
 	},
-	get flip() {
-		return this._flip;
-	},
-	set flip(value) {
-		this._flip = value;
-		this._show.SetFlip(value);
-	},
 }, "ALittle.TextEdit");
 
 }
@@ -7115,7 +7071,6 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 		this._password_mode = false;
 		this._default_text = "";
 		this._default_text_alpha = 1;
-		this._flip = 0;
 		this._current_flash_alpha = 1;
 		this._current_flash_dir = -0.05;
 		this._is_selecting = false;
@@ -7611,13 +7566,6 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 	get cursor_blue() {
 		return this._cursor_blue;
 	},
-	get flip() {
-		return this._flip;
-	},
-	set flip(value) {
-		this._flip = value;
-		this._show.SetFlip(value);
-	},
 }, "ALittle.TextInput");
 
 }
@@ -8094,7 +8042,6 @@ ALittle.Grid9Image = JavaScript.Class(ALittle.DisplayObject, {
 		this._show = ALittle.NewObject(JavaScript.JGrid9Image);
 		this._texture_width = 0;
 		this._texture_height = 0;
-		this._flip = 0;
 		this._tex_coord_t = 0;
 		this._tex_coord_b = 1;
 		this._tex_coord_l = 0;
@@ -8259,13 +8206,6 @@ ALittle.Grid9Image = JavaScript.Class(ALittle.DisplayObject, {
 	},
 	get texture_height() {
 		return this._texture_height;
-	},
-	get flip() {
-		return this._flip;
-	},
-	set flip(value) {
-		this._flip = value;
-		this._show.SetFlip(value);
 	},
 }, "ALittle.Grid9Image");
 

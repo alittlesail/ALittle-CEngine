@@ -12,7 +12,6 @@ public class TextArea : DisplayObject
     private bool _deleteline;
     private string _font_path;
     private int _font_size;
-    private int _flip;
     
     private int _halign_type;
     private int _valign_type;
@@ -26,9 +25,7 @@ public class TextArea : DisplayObject
         this._deleteline = false;    // 是否显示删除线
         // this._font_path = null;
         // this._font_size = null;
-    
-        this._flip = 0;
-    
+        
         this._halign_type = UIEnumTypes.HALIGN_LEFT;
         this._valign_type = UIEnumTypes.VALIGN_TOP;
     
@@ -173,16 +170,5 @@ public class TextArea : DisplayObject
     public get real_height() : double
     {
         return this._show.GetRealHeight();
-    }
-    
-    public get flip() : int
-    {
-        return this._flip;
-    }
-    
-    public set flip(int value)
-    {
-        this._flip = value;
-        this._show.SetFlip(value);
     }
 }

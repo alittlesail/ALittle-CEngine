@@ -28,7 +28,6 @@ public class IDisplayObject
     public fun ClearTexture() {}
     public fun SetTexture(ITexture texture) {}
     public fun SetTextureCoord(double t, double b, double l, double r) {}
-    public fun SetFlip(int value) {}
     public fun SetRowColCount(int row_count, int col_count) {}
     public fun SetRowColIndex(int row, int col) {}
     public fun NeedDraw() {}

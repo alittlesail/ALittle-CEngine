@@ -12,8 +12,6 @@ public class Grid9Image : DisplayObject
     private int _texture_width;
     private int _texture_height;
 
-    private int _flip;
-
     private double _tex_coord_t;
     private double _tex_coord_b;
     private double _tex_coord_l;
@@ -39,8 +37,6 @@ public class Grid9Image : DisplayObject
         // 保存纹理的宽高
         this._texture_width = 0;
         this._texture_height = 0;
-    
-        this._flip = 0;
     
         this._tex_coord_t = 0;
         this._tex_coord_b = 1;
@@ -268,16 +264,5 @@ public class Grid9Image : DisplayObject
     public get texture_height() : int
     {
         return this._texture_height;
-    }
-    
-    public get flip() : int
-    {
-        return this._flip;
-    }
-    
-    public set flip(int value)
-    {
-        this._flip = value;
-        this._show.SetFlip(value);
     }
 }

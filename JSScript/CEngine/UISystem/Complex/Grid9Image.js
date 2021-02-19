@@ -9,7 +9,6 @@ ALittle.Grid9Image = JavaScript.Class(ALittle.DisplayObject, {
 		this._show = ALittle.NewObject(JavaScript.JGrid9Image);
 		this._texture_width = 0;
 		this._texture_height = 0;
-		this._flip = 0;
 		this._tex_coord_t = 0;
 		this._tex_coord_b = 1;
 		this._tex_coord_l = 0;
@@ -174,13 +173,6 @@ ALittle.Grid9Image = JavaScript.Class(ALittle.DisplayObject, {
 	},
 	get texture_height() {
 		return this._texture_height;
-	},
-	get flip() {
-		return this._flip;
-	},
-	set flip(value) {
-		this._flip = value;
-		this._show.SetFlip(value);
 	},
 }, "ALittle.Grid9Image");
 

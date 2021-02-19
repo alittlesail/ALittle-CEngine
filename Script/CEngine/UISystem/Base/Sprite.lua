@@ -24,7 +24,6 @@ function ALittle.Sprite:Ctor(ctrl_sys)
 	___rawset(self, "_col_count", 1)
 	___rawset(self, "_row_index", 1)
 	___rawset(self, "_col_index", 1)
-	___rawset(self, "_flip", 0)
 	A_LoadTextureManager:RegisterRedrawControl(self)
 	self:AddEventListener(___all_struct[40651933], self, self.HandleLButtonUp)
 	self:AddEventListener(___all_struct[683647260], self, self.HandleMButtonUp)
@@ -194,15 +193,6 @@ function ALittle.Sprite:SetRowCol(row, col)
 	self._row_index = row
 	self._col_index = col
 	self._show:SetRowColIndex(self._row_index, self._col_index)
-end
-
-function ALittle.Sprite.__getter:flip()
-	return self._flip
-end
-
-function ALittle.Sprite.__setter:flip(value)
-	self._flip = value
-	self._show:SetFlip(value)
 end
 
 end

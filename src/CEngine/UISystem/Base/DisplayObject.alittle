@@ -67,7 +67,6 @@ public struct DisplayInfo
     double center_x;
     double center_y;
     double angle;
-    int flip;
     
     bool hand_cursor;
     bool visible;

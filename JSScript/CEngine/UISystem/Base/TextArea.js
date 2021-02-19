@@ -11,7 +11,6 @@ ALittle.TextArea = JavaScript.Class(ALittle.DisplayObject, {
 		this._italic = false;
 		this._underline = false;
 		this._deleteline = false;
-		this._flip = 0;
 		this._halign_type = 0;
 		this._valign_type = 0;
 		this._show = ALittle.NewObject(JavaScript.JTextArea);
@@ -115,13 +114,6 @@ ALittle.TextArea = JavaScript.Class(ALittle.DisplayObject, {
 	},
 	get real_height() {
 		return this._show.GetRealHeight();
-	},
-	get flip() {
-		return this._flip;
-	},
-	set flip(value) {
-		this._flip = value;
-		this._show.SetFlip(value);
 	},
 }, "ALittle.TextArea");
 

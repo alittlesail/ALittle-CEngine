@@ -17,7 +17,6 @@ ALittle.Sprite = JavaScript.Class(ALittle.DisplayObject, {
 		this._col_count = 1;
 		this._row_index = 1;
 		this._col_index = 1;
-		this._flip = 0;
 		this.AddEventListener(___all_struct.get(40651933), this, this.HandleLButtonUp);
 		this.AddEventListener(___all_struct.get(683647260), this, this.HandleMButtonUp);
 		this.AddEventListener(___all_struct.get(734860930), this, this.HandleFLButtonUp);
@@ -164,13 +163,6 @@ ALittle.Sprite = JavaScript.Class(ALittle.DisplayObject, {
 		this._row_index = row;
 		this._col_index = col;
 		this._show.SetRowColIndex(this._row_index, this._col_index);
-	},
-	get flip() {
-		return this._flip;
-	},
-	set flip(value) {
-		this._flip = value;
-		this._show.SetFlip(value);
 	},
 }, "ALittle.Sprite");
 

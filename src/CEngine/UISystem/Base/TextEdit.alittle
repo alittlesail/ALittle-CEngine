@@ -24,8 +24,6 @@ public class TextEdit : DisplayObject
     private string _default_text;
     private double _default_text_alpha;
     
-    private int _flip;
-    
     // 光标闪烁
     private double _current_flash_alpha;
     private double _current_flash_dir;
@@ -69,8 +67,6 @@ public class TextEdit : DisplayObject
     
         this._default_text = "";
         this._default_text_alpha = 1;
-    
-        this._flip = 0;
     
         // 光标闪烁
         this._current_flash_alpha = 1;
@@ -870,16 +866,5 @@ public class TextEdit : DisplayObject
     public get cursor_blue() : double
     {
         return this._cursor_blue;
-    }
-    
-    public get flip() : int
-    {
-        return this._flip;
-    }
-    
-    public set flip(int value)
-    {
-        this._flip = value;
-        this._show.SetFlip(value);
     }
 }

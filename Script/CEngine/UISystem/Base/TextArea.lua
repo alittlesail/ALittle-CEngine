@@ -18,7 +18,6 @@ function ALittle.TextArea:Ctor(ctrl_sys)
 	___rawset(self, "_italic", false)
 	___rawset(self, "_underline", false)
 	___rawset(self, "_deleteline", false)
-	___rawset(self, "_flip", 0)
 	___rawset(self, "_halign_type", 0)
 	___rawset(self, "_valign_type", 0)
 	___rawset(self, "_show", __CPPAPITextArea())
@@ -143,15 +142,6 @@ end
 
 function ALittle.TextArea.__getter:real_height()
 	return self._show:GetRealHeight()
-end
-
-function ALittle.TextArea.__getter:flip()
-	return self._flip
-end
-
-function ALittle.TextArea.__setter:flip(value)
-	self._flip = value
-	self._show:SetFlip(value)
 end
 
 end

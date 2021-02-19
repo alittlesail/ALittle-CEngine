@@ -109,8 +109,6 @@ JavaScript.JDisplayObject = JavaScript.Class(ALittle.IDisplayObject, {
 	},
 	SetTextureCoord : function(t, b, l, r) {
 	},
-	SetFlip : function(value) {
-	},
 	SetRowColCount : function(row_count, col_count) {
 	},
 	SetRowColIndex : function(row, col) {

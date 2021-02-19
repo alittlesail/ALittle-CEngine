@@ -16,7 +16,6 @@ function ALittle.Grid9Image:Ctor(ctrl_sys)
 	___rawset(self, "_show", __CPPAPIGrid9Image())
 	___rawset(self, "_texture_width", 0)
 	___rawset(self, "_texture_height", 0)
-	___rawset(self, "_flip", 0)
 	___rawset(self, "_tex_coord_t", 0)
 	___rawset(self, "_tex_coord_b", 1)
 	___rawset(self, "_tex_coord_l", 0)
@@ -205,15 +204,6 @@ end
 
 function ALittle.Grid9Image.__getter:texture_height()
 	return self._texture_height
-end
-
-function ALittle.Grid9Image.__getter:flip()
-	return self._flip
-end
-
-function ALittle.Grid9Image.__setter:flip(value)
-	self._flip = value
-	self._show:SetFlip(value)
 end
 
 end

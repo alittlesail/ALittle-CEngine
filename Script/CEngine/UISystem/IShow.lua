@@ -84,9 +84,6 @@ end
 function ALittle.IDisplayObject:SetTextureCoord(t, b, l, r)
 end
 
-function ALittle.IDisplayObject:SetFlip(value)
-end
-
 function ALittle.IDisplayObject:SetRowColCount(row_count, col_count)
 end
 

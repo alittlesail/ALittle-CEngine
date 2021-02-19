@@ -20,7 +20,6 @@ function ALittle.Image:Ctor(ctrl_sys)
 	___rawset(self, "_tex_coord_b", 1)
 	___rawset(self, "_tex_coord_l", 0)
 	___rawset(self, "_tex_coord_r", 1)
-	___rawset(self, "_flip", 0)
 	A_LoadTextureManager:RegisterRedrawControl(self)
 	self:AddEventListener(___all_struct[40651933], self, self.HandleLButtonUp)
 	self:AddEventListener(___all_struct[683647260], self, self.HandleMButtonUp)
@@ -167,15 +166,6 @@ end
 
 function ALittle.Image.__getter:texture_height()
 	return self._texture_height
-end
-
-function ALittle.Image.__getter:flip()
-	return self._flip
-end
-
-function ALittle.Image.__setter:flip(value)
-	self._flip = value
-	self._show:SetFlip(value)
 end
 
 end

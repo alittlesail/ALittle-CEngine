@@ -30,7 +30,6 @@ function ALittle.TextInput:Ctor(ctrl_sys)
 	___rawset(self, "_password_mode", false)
 	___rawset(self, "_default_text", "")
 	___rawset(self, "_default_text_alpha", 1)
-	___rawset(self, "_flip", 0)
 	___rawset(self, "_current_flash_alpha", 1)
 	___rawset(self, "_current_flash_dir", -0.05)
 	___rawset(self, "_is_selecting", false)
@@ -554,15 +553,6 @@ end
 
 function ALittle.TextInput.__getter:cursor_blue()
 	return self._cursor_blue
-end
-
-function ALittle.TextInput.__getter:flip()
-	return self._flip
-end
-
-function ALittle.TextInput.__setter:flip(value)
-	self._flip = value
-	self._show:SetFlip(value)
 end
 
 end
