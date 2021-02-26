@@ -39,7 +39,8 @@ public class SpritePlay : Sprite
         this._play_index = 0;
         this._row_index = 1;
         this._col_index = 1;
-
+        // 立即执行一帧
+        this.PlayUpdate();
         // 更新循环
         this._play_loop = new LoopFunction(bind(this.PlayUpdate, this), -1, this._interval, 0);
         A_WeakLoopSystem.AddUpdater(this._play_loop);

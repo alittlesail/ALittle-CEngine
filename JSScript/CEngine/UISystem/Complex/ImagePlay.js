@@ -59,6 +59,7 @@ ALittle.ImagePlay = JavaScript.Class(ALittle.DisplayLayout, {
 			if (v === undefined) break;
 			v.visible = false;
 		}
+		this.PlayUpdate();
 		this._play_loop = ALittle.NewObject(ALittle.LoopFunction, this.PlayUpdate.bind(this), -1, this._interval, 0);
 		A_WeakLoopSystem.AddUpdater(this._play_loop);
 	},

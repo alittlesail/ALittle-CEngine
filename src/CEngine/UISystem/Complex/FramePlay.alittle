@@ -103,6 +103,8 @@ public class FramePlay : DisplayLayout
         this._play_loop_index = 0;
         // 隐藏所有图片
         this.HideAllChild();
+        // 立即执行一帧
+        this.PlayUpdate();
         // 更新循环
         this._play_loop = new LoopFunction(bind(this.PlayUpdateLoop, this), -1, this._interval, 0);
         A_WeakLoopSystem.AddUpdater(this._play_loop);

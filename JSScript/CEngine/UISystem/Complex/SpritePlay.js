@@ -26,6 +26,7 @@ ALittle.SpritePlay = JavaScript.Class(ALittle.Sprite, {
 		this._play_index = 0;
 		this._row_index = 1;
 		this._col_index = 1;
+		this.PlayUpdate();
 		this._play_loop = ALittle.NewObject(ALittle.LoopFunction, this.PlayUpdate.bind(this), -1, this._interval, 0);
 		A_WeakLoopSystem.AddUpdater(this._play_loop);
 	},

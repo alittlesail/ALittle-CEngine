@@ -13682,6 +13682,7 @@ ALittle.ImagePlay = JavaScript.Class(ALittle.DisplayLayout, {
 			if (v === undefined) break;
 			v.visible = false;
 		}
+		this.PlayUpdate();
 		this._play_loop = ALittle.NewObject(ALittle.LoopFunction, this.PlayUpdate.bind(this), -1, this._interval, 0);
 		A_WeakLoopSystem.AddUpdater(this._play_loop);
 	},
@@ -13735,6 +13736,7 @@ ALittle.SpritePlay = JavaScript.Class(ALittle.Sprite, {
 		this._play_index = 0;
 		this._row_index = 1;
 		this._col_index = 1;
+		this.PlayUpdate();
 		this._play_loop = ALittle.NewObject(ALittle.LoopFunction, this.PlayUpdate.bind(this), -1, this._interval, 0);
 		A_WeakLoopSystem.AddUpdater(this._play_loop);
 	},
@@ -13963,6 +13965,7 @@ ALittle.FramePlay = JavaScript.Class(ALittle.DisplayLayout, {
 		this._play_child_index = 0;
 		this._play_loop_index = 0;
 		this.HideAllChild();
+		this.PlayUpdate();
 		this._play_loop = ALittle.NewObject(ALittle.LoopFunction, this.PlayUpdateLoop.bind(this), -1, this._interval, 0);
 		A_WeakLoopSystem.AddUpdater(this._play_loop);
 	},

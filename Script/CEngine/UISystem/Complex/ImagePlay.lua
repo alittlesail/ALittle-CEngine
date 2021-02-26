@@ -65,6 +65,7 @@ function ALittle.ImagePlay:Play()
 	for k, v in ___ipairs(self._childs) do
 		v.visible = false
 	end
+	self:PlayUpdate()
 	self._play_loop = ALittle.LoopFunction(Lua.Bind(self.PlayUpdate, self), -1, self._interval, 0)
 	A_WeakLoopSystem:AddUpdater(self._play_loop)
 end
