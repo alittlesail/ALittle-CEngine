@@ -953,11 +953,11 @@ JavaScript.JDisplayObject = JavaScript.Class(ALittle.IDisplayObject, {
 	},
 	SetX : function(x) {
 		this._x = x;
-		this._native.x = this._x;
+		this._native.x = Math.floor(this._x);
 	},
 	SetY : function(y) {
 		this._y = y;
-		this._native.y = this._y;
+		this._native.y = Math.floor(this._y);
 	},
 	SetZ : function(z) {
 		this._native.zIndex = z;
@@ -1199,7 +1199,7 @@ JavaScript.JDisplayView = JavaScript.Class(JavaScript.JDisplayObjects, {
 	Draw : function() {
 		this._graphics.clear();
 		this._graphics.beginFill();
-		this._graphics.drawRect(0, 0, this._width, this._height);
+		this._graphics.drawRect(0, 0, Math.floor(this._width), Math.floor(this._height));
 		this._graphics.endFill();
 	},
 	RemoveChild : function(value) {
@@ -1266,7 +1266,7 @@ JavaScript.JQuad = JavaScript.Class(JavaScript.JDisplayObject, {
 	Draw : function() {
 		this._native.clear();
 		this._native.beginFill(this._color, this._alpha);
-		this._native.drawRect(0, 0, this._width, this._height);
+		this._native.drawRect(0, 0, Math.floor(this._width), Math.floor(this._height));
 		this._native.endFill();
 	},
 	SetWidth : function(value) {
@@ -1304,10 +1304,10 @@ JavaScript.JImage = JavaScript.Class(JavaScript.JDisplayObject, {
 		this._native = new PIXI.Sprite();
 	},
 	SetWidth : function(width) {
-		this._native.width = width;
+		this._native.width = Math.floor(width);
 	},
 	SetHeight : function(height) {
-		this._native.height = height;
+		this._native.height = Math.floor(height);
 	},
 	ClearTexture : function() {
 		this._native.texture = undefined;
@@ -1338,8 +1338,8 @@ JavaScript.JGrid9Image = JavaScript.Class(JavaScript.JDisplayObject, {
 		if (this._nine === undefined) {
 			this._nine = new PIXI.NineSlicePlane(texture.native, this._leftWidth, this._topHeight, this._rightWidth, this._bottomHeight);
 			this._native.addChild(this._nine);
-			this._nine.width = this._width;
-			this._nine.height = this._height;
+			this._nine.width = Math.floor(this._width);
+			this._nine.height = Math.floor(this._height);
 		} else {
 			this._native.texture = texture.native;
 		}
@@ -1349,37 +1349,37 @@ JavaScript.JGrid9Image = JavaScript.Class(JavaScript.JDisplayObject, {
 	SetWidth : function(width) {
 		this._width = width;
 		if (this._nine !== undefined) {
-			this._nine.width = width;
+			this._nine.width = Math.floor(width);
 		}
 	},
 	SetHeight : function(height) {
 		this._height = height;
 		if (this._nine !== undefined) {
-			this._nine.height = height;
+			this._nine.height = Math.floor(height);
 		}
 	},
 	SetLeftSize : function(value) {
 		this._leftWidth = value;
 		if (this._nine !== undefined) {
-			this._nine.leftWidth = value;
+			this._nine.leftWidth = Math.floor(value);
 		}
 	},
 	SetRightSize : function(value) {
 		this._rightWidth = value;
 		if (this._nine !== undefined) {
-			this._nine.rightWidth = value;
+			this._nine.rightWidth = Math.floor(value);
 		}
 	},
 	SetTopSize : function(value) {
 		this._topHeight = value;
 		if (this._nine !== undefined) {
-			this._nine.topHeight = value;
+			this._nine.topHeight = Math.floor(value);
 		}
 	},
 	SetBottomSize : function(value) {
 		this._bottomHeight = value;
 		if (this._nine !== undefined) {
-			this._nine.bottomHeight = value;
+			this._nine.bottomHeight = Math.floor(value);
 		}
 	},
 }, "JavaScript.JGrid9Image");
@@ -1397,10 +1397,10 @@ JavaScript.JSprite = JavaScript.Class(JavaScript.JDisplayObject, {
 		this._native = new PIXI.Sprite();
 	},
 	SetWidth : function(width) {
-		this._native.width = width;
+		this._native.width = Math.floor(width);
 	},
 	SetHeight : function(height) {
-		this._native.height = height;
+		this._native.height = Math.floor(height);
 	},
 	ClearTexture : function() {
 		this._texture = undefined;
