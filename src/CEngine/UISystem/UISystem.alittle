@@ -38,7 +38,6 @@ class UISystem
     private DisplayObject   _mfd;
     private DisplayObject   _sfc;
     private DisplayObject   _wfc;
-    private DisplayObject   _pfc;
     private string          _button_type;
     private bool            _sl;
     private bool            _dl;
@@ -84,7 +83,6 @@ class UISystem
         this._mfd = null;        // 移动焦点对话框
         this._sfc = null;        // 选中焦点控件，用于记录当前的焦点控件（比如被鼠标点击了，或者tab键选中了）
         this._wfc = null;        // 滚动焦点控件，用于记录当前鼠标滚轮滚动的控件
-        this._pfc = null;       // 拾取焦点控件，用于处理拾取，拖放操作
         this._button_type = null;    // 当前按下的鼠标按键类型
         this._sl = false;    // 是否锁定焦点控件，当控件被鼠标按下但未被释放的时候，控件是属于锁定状态
         this._dl = false;    // 是否正在拖拽控件，当控件被鼠标按下并被拖动，控件就属于拖拽状态
@@ -201,19 +199,30 @@ class UISystem
                 // 向选中焦点控件发送拖拽结束事件
                 if (this._button_type == "ALittle.UILButtonDownEvent")
                 {
-                    var event = new UIButtonDragEndEvent();
-                    event.target = this._sfc;
-                    event.rel_x = this._mfc_rel_x;
-                    event.rel_y = this._mfc_rel_y;
-                    // 如果选中焦点，已经不是移动焦点，那么就重新计算相对位置
-                    if (this._mfc != this._sfc)
-                        event.rel_x, event.rel_y = this._sfc.GlobalToLocalMatrix2D(this._mouse_x, this._mouse_y);
+                    {
+                        var event = new UIButtonDragEndEvent();
+                        event.target = this._sfc;
+                        event.rel_x = this._mfc_rel_x;
+                        event.rel_y = this._mfc_rel_y;
+                        // 如果选中焦点，已经不是移动焦点，那么就重新计算相对位置
+                        if (this._mfc != this._sfc)
+                            event.rel_x, event.rel_y = this._sfc.GlobalToLocalMatrix2D(this._mouse_x, this._mouse_y);
+    
+                        event.delta_x = this._mouse_x - this._last_mouse_x;
+                        event.delta_y = this._mouse_y - this._last_mouse_y;
+                        event.abs_x = this._mouse_x;
+                        event.abs_y = this._mouse_y;
+                        this._sfc.DispatchEvent(event);
+                    }
 
-                    event.delta_x = this._mouse_x - this._last_mouse_x;
-                    event.delta_y = this._mouse_y - this._last_mouse_y;
-                    event.abs_x = this._mouse_x;
-                    event.abs_y = this._mouse_y;
-                    this._sfc.DispatchEvent(event);
+                    // 如果是拖拽结束，那么就发送一个Drop事件
+                    if (this._mfc != null)
+                    {
+                        var event = new UIDropEvent();
+                        event.target = this._mfc;
+                        event.drop_target = this._sfc;
+                        this._mfc.DispatchEvent(event);
+                    }
                 }
             }
             // 这里先把控件取出来，把焦点控件设置为空
@@ -243,22 +252,6 @@ class UISystem
     public get focus() : DisplayObject
     {
         return this._sfc;
-    }
-
-    // 设置拾取焦点控件
-    public set pick(DisplayObject control)
-    {
-        if (this._pfc != null)
-            A_LayerManager.RemoveFromTip(this._pfc);
-        this._pfc = control;
-        if (this._pfc != null)
-            A_LayerManager.AddToTip(this._pfc);
-    }
-    
-    // 获取拾取焦点控件
-    public get pick() : DisplayObject
-    {
-        return this._pfc;
     }
     
     // 获取窗口宽高
@@ -292,12 +285,6 @@ class UISystem
         {
             this._long_press.Stop();
             this._long_press = null;
-        }
-    
-        if (this._pfc != null)
-        {
-            this._pfc.x += delta_x;
-            this._pfc.y += delta_y;
         }
     
         // 检查是否锁定控件，如果锁定了，那么就是在拖动控件
@@ -401,15 +388,6 @@ class UISystem
             this._sl = true;
             // 则向控件发送鼠标左键点击事件
             this._button_type = rflt.name;
-            if (this._pfc != null && rflt.name == "ALittle.UILButtonDownEvent")
-            {
-                var event = new UIDropEvent();
-                event.target = this._mfc;
-                event.drop_target = this._pfc;
-                this._mfc.DispatchEvent(event);
-                A_LayerManager.RemoveFromTip(this._pfc);
-                this._pfc = null;
-            }
             // 把对话框置顶
             if (this._mfd != null)
             {
@@ -541,6 +519,14 @@ class UISystem
         }
         // 更新移动焦点控件
         this.UpdateMoveFocus(x, y);
+        // 如果是拖拽结束，那么就发送一个Drop事件
+        if (save_dl && this._mfc != null)
+        {
+            var event = new UIDropEvent();
+            event.target = this._mfc;
+            event.drop_target = this._sfc;
+            this._mfc.DispatchEvent(event);
+        }
         return this._mfc != null;
     }
     

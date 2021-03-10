@@ -35,7 +35,6 @@ function ALittle.UISystem:Ctor()
 	___rawset(self, "_mfd", nil)
 	___rawset(self, "_sfc", nil)
 	___rawset(self, "_wfc", nil)
-	___rawset(self, "_pfc", nil)
 	___rawset(self, "_button_type", nil)
 	___rawset(self, "_sl", false)
 	___rawset(self, "_dl", false)
@@ -120,18 +119,26 @@ function ALittle.UISystem.__setter:focus(control)
 			self._dl_delta_x = 0
 			self._dl_delta_y = 0
 			if self._button_type == "ALittle.UILButtonDownEvent" then
-				local event = {}
-				event.target = self._sfc
-				event.rel_x = self._mfc_rel_x
-				event.rel_y = self._mfc_rel_y
-				if self._mfc ~= self._sfc then
-					event.rel_x, event.rel_y = self._sfc:GlobalToLocalMatrix2D(self._mouse_x, self._mouse_y)
+				do
+					local event = {}
+					event.target = self._sfc
+					event.rel_x = self._mfc_rel_x
+					event.rel_y = self._mfc_rel_y
+					if self._mfc ~= self._sfc then
+						event.rel_x, event.rel_y = self._sfc:GlobalToLocalMatrix2D(self._mouse_x, self._mouse_y)
+					end
+					event.delta_x = self._mouse_x - self._last_mouse_x
+					event.delta_y = self._mouse_y - self._last_mouse_y
+					event.abs_x = self._mouse_x
+					event.abs_y = self._mouse_y
+					self._sfc:DispatchEvent(___all_struct[150587926], event)
 				end
-				event.delta_x = self._mouse_x - self._last_mouse_x
-				event.delta_y = self._mouse_y - self._last_mouse_y
-				event.abs_x = self._mouse_x
-				event.abs_y = self._mouse_y
-				self._sfc:DispatchEvent(___all_struct[150587926], event)
+				if self._mfc ~= nil then
+					local event = {}
+					event.target = self._mfc
+					event.drop_target = self._sfc
+					self._mfc:DispatchEvent(___all_struct[1354499457], event)
+				end
 			end
 		end
 		local sfc = self._sfc
@@ -150,20 +157,6 @@ end
 
 function ALittle.UISystem.__getter:focus()
 	return self._sfc
-end
-
-function ALittle.UISystem.__setter:pick(control)
-	if self._pfc ~= nil then
-		A_LayerManager:RemoveFromTip(self._pfc)
-	end
-	self._pfc = control
-	if self._pfc ~= nil then
-		A_LayerManager:AddToTip(self._pfc)
-	end
-end
-
-function ALittle.UISystem.__getter:pick()
-	return self._pfc
 end
 
 function ALittle.UISystem.__getter:view_width()
@@ -187,10 +180,6 @@ function ALittle.UISystem:HandleMouseMoved(x, y)
 	if self._long_press ~= nil then
 		self._long_press:Stop()
 		self._long_press = nil
-	end
-	if self._pfc ~= nil then
-		self._pfc.x = self._pfc.x + (delta_x)
-		self._pfc.y = self._pfc.y + (delta_y)
 	end
 	if self._sl and self._button_type == "ALittle.UILButtonDownEvent" then
 		if self._dl == true then
@@ -264,14 +253,6 @@ function ALittle.UISystem:HandleButtonDown(T, x, y, count)
 	if self._mfc ~= nil then
 		self._sl = true
 		self._button_type = rflt.name
-		if self._pfc ~= nil and rflt.name == "ALittle.UILButtonDownEvent" then
-			local event = {}
-			event.target = self._mfc
-			event.drop_target = self._pfc
-			self._mfc:DispatchEvent(___all_struct[1354499457], event)
-			A_LayerManager:RemoveFromTip(self._pfc)
-			self._pfc = nil
-		end
 		if self._mfd ~= nil then
 			local layer = self._mfd.show_parent
 			layer:SetChildIndex(self._mfd, layer.child_count)
@@ -365,6 +346,12 @@ function ALittle.UISystem:HandleButtonUp(T, x, y, count)
 		self._sfc:DispatchEvent(T, event)
 	end
 	self:UpdateMoveFocus(x, y)
+	if save_dl and self._mfc ~= nil then
+		local event = {}
+		event.target = self._mfc
+		event.drop_target = self._sfc
+		self._mfc:DispatchEvent(___all_struct[1354499457], event)
+	end
 	return self._mfc ~= nil
 end
 
