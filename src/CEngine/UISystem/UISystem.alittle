@@ -221,6 +221,10 @@ class UISystem
                         var event = new UIDropEvent();
                         event.target = this._mfc;
                         event.drop_target = this._sfc;
+                        event.rel_x = this._mfc_rel_x;
+                        event.rel_y = this._mfc_rel_y;
+                        event.abs_x = this._mouse_x;
+                        event.abs_y = this._mouse_y;
                         this._mfc.DispatchEvent(event);
                     }
                 }
@@ -525,6 +529,10 @@ class UISystem
             var event = new UIDropEvent();
             event.target = this._mfc;
             event.drop_target = this._sfc;
+            event.rel_x = this._mfc_rel_x;
+            event.rel_y = this._mfc_rel_y;
+            event.abs_x = this._mouse_x;
+            event.abs_y = this._mouse_y;
             this._mfc.DispatchEvent(event);
         }
         return this._mfc != null;

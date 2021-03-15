@@ -113,7 +113,9 @@ public await static RequireCEngine(string base_path)
 
 public static __ALITTLEAPI_HandleConsoleCmd(string cmd)
 {
-    ALittle.ExecuteCommand(cmd);
+	var error, result = tcall(ALittle.ExecuteCommand, cmd);
+    if (error != null) ALittle.Warn(error);
+    elseif (result != null) ALittle.Log(result);
 }
 
 public static __ALITTLEAPI_FingerMoved(double x, double y, int finger_id, int touch_id)

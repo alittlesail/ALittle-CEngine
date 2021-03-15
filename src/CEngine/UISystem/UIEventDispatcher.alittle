@@ -89,6 +89,10 @@ public struct UIFingerDragEndEvent : UIFingerDragEvent { }
 public struct UIDropEvent: UIEvent
 {
     DisplayObject drop_target;
+    double rel_x;
+    double rel_y;
+    double abs_x;
+    double abs_y;
 }
 
 protected struct UIButtonEvent : UIEvent

@@ -83,7 +83,12 @@ function _G.RequireCEngine(base_path)
 end
 
 function _G.__ALITTLEAPI_HandleConsoleCmd(cmd)
-	ALittle.ExecuteCommand(cmd)
+	local error, result = Lua.TCall(ALittle.ExecuteCommand, cmd)
+	if error ~= nil then
+		ALittle.Warn(error)
+	elseif result ~= nil then
+		ALittle.Log(result)
+	end
 end
 
 function _G.__ALITTLEAPI_FingerMoved(x, y, finger_id, touch_id)

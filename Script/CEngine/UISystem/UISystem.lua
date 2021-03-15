@@ -137,6 +137,10 @@ function ALittle.UISystem.__setter:focus(control)
 					local event = {}
 					event.target = self._mfc
 					event.drop_target = self._sfc
+					event.rel_x = self._mfc_rel_x
+					event.rel_y = self._mfc_rel_y
+					event.abs_x = self._mouse_x
+					event.abs_y = self._mouse_y
 					self._mfc:DispatchEvent(___all_struct[1354499457], event)
 				end
 			end
@@ -350,6 +354,10 @@ function ALittle.UISystem:HandleButtonUp(T, x, y, count)
 		local event = {}
 		event.target = self._mfc
 		event.drop_target = self._sfc
+		event.rel_x = self._mfc_rel_x
+		event.rel_y = self._mfc_rel_y
+		event.abs_x = self._mouse_x
+		event.abs_y = self._mouse_y
 		self._mfc:DispatchEvent(___all_struct[1354499457], event)
 	end
 	return self._mfc ~= nil
