@@ -28,7 +28,6 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 		this._mfd = undefined;
 		this._sfc = undefined;
 		this._wfc = undefined;
-		this._pfc = undefined;
 		this._button_type = undefined;
 		this._sl = false;
 		this._dl = false;
@@ -99,18 +98,30 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 				this._dl_delta_x = 0;
 				this._dl_delta_y = 0;
 				if (this._button_type === "ALittle.UILButtonDownEvent") {
-					let event = {};
-					event.target = this._sfc;
-					event.rel_x = this._mfc_rel_x;
-					event.rel_y = this._mfc_rel_y;
-					if (this._mfc !== this._sfc) {
-						[event.rel_x, event.rel_y] = this._sfc.GlobalToLocalMatrix2D(this._mouse_x, this._mouse_y);
+					{
+						let event = {};
+						event.target = this._sfc;
+						event.rel_x = this._mfc_rel_x;
+						event.rel_y = this._mfc_rel_y;
+						if (this._mfc !== this._sfc) {
+							[event.rel_x, event.rel_y] = this._sfc.GlobalToLocalMatrix2D(this._mouse_x, this._mouse_y);
+						}
+						event.delta_x = this._mouse_x - this._last_mouse_x;
+						event.delta_y = this._mouse_y - this._last_mouse_y;
+						event.abs_x = this._mouse_x;
+						event.abs_y = this._mouse_y;
+						this._sfc.DispatchEvent(___all_struct.get(150587926), event);
 					}
-					event.delta_x = this._mouse_x - this._last_mouse_x;
-					event.delta_y = this._mouse_y - this._last_mouse_y;
-					event.abs_x = this._mouse_x;
-					event.abs_y = this._mouse_y;
-					this._sfc.DispatchEvent(___all_struct.get(150587926), event);
+					if (this._mfc !== undefined) {
+						let event = {};
+						event.target = this._mfc;
+						event.drop_target = this._sfc;
+						event.rel_x = this._mfc_rel_x;
+						event.rel_y = this._mfc_rel_y;
+						event.abs_x = this._mouse_x;
+						event.abs_y = this._mouse_y;
+						this._mfc.DispatchEvent(___all_struct.get(1354499457), event);
+					}
 				}
 			}
 			let sfc = this._sfc;
@@ -128,18 +139,6 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 	},
 	get focus() {
 		return this._sfc;
-	},
-	set pick(control) {
-		if (this._pfc !== undefined) {
-			A_LayerManager.RemoveFromTip(this._pfc);
-		}
-		this._pfc = control;
-		if (this._pfc !== undefined) {
-			A_LayerManager.AddToTip(this._pfc);
-		}
-	},
-	get pick() {
-		return this._pfc;
 	},
 	get view_width() {
 		return this._view_width;
@@ -160,10 +159,6 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 		if (this._long_press !== undefined) {
 			this._long_press.Stop();
 			this._long_press = undefined;
-		}
-		if (this._pfc !== undefined) {
-			this._pfc.x = this._pfc.x + (delta_x);
-			this._pfc.y = this._pfc.y + (delta_y);
 		}
 		if (this._sl && this._button_type === "ALittle.UILButtonDownEvent") {
 			if (this._dl === true) {
@@ -232,14 +227,6 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 		if (this._mfc !== undefined) {
 			this._sl = true;
 			this._button_type = rflt.name;
-			if (this._pfc !== undefined && rflt.name === "ALittle.UILButtonDownEvent") {
-				let event = {};
-				event.target = this._mfc;
-				event.drop_target = this._pfc;
-				this._mfc.DispatchEvent(___all_struct.get(1354499457), event);
-				A_LayerManager.RemoveFromTip(this._pfc);
-				this._pfc = undefined;
-			}
 			if (this._mfd !== undefined) {
 				let layer = this._mfd.show_parent;
 				layer.SetChildIndex(this._mfd, layer.child_count);
@@ -331,6 +318,16 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 			this._sfc.DispatchEvent(T, event);
 		}
 		this.UpdateMoveFocus(x, y);
+		if (save_dl && this._mfc !== undefined) {
+			let event = {};
+			event.target = this._mfc;
+			event.drop_target = this._sfc;
+			event.rel_x = this._mfc_rel_x;
+			event.rel_y = this._mfc_rel_y;
+			event.abs_x = this._mouse_x;
+			event.abs_y = this._mouse_y;
+			this._mfc.DispatchEvent(___all_struct.get(1354499457), event);
+		}
 		return this._mfc !== undefined;
 	},
 	HandleRButtonDown : function(x, y, count) {

@@ -81,7 +81,12 @@ window.RequireCEngine = function(base_path) {
 }
 
 window.__ALITTLEAPI_HandleConsoleCmd = function(cmd) {
-	ALittle.ExecuteCommand(cmd);
+	let [error, result] = (function() { try { let ___VALUE = ALittle.ExecuteCommand.call(undefined, cmd); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } })();
+	if (error !== undefined) {
+		ALittle.Warn(error);
+	} else if (result !== undefined) {
+		ALittle.Log(result);
+	}
 }
 
 window.__ALITTLEAPI_FingerMoved = function(x, y, finger_id, touch_id) {

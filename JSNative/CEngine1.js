@@ -81,7 +81,12 @@ window.RequireCEngine = function(base_path) {
 }
 
 window.__ALITTLEAPI_HandleConsoleCmd = function(cmd) {
-	ALittle.ExecuteCommand(cmd);
+	let [error, result] = (function() { try { let ___VALUE = ALittle.ExecuteCommand.call(undefined, cmd); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } })();
+	if (error !== undefined) {
+		ALittle.Warn(error);
+	} else if (result !== undefined) {
+		ALittle.Log(result);
+	}
 }
 
 window.__ALITTLEAPI_FingerMoved = function(x, y, finger_id, touch_id) {
@@ -3992,8 +3997,8 @@ option_map : {}
 })
 ALittle.RegStruct(1354499457, "ALittle.UIDropEvent", {
 name : "ALittle.UIDropEvent", ns_name : "ALittle", rl_name : "UIDropEvent", hash_code : 1354499457,
-name_list : ["target","drop_target"],
-type_list : ["ALittle.DisplayObject","ALittle.DisplayObject"],
+name_list : ["target","drop_target","rel_x","rel_y","abs_x","abs_y"],
+type_list : ["ALittle.DisplayObject","ALittle.DisplayObject","double","double","double","double"],
 option_map : {}
 })
 ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {

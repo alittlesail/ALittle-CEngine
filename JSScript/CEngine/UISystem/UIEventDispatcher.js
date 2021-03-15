@@ -81,8 +81,8 @@ option_map : {}
 })
 ALittle.RegStruct(1354499457, "ALittle.UIDropEvent", {
 name : "ALittle.UIDropEvent", ns_name : "ALittle", rl_name : "UIDropEvent", hash_code : 1354499457,
-name_list : ["target","drop_target"],
-type_list : ["ALittle.DisplayObject","ALittle.DisplayObject"],
+name_list : ["target","drop_target","rel_x","rel_y","abs_x","abs_y"],
+type_list : ["ALittle.DisplayObject","ALittle.DisplayObject","double","double","double","double"],
 option_map : {}
 })
 ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
