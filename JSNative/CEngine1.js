@@ -231,8 +231,8 @@ window.__ALITTLEAPI_ConnectSucceed = ALittle.__ALITTLEAPI_ConnectSucceed;
 window.__ALITTLEAPI_Disconnected = ALittle.__ALITTLEAPI_Disconnected;
 window.__ALITTLEAPI_ConnectFailed = ALittle.__ALITTLEAPI_ConnectFailed;
 window.__ALITTLEAPI_Message = ALittle.__ALITTLEAPI_Message;
-window.__ALITTLEAPI_AudioChunkStoppedEvent = function(id) {
-	A_AudioSystem.HandleAudioChunkStoppedEvent(id);
+window.__ALITTLEAPI_AudioChannelStoppedEvent = function(id) {
+	A_AudioSystem.HandleAudioChannelStoppedEvent(id);
 }
 
 window.__ALITTLEAPI_ALittleJsonRPC = function(json) {
@@ -2781,40 +2781,53 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 	Ctor : function() {
 		this._chunk_map = new Map();
 		this._app_background = false;
-		this._all_chunk_mute = false;
+		this._all_mute = false;
+		this._stream_volume = 1.0;
+		this._stream_mute = false;
 		A_OtherSystem.AddEventListener(___all_struct.get(521107426), this, this.HandleDidEnterBackground);
 		A_OtherSystem.AddEventListener(___all_struct.get(760325696), this, this.HandleDidEnterForeground);
 	},
+	Setup : function(sample_rate, channels) {
+		__CPPAPI_AudioSystem.Setup(sample_rate, channels);
+	},
 	HandleDidEnterBackground : function(event) {
 		this._app_background = true;
-		this.UpdateAllChunkVolume();
+		this.UpdateAllVolume();
 	},
 	HandleDidEnterForeground : function(event) {
 		this._app_background = false;
-		this.UpdateAllChunkVolume();
+		this.UpdateAllVolume();
 	},
-	UpdateChunkVolume : function(info) {
+	UpdateChannelVolume : function(info) {
 		let real_volume = info.volume;
-		if (info.mute || this._app_background || this._all_chunk_mute) {
+		if (info.mute || this._app_background || this._all_mute) {
 			real_volume = 0;
 		}
-		__CPPAPI_AudioSystem.SetChunkVolume(info.channel, real_volume);
+		__CPPAPI_AudioSystem.SetChannelVolume(info.channel, real_volume);
 	},
-	UpdateAllChunkVolume : function() {
+	UpdateStreamVolume : function() {
+		let real_volume = this._stream_volume;
+		if (this._stream_mute || this._app_background || this._all_mute) {
+			real_volume = 0;
+		}
+		__CPPAPI_AudioSystem.SetStreamVolume(real_volume);
+	},
+	UpdateAllVolume : function() {
 		for (let [k, v] of this._chunk_map) {
 			if (v === undefined) continue;
-			this.UpdateChunkVolume(v);
+			this.UpdateChannelVolume(v);
 		}
+		this.UpdateStreamVolume();
 	},
-	SetAllChunkMute : function(mute) {
-		if (this._all_chunk_mute === mute) {
+	SetAllMute : function(mute) {
+		if (this._all_mute === mute) {
 			return;
 		}
-		this._all_chunk_mute = mute;
-		this.UpdateAllChunkVolume();
+		this._all_mute = mute;
+		this.UpdateAllVolume();
 	},
-	GetAllChunkMute : function() {
-		return this._all_chunk_mute;
+	GetAllMute : function() {
+		return this._all_mute;
 	},
 	AddChunkCache : function(file_path) {
 		__CPPAPI_AudioSystem.AddChunkCache(file_path);
@@ -2822,11 +2835,11 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 	RemoveChunkCache : function(file_path) {
 		__CPPAPI_AudioSystem.RemoveChunkCache(file_path);
 	},
-	StartChunk : function(file_path, loop, callback) {
+	StartChannel : function(file_path, loop, callback) {
 		if (loop === undefined) {
 			loop = 1;
 		}
-		let channel = __CPPAPI_AudioSystem.StartChunk(file_path, loop);
+		let channel = __CPPAPI_AudioSystem.StartChannel(file_path, loop);
 		if (channel < 0) {
 			return -1;
 		}
@@ -2834,21 +2847,21 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 		info.file_path = file_path;
 		info.callback = callback;
 		info.channel = channel;
-		info.volume = __CPPAPI_AudioSystem.GetChunkVolume(channel);
+		info.volume = __CPPAPI_AudioSystem.GetChannelVolume(channel);
 		info.mute = false;
 		this._chunk_map.set(channel, info);
-		this.UpdateChunkVolume(info);
+		this.UpdateChannelVolume(info);
 		return channel;
 	},
-	StopChunk : function(channel) {
+	StopChannel : function(channel) {
 		let info = this._chunk_map.get(channel);
 		if (info === undefined) {
 			return;
 		}
 		this._chunk_map.delete(channel);
-		__CPPAPI_AudioSystem.StopChunk(channel);
+		__CPPAPI_AudioSystem.StopChannel(channel);
 	},
-	SetChunkMute : function(channel, mute) {
+	SetChannelMute : function(channel, mute) {
 		let info = this._chunk_map.get(channel);
 		if (info === undefined) {
 			return;
@@ -2857,31 +2870,31 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 			return;
 		}
 		info.mute = mute;
-		this.UpdateChunkVolume(info);
+		this.UpdateChannelVolume(info);
 	},
-	GetChunkMute : function(channel) {
+	GetChannelMute : function(channel) {
 		let info = this._chunk_map.get(channel);
 		if (info === undefined) {
 			return false;
 		}
 		return info.mute;
 	},
-	SetChunkVolume : function(channel, volume) {
+	SetChannelVolume : function(channel, volume) {
 		let info = this._chunk_map.get(channel);
 		if (info === undefined) {
 			return;
 		}
 		info.volume = volume;
-		this.UpdateChunkVolume(info);
+		this.UpdateChannelVolume(info);
 	},
-	GetChunkVolume : function(channel) {
+	GetChannelVolume : function(channel) {
 		let info = this._chunk_map.get(channel);
 		if (info === undefined) {
 			return 0;
 		}
 		return info.volume;
 	},
-	HandleAudioChunkStoppedEvent : function(channel) {
+	HandleAudioChannelStoppedEvent : function(channel) {
 		let info = this._chunk_map.get(channel);
 		if (info === undefined) {
 			return;
@@ -2891,6 +2904,29 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 			return;
 		}
 		info.callback(info.file_path, info.channel);
+	},
+	StartStream : function(sample_rate, channels) {
+		return __CPPAPI_AudioSystem.StartStream(sample_rate, channels);
+	},
+	StopStream : function() {
+		__CPPAPI_AudioSystem.StopStream();
+	},
+	SetStreamMute : function(mute) {
+		if (this._stream_mute === mute) {
+			return;
+		}
+		this._stream_mute = mute;
+		this.UpdateStreamVolume();
+	},
+	GetStreamMute : function() {
+		return this._stream_mute;
+	},
+	SetStreamVolume : function(volume) {
+		this._stream_volume = volume;
+		this.UpdateStreamVolume();
+	},
+	GetStreamVolume : function() {
+		return this._stream_volume;
 	},
 }, "ALittle.AudioSystem");
 

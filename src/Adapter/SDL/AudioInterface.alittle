@@ -3,13 +3,21 @@ register namespace lua;
 
 public class __CPPAPIAudioSystem
 {
+    public fun Setup(int sample_rate, int channels) {}
+    // 缓存管理
     public fun AddChunkCache(string path) {}
     public fun RemoveChunkCache(string path) {}
     // 如果loop<=0，那么就表示无限循环
-    public fun StartChunk(string path, int loop) : int {}
-    public fun StopChunk(int channel) : bool {}
-    public fun SetChunkVolume(int channel, double volume) : bool {}
-    public fun GetChunkVolume(int channel) : double {}
+    public fun StartChannel(string path, int loop) : int {}
+    public fun StopChannel(int channel) : bool {}
+    public fun SetChannelVolume(int channel, double volume) : bool {}
+    public fun GetChannelVolume(int channel) : double {}
+    // 输入流处理
+    public fun StartStream(int sample_rate, int channels) : bool {}
+    public fun StopStream() {}
+    public fun PushStreamSample(int left_sample, int right_sample) : bool {}
+    public fun SetStreamVolume(double volume) {}
+    public fun GetStreamVolume() : double {}
 }
 
 public var __CPPAPI_AudioSystem:__CPPAPIAudioSystem;

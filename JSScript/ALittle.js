@@ -231,8 +231,8 @@ window.__ALITTLEAPI_ConnectSucceed = ALittle.__ALITTLEAPI_ConnectSucceed;
 window.__ALITTLEAPI_Disconnected = ALittle.__ALITTLEAPI_Disconnected;
 window.__ALITTLEAPI_ConnectFailed = ALittle.__ALITTLEAPI_ConnectFailed;
 window.__ALITTLEAPI_Message = ALittle.__ALITTLEAPI_Message;
-window.__ALITTLEAPI_AudioChunkStoppedEvent = function(id) {
-	A_AudioSystem.HandleAudioChunkStoppedEvent(id);
+window.__ALITTLEAPI_AudioChannelStoppedEvent = function(id) {
+	A_AudioSystem.HandleAudioChannelStoppedEvent(id);
 }
 
 window.__ALITTLEAPI_ALittleJsonRPC = function(json) {

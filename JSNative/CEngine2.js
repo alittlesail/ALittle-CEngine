@@ -10030,11 +10030,11 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		}
 		return ALittle.NewObject(class_func, this);
 	},
-	StartChunk : function(file_path, loop, callback) {
-		return A_AudioSystem.StartChunk(this._sound_path + file_path, loop, callback);
+	StartChannel : function(file_path, loop, callback) {
+		return A_AudioSystem.StartChannel(this._sound_path + file_path, loop, callback);
 	},
-	StopChunk : function(channel) {
-		A_AudioSystem.StopChunk(channel);
+	StopChannel : function(channel) {
+		A_AudioSystem.StopChannel(channel);
 	},
 	SetTexture : function(object, name) {
 		this._texture_mgr.SetTexture(object, name);

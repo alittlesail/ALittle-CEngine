@@ -296,9 +296,9 @@ public var __ALITTLEAPI_ConnectFailed = ALittle.__ALITTLEAPI_ConnectFailed;
 public var __ALITTLEAPI_Message = ALittle.__ALITTLEAPI_Message;
 
 //////////////////////////////////////////////////////////////////////////////////////
-public static __ALITTLEAPI_AudioChunkStoppedEvent(int id)
+public static __ALITTLEAPI_AudioChannelStoppedEvent(int id)
 {
-    A_AudioSystem.HandleAudioChunkStoppedEvent(id);
+    A_AudioSystem.HandleAudioChannelStoppedEvent(id);
 }
 //////////////////////////////////////////////////////////////////////////////////////
 

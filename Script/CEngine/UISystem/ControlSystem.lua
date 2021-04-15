@@ -215,12 +215,12 @@ function ALittle.ControlSystem:CreateControlObject(info)
 	return ALittle.NewObject(class_func, self)
 end
 
-function ALittle.ControlSystem:StartChunk(file_path, loop, callback)
-	return A_AudioSystem:StartChunk(self._sound_path .. file_path, loop, callback)
+function ALittle.ControlSystem:StartChannel(file_path, loop, callback)
+	return A_AudioSystem:StartChannel(self._sound_path .. file_path, loop, callback)
 end
 
-function ALittle.ControlSystem:StopChunk(channel)
-	A_AudioSystem:StopChunk(channel)
+function ALittle.ControlSystem:StopChannel(channel)
+	A_AudioSystem:StopChannel(channel)
 end
 
 function ALittle.ControlSystem:SetTexture(object, name)

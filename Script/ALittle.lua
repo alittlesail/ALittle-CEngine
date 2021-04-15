@@ -233,8 +233,8 @@ _G.__ALITTLEAPI_ConnectSucceed = ALittle.__ALITTLEAPI_ConnectSucceed
 _G.__ALITTLEAPI_Disconnected = ALittle.__ALITTLEAPI_Disconnected
 _G.__ALITTLEAPI_ConnectFailed = ALittle.__ALITTLEAPI_ConnectFailed
 _G.__ALITTLEAPI_Message = ALittle.__ALITTLEAPI_Message
-function _G.__ALITTLEAPI_AudioChunkStoppedEvent(id)
-	A_AudioSystem:HandleAudioChunkStoppedEvent(id)
+function _G.__ALITTLEAPI_AudioChannelStoppedEvent(id)
+	A_AudioSystem:HandleAudioChannelStoppedEvent(id)
 end
 
 function _G.__ALITTLEAPI_ALittleJsonRPC(json)
