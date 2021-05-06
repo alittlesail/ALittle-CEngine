@@ -34,7 +34,7 @@ function ALittle.Text.__setter:font_path(value)
 		return
 	end
 	self._ctrl_sys:SetFont(self, self._font_path, self._font_size)
-	self:RejuseSize()
+	self:AdjustSize()
 end
 
 function ALittle.Text.__setter:font_size(value)
@@ -43,7 +43,7 @@ function ALittle.Text.__setter:font_size(value)
 		return
 	end
 	self._ctrl_sys:SetFont(self, self._font_path, self._font_size)
-	self:RejuseSize()
+	self:AdjustSize()
 end
 
 function ALittle.Text.__getter:font_path()
@@ -64,7 +64,7 @@ function ALittle.Text.__setter:text(value)
 	end
 	self._text = value
 	self._show:SetText(value)
-	self:RejuseSize()
+	self:AdjustSize()
 end
 
 function ALittle.Text.__getter:text()
@@ -77,7 +77,7 @@ function ALittle.Text.__setter:bold(value)
 	end
 	self._bold = value
 	self._show:SetBold(value)
-	self:RejuseSize()
+	self:AdjustSize()
 end
 
 function ALittle.Text.__getter:bold()
@@ -90,7 +90,7 @@ function ALittle.Text.__setter:italic(value)
 	end
 	self._italic = value
 	self._show:SetItalic(value)
-	self:RejuseSize()
+	self:AdjustSize()
 end
 
 function ALittle.Text.__getter:italic()
@@ -103,7 +103,7 @@ function ALittle.Text.__setter:underline(value)
 	end
 	self._underline = value
 	self._show:SetUnderline(value)
-	self:RejuseSize()
+	self:AdjustSize()
 end
 
 function ALittle.Text.__getter:underline()
@@ -116,14 +116,14 @@ function ALittle.Text.__setter:deleteline(value)
 	end
 	self._deleteline = value
 	self._show:SetDeleteline(value)
-	self:RejuseSize()
+	self:AdjustSize()
 end
 
 function ALittle.Text.__getter:deleteline()
 	return self._deleteline
 end
 
-function ALittle.Text:RejuseSize()
+function ALittle.Text:AdjustSize()
 	if self._font_path == nil or self._font_size == nil then
 		return
 	end
@@ -136,7 +136,7 @@ function ALittle.Text.__setter:rejust_size(value)
 	if value ~= true then
 		return
 	end
-	self:RejuseSize()
+	self:AdjustSize()
 end
 
 function ALittle.Text:DeserializeSetter(info)

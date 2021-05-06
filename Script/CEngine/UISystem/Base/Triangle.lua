@@ -232,7 +232,7 @@ function ALittle.Triangle.__setter:y3(v)
 	self._show:SetPosXY(2, self._x3, self._y3)
 end
 
-function ALittle.Triangle:RejuseSize()
+function ALittle.Triangle:AdjustSize()
 	local max = self._x1
 	if max < self._x2 then
 		max = self._x2

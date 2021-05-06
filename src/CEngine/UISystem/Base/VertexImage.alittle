@@ -224,7 +224,7 @@ public class VertexImage : DisplayObject
     public set x4(double v) { this._x4 = v; this._show.SetPosXY(3, this._x4, this._y4); }
     public set y4(double v) { this._y4 = v; this._show.SetPosXY(3, this._x4, this._y4); }
 
-    public fun RejuseSize()
+    public fun AdjustSize()
     {
         var max = this._x1;
         if (max < this._x2) max = this._x2;

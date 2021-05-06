@@ -188,7 +188,7 @@ ALittle.Triangle = JavaScript.Class(ALittle.DisplayObject, {
 		this._y3 = v;
 		this._show.SetPosXY(2, this._x3, this._y3);
 	},
-	RejuseSize : function() {
+	AdjustSize : function() {
 		let max = this._x1;
 		if (max < this._x2) {
 			max = this._x2;

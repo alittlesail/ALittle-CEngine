@@ -272,7 +272,7 @@ function ALittle.VertexImage.__setter:y4(v)
 	self._show:SetPosXY(3, self._x4, self._y4)
 end
 
-function ALittle.VertexImage:RejuseSize()
+function ALittle.VertexImage:AdjustSize()
 	local max = self._x1
 	if max < self._x2 then
 		max = self._x2

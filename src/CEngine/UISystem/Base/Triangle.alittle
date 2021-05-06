@@ -208,7 +208,7 @@ public class Triangle : DisplayObject
     public set x3(double v) { this._x3 = v; this._show.SetPosXY(2, this._x3, this._y3); }
     public set y3(double v) { this._y3 = v; this._show.SetPosXY(2, this._x3, this._y3); }
 
-    public fun RejuseSize()
+    public fun AdjustSize()
     {
         var max = this._x1;
         if (max < this._x2) max = this._x2;

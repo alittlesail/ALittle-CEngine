@@ -146,6 +146,9 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 	StartStream : function(sample_rate, channels) {
 		return __CPPAPI_AudioSystem.StartStream(sample_rate, channels);
 	},
+	PushStreamSample : function(left_sample, right_sample) {
+		__CPPAPI_AudioSystem.PushStreamSample(left_sample, right_sample);
+	},
 	StopStream : function() {
 		__CPPAPI_AudioSystem.StopStream();
 	},

@@ -2908,6 +2908,9 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 	StartStream : function(sample_rate, channels) {
 		return __CPPAPI_AudioSystem.StartStream(sample_rate, channels);
 	},
+	PushStreamSample : function(left_sample, right_sample) {
+		__CPPAPI_AudioSystem.PushStreamSample(left_sample, right_sample);
+	},
 	StopStream : function() {
 		__CPPAPI_AudioSystem.StopStream();
 	},
@@ -6268,7 +6271,7 @@ ALittle.Text = JavaScript.Class(ALittle.DisplayObject, {
 			return;
 		}
 		this._ctrl_sys.SetFont(this, this._font_path, this._font_size);
-		this.RejuseSize();
+		this.AdjustSize();
 	},
 	set font_size(value) {
 		this._font_size = value;
@@ -6276,7 +6279,7 @@ ALittle.Text = JavaScript.Class(ALittle.DisplayObject, {
 			return;
 		}
 		this._ctrl_sys.SetFont(this, this._font_path, this._font_size);
-		this.RejuseSize();
+		this.AdjustSize();
 	},
 	get font_path() {
 		return this._font_path;
@@ -6294,7 +6297,7 @@ ALittle.Text = JavaScript.Class(ALittle.DisplayObject, {
 		}
 		this._text = value;
 		this._show.SetText(value);
-		this.RejuseSize();
+		this.AdjustSize();
 	},
 	get text() {
 		return this._text;
@@ -6305,7 +6308,7 @@ ALittle.Text = JavaScript.Class(ALittle.DisplayObject, {
 		}
 		this._bold = value;
 		this._show.SetBold(value);
-		this.RejuseSize();
+		this.AdjustSize();
 	},
 	get bold() {
 		return this._bold;
@@ -6316,7 +6319,7 @@ ALittle.Text = JavaScript.Class(ALittle.DisplayObject, {
 		}
 		this._italic = value;
 		this._show.SetItalic(value);
-		this.RejuseSize();
+		this.AdjustSize();
 	},
 	get italic() {
 		return this._italic;
@@ -6327,7 +6330,7 @@ ALittle.Text = JavaScript.Class(ALittle.DisplayObject, {
 		}
 		this._underline = value;
 		this._show.SetUnderline(value);
-		this.RejuseSize();
+		this.AdjustSize();
 	},
 	get underline() {
 		return this._underline;
@@ -6338,12 +6341,12 @@ ALittle.Text = JavaScript.Class(ALittle.DisplayObject, {
 		}
 		this._deleteline = value;
 		this._show.SetDeleteline(value);
-		this.RejuseSize();
+		this.AdjustSize();
 	},
 	get deleteline() {
 		return this._deleteline;
 	},
-	RejuseSize : function() {
+	AdjustSize : function() {
 		if (this._font_path === undefined || this._font_size === undefined) {
 			return;
 		}
@@ -6355,7 +6358,7 @@ ALittle.Text = JavaScript.Class(ALittle.DisplayObject, {
 		if (value !== true) {
 			return;
 		}
-		this.RejuseSize();
+		this.AdjustSize();
 	},
 	DeserializeSetter : function(info) {
 		let base_attr = info.__base_attr;
@@ -7800,7 +7803,7 @@ ALittle.Triangle = JavaScript.Class(ALittle.DisplayObject, {
 		this._y3 = v;
 		this._show.SetPosXY(2, this._x3, this._y3);
 	},
-	RejuseSize : function() {
+	AdjustSize : function() {
 		let max = this._x1;
 		if (max < this._x2) {
 			max = this._x2;
@@ -8044,7 +8047,7 @@ ALittle.VertexImage = JavaScript.Class(ALittle.DisplayObject, {
 		this._y4 = v;
 		this._show.SetPosXY(3, this._x4, this._y4);
 	},
-	RejuseSize : function() {
+	AdjustSize : function() {
 		let max = this._x1;
 		if (max < this._x2) {
 			max = this._x2;

@@ -220,7 +220,7 @@ ALittle.VertexImage = JavaScript.Class(ALittle.DisplayObject, {
 		this._y4 = v;
 		this._show.SetPosXY(3, this._x4, this._y4);
 	},
-	RejuseSize : function() {
+	AdjustSize : function() {
 		let max = this._x1;
 		if (max < this._x2) {
 			max = this._x2;

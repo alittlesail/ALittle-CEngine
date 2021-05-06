@@ -48,7 +48,7 @@ public class Text : DisplayObject
         if (this._font_path == null || this._font_size == null)
             return;
         this._ctrl_sys.SetFont(this, this._font_path, this._font_size);
-        this.RejuseSize();
+        this.AdjustSize();
     }
     public set font_size(int value)
     {
@@ -56,7 +56,7 @@ public class Text : DisplayObject
         if (this._font_path == null || this._font_size == null)
             return;
         this._ctrl_sys.SetFont(this, this._font_path, this._font_size);
-        this.RejuseSize();
+        this.AdjustSize();
     }
     
     public get font_path() : string
@@ -81,7 +81,7 @@ public class Text : DisplayObject
 
         this._text = value;
         this._show.SetText(value);
-        this.RejuseSize();
+        this.AdjustSize();
     }
     // 获取文本
     public get text() : string
@@ -96,7 +96,7 @@ public class Text : DisplayObject
             return;
         this._bold = value;
         this._show.SetBold(value);
-        this.RejuseSize();
+        this.AdjustSize();
     }
     public get bold() : bool
     {
@@ -110,7 +110,7 @@ public class Text : DisplayObject
             return;
         this._italic = value;
         this._show.SetItalic(value);
-        this.RejuseSize();
+        this.AdjustSize();
     }
     public get italic() : bool
     {
@@ -124,7 +124,7 @@ public class Text : DisplayObject
             return;
         this._underline = value;
         this._show.SetUnderline(value);
-        this.RejuseSize();
+        this.AdjustSize();
     }
     public get underline() : bool
     {
@@ -138,14 +138,14 @@ public class Text : DisplayObject
             return;
         this._deleteline = value;
         this._show.SetDeleteline(value);
-        this.RejuseSize();
+        this.AdjustSize();
     }
     public get deleteline() : bool
     {
         return this._deleteline;
     }
     
-    public fun RejuseSize()
+    public fun AdjustSize()
     {
         if (this._font_path == null || this._font_size == null)
             return;
@@ -160,7 +160,7 @@ public class Text : DisplayObject
     {
         if (value != true)
             return;
-        this.RejuseSize();
+        this.AdjustSize();
     }
     
     // 设置普通属性
