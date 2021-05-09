@@ -2772,13 +2772,15 @@ option_map : {}
 })
 ALittle.RegStruct(384201948, "ALittle.ChunkInfo", {
 name : "ALittle.ChunkInfo", ns_name : "ALittle", rl_name : "ChunkInfo", hash_code : 384201948,
-name_list : ["file_path","callback","channel","volume","mute"],
-type_list : ["string","Functor<(string,int)>","int","double","bool"],
+name_list : ["file_path","callback","channel","volume","mute","instance"],
+type_list : ["string","Functor<(string,int)>","int","double","bool","native PIXI.IMediaInstance"],
 option_map : {}
 })
 
 ALittle.AudioSystem = JavaScript.Class(undefined, {
 	Ctor : function() {
+		this._chunk_creator_id = 0;
+		this._file_map = {};
 		this._chunk_map = new Map();
 		this._app_background = false;
 		this._all_mute = false;
@@ -2788,7 +2790,6 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 		A_OtherSystem.AddEventListener(___all_struct.get(760325696), this, this.HandleDidEnterForeground);
 	},
 	Setup : function(sample_rate, channels) {
-		__CPPAPI_AudioSystem.Setup(sample_rate, channels);
 	},
 	HandleDidEnterBackground : function(event) {
 		this._app_background = true;
@@ -2803,7 +2804,9 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 		if (info.mute || this._app_background || this._all_mute) {
 			real_volume = 0;
 		}
-		__CPPAPI_AudioSystem.SetChannelVolume(info.channel, real_volume);
+		if (info.instance.set !== undefined) {
+			info.instance.set("volume", real_volume);
+		}
 	},
 	UpdateStreamVolume : function() {
 		let real_volume = this._stream_volume;
@@ -2830,28 +2833,39 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 		return this._all_mute;
 	},
 	AddChunkCache : function(file_path) {
-		__CPPAPI_AudioSystem.AddChunkCache(file_path);
+		PIXI.sound.add(file_path, file_path);
+		this._file_map[file_path] = true;
 	},
 	RemoveChunkCache : function(file_path) {
-		__CPPAPI_AudioSystem.RemoveChunkCache(file_path);
+		PIXI.sound.remove(file_path);
+		this._file_map[file_path] = false;
 	},
 	StartChannel : function(file_path, loop, callback) {
 		if (loop === undefined) {
 			loop = 1;
 		}
-		let channel = __CPPAPI_AudioSystem.StartChannel(file_path, loop);
-		if (channel < 0) {
-			return -1;
+		{
+			if (this._file_map[file_path] === undefined) {
+				this._file_map[file_path] = true;
+				PIXI.sound.add(file_path, file_path);
+			}
+			this._chunk_creator_id = this._chunk_creator_id + (1);
+			let channel = this._chunk_creator_id;
+			let options = {};
+			options.loop = loop !== 1;
+			options.complete = this.HandleAudioChannelStoppedEvent.bind(this, channel);
+			let instance = PIXI.sound.play(file_path, options);
+			let info = {};
+			info.file_path = file_path;
+			info.callback = callback;
+			info.channel = channel;
+			info.instance = instance;
+			info.volume = 1;
+			info.mute = false;
+			this._chunk_map.set(channel, info);
+			this.UpdateChannelVolume(info);
+			return channel;
 		}
-		let info = {};
-		info.file_path = file_path;
-		info.callback = callback;
-		info.channel = channel;
-		info.volume = __CPPAPI_AudioSystem.GetChannelVolume(channel);
-		info.mute = false;
-		this._chunk_map.set(channel, info);
-		this.UpdateChannelVolume(info);
-		return channel;
 	},
 	StopChannel : function(channel) {
 		let info = this._chunk_map.get(channel);
@@ -2859,7 +2873,7 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 			return;
 		}
 		this._chunk_map.delete(channel);
-		__CPPAPI_AudioSystem.StopChannel(channel);
+		info.instance.stop();
 	},
 	SetChannelMute : function(channel, mute) {
 		let info = this._chunk_map.get(channel);

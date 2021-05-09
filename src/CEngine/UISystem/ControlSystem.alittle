@@ -341,6 +341,7 @@ public class ControlSystem
     }
     
     // 播放Sound包内的声音
+    // 在JavaScript下，这个接口要在用户点击鼠标或者键盘操作之后才会有效果，这个是浏览器政策问题
     public fun StartChannel(string file_path, [Nullable] int loop, [Nullable] Functor<(string, int)> callback) : int
     {
         return A_AudioSystem.StartChannel(this._sound_path .. file_path, loop, callback);

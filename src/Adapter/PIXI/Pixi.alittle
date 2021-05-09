@@ -415,7 +415,7 @@ public class TextInput : Container
 public struct PlayOptions
 {
     Functor<()> complete;
-    int loop;
+    bool loop;
 }
 
 [Native]
@@ -427,7 +427,8 @@ public class Sound
 [Native]
 public class IMediaInstance
 {
-    public get volume() : double {}
+    public fun set(string type, double value) {}
+    public fun stop() {}
 }
 
 [Native]

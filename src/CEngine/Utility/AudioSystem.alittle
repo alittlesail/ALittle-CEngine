@@ -8,6 +8,8 @@ struct ChunkInfo
     int channel;
     double volume;
     bool mute;
+
+    PIXI.IMediaInstance instance;
 }
 
 class AudioSystem
@@ -20,6 +22,8 @@ class AudioSystem
 
     [Language(JavaScript)]
     private int				_chunk_creator_id = 0;
+    [Language(JavaScript)]
+    private Map<string, bool>  _file_map = new Map<string, bool>();
     
     public ctor()
     {
@@ -61,7 +65,9 @@ class AudioSystem
         [Language(Lua)]
         __CPPAPI_AudioSystem.SetChannelVolume(info.channel, real_volume);
         [Language(JavaScript)]
-        PIXI.sound.volume(""..info.channel, real_volume);
+        // 因为PIXI.sound.play在未加载资源完成之前返回的instance是Promise，而不是PIXI.IMediaInstance
+        if (info.instance.set != null)
+        	info.instance.set("volume", real_volume);
     }
 
     private fun UpdateStreamVolume()
@@ -97,12 +103,20 @@ class AudioSystem
     {
         [Language(Lua)]
         __CPPAPI_AudioSystem.AddChunkCache(file_path);
+        [Language(JavaScript)]
+        PIXI.sound.add(file_path, file_path);
+        [Language(JavaScript)]
+        this._file_map[file_path] = true;
     }
     
     public fun RemoveChunkCache(string file_path)
     {
         [Language(Lua)]
         __CPPAPI_AudioSystem.RemoveChunkCache(file_path);
+        [Language(JavaScript)]
+        PIXI.sound.remove(file_path);
+        [Language(JavaScript)]
+        this._file_map[file_path] = false;
     }
     
     public fun StartChannel(string file_path, [Nullable] int loop, [Nullable] Functor<(string, int)> callback) : int
@@ -128,22 +142,26 @@ class AudioSystem
 
         [Language(JavaScript)]
         {
+            if (this._file_map[file_path] == null)
+            {
+                this._file_map[file_path] = true;
+                PIXI.sound.add(file_path, file_path);
+            }
+
             this._chunk_creator_id += 1;
             var channel = this._chunk_creator_id;
-            var alias = ""..channel;
-            PIXI.sound.add(alias, file_path);
-
+            
             var options = new PIXI.PlayOptions();
-            options.loop = loop;
-            if (options.loop <= 0) options.loop = 1000000;
+            options.loop = loop != 1;
             options.complete = bind(this.HandleAudioChannelStoppedEvent, this, channel);
-            var instance = PIXI.sound.play(alias, options);
+            var instance = PIXI.sound.play(file_path, options);
 
             var info = new ChunkInfo();
             info.file_path = file_path;
             info.callback = callback;
             info.channel = channel;
-            info.volume = instance.volume;
+            info.instance = instance;
+            info.volume = 1;
             info.mute = false;
             this._chunk_map[channel] = info;
             this.UpdateChannelVolume(info);
@@ -163,7 +181,7 @@ class AudioSystem
         [Language(Lua)]
         __CPPAPI_AudioSystem.StopChannel(channel);
         [Language(JavaScript)]
-        PIXI.sound.stop(""..channel);
+        info.instance.stop();
     }
     
     public fun SetChannelMute(int channel, bool mute)
