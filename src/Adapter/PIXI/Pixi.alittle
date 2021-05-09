@@ -410,4 +410,37 @@ public class TextInput : Container
     public get htmlInput() : javascript.DomElement {}
     public get substituteText() : bool {}
     public set substituteText(bool v) {}
-} 
+}
+
+public struct PlayOptions
+{
+    Functor<()> complete;
+    int loop;
+}
+
+[Native]
+public class Sound
+{
+
+}
+
+[Native]
+public class IMediaInstance
+{
+    public get volume() : double {}
+}
+
+[Native]
+public class sound
+{
+    public static add(string alias, string sound_path) {}
+    public static play(string alias, [Nullable] PlayOptions options) : IMediaInstance {}
+    public static stop(string alias) {}
+    public static stopAll() {}
+    public static remove(string alias) {}
+    public static removeAll() {}
+    public static volume(string alias, double number) {}
+    public static muteAll() {}
+    public static unmuteAll() {}
+    public static find(string alias) : Sound {}
+}

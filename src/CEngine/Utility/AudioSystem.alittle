@@ -17,6 +17,9 @@ class AudioSystem
     private bool                _all_mute;
     private double              _stream_volume;
     private bool				_stream_mute;
+
+    [Language(JavaScript)]
+    private int				_chunk_creator_id = 0;
     
     public ctor()
     {
@@ -33,6 +36,7 @@ class AudioSystem
 
     public fun Setup(int sample_rate, int channels)
     {
+        [Language(Lua)]
         __CPPAPI_AudioSystem.Setup(sample_rate, channels);
     }
     
@@ -54,7 +58,10 @@ class AudioSystem
         var real_volume = info.volume;
         if (info.mute || this._app_background || this._all_mute)
             real_volume = 0;
+        [Language(Lua)]
         __CPPAPI_AudioSystem.SetChannelVolume(info.channel, real_volume);
+        [Language(JavaScript)]
+        PIXI.sound.volume(""..info.channel, real_volume);
     }
 
     private fun UpdateStreamVolume()
@@ -88,11 +95,13 @@ class AudioSystem
     //////////////////////////////////////-Mixer部分//////////////////////////////////////-
     public fun AddChunkCache(string file_path)
     {
+        [Language(Lua)]
         __CPPAPI_AudioSystem.AddChunkCache(file_path);
     }
     
     public fun RemoveChunkCache(string file_path)
     {
+        [Language(Lua)]
         __CPPAPI_AudioSystem.RemoveChunkCache(file_path);
     }
     
@@ -100,19 +109,47 @@ class AudioSystem
     {
         if (loop == null) loop = 1;
 
-        var channel = __CPPAPI_AudioSystem.StartChannel(file_path, loop);
-        if (channel < 0)
-            return -1;
-    
-        var info = new ChunkInfo();
-        info.file_path = file_path;
-        info.callback = callback;
-        info.channel = channel;
-        info.volume = __CPPAPI_AudioSystem.GetChannelVolume(channel);
-        info.mute = false;
-        this._chunk_map[channel] = info;
-        this.UpdateChannelVolume(info);
-        return channel;
+        [Language(Lua)]
+        {
+            var channel = __CPPAPI_AudioSystem.StartChannel(file_path, loop);
+            if (channel < 0)
+                return -1;
+        
+            var info = new ChunkInfo();
+            info.file_path = file_path;
+            info.callback = callback;
+            info.channel = channel;
+            info.volume = __CPPAPI_AudioSystem.GetChannelVolume(channel);
+            info.mute = false;
+            this._chunk_map[channel] = info;
+            this.UpdateChannelVolume(info);
+            return channel;
+        }
+
+        [Language(JavaScript)]
+        {
+            this._chunk_creator_id += 1;
+            var channel = this._chunk_creator_id;
+            var alias = ""..channel;
+            PIXI.sound.add(alias, file_path);
+
+            var options = new PIXI.PlayOptions();
+            options.loop = loop;
+            if (options.loop <= 0) options.loop = 1000000;
+            options.complete = bind(this.HandleAudioChannelStoppedEvent, this, channel);
+            var instance = PIXI.sound.play(alias, options);
+
+            var info = new ChunkInfo();
+            info.file_path = file_path;
+            info.callback = callback;
+            info.channel = channel;
+            info.volume = instance.volume;
+            info.mute = false;
+            this._chunk_map[channel] = info;
+            this.UpdateChannelVolume(info);
+
+            return channel;
+        }
     }
     
     public fun StopChannel(int channel)
@@ -122,7 +159,11 @@ class AudioSystem
             return;
     
         this._chunk_map[channel] = null;
+
+        [Language(Lua)]
         __CPPAPI_AudioSystem.StopChannel(channel);
+        [Language(JavaScript)]
+        PIXI.sound.stop(""..channel);
     }
     
     public fun SetChannelMute(int channel, bool mute)

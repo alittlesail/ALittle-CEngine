@@ -24,6 +24,7 @@ option_map = {}
 ALittle.AudioSystem = Lua.Class(nil, "ALittle.AudioSystem")
 
 function ALittle.AudioSystem:Ctor()
+	___rawset(self, "_chunk_creator_id", 0)
 	___rawset(self, "_chunk_map", {})
 	___rawset(self, "_app_background", false)
 	___rawset(self, "_all_mute", false)
@@ -94,19 +95,21 @@ function ALittle.AudioSystem:StartChannel(file_path, loop, callback)
 	if loop == nil then
 		loop = 1
 	end
-	local channel = __CPPAPI_AudioSystem:StartChannel(file_path, loop)
-	if channel < 0 then
-		return -1
+	do
+		local channel = __CPPAPI_AudioSystem:StartChannel(file_path, loop)
+		if channel < 0 then
+			return -1
+		end
+		local info = {}
+		info.file_path = file_path
+		info.callback = callback
+		info.channel = channel
+		info.volume = __CPPAPI_AudioSystem:GetChannelVolume(channel)
+		info.mute = false
+		self._chunk_map[channel] = info
+		self:UpdateChannelVolume(info)
+		return channel
 	end
-	local info = {}
-	info.file_path = file_path
-	info.callback = callback
-	info.channel = channel
-	info.volume = __CPPAPI_AudioSystem:GetChannelVolume(channel)
-	info.mute = false
-	self._chunk_map[channel] = info
-	self:UpdateChannelVolume(info)
-	return channel
 end
 
 function ALittle.AudioSystem:StopChannel(channel)

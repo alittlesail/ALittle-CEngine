@@ -341,7 +341,7 @@ public class ControlSystem
     }
     
     // 播放Sound包内的声音
-    public fun StartChannel(string file_path, int loop, Functor<(string, int)> callback) : int
+    public fun StartChannel(string file_path, [Nullable] int loop, [Nullable] Functor<(string, int)> callback) : int
     {
         return A_AudioSystem.StartChannel(this._sound_path .. file_path, loop, callback);
     }
