@@ -36,6 +36,12 @@ public struct TileMap
     List<TileLayer> layer_list;	// 层
 }
 
+public struct TileRange
+{
+    Map<int, string> tex_map;	// 纹理ID映射的纹理路径
+    List<TileLayer> layer_list;	// 层
+}
+
 private var floor = Math_Floor;
 private var ceil = Math_Ceil;
 
