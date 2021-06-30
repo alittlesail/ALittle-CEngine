@@ -168,10 +168,12 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 		this._stream_sample_rate = sample_rate;
 		this._stream_sample_channels = channels;
 		{
+			let options = {};
+			options.sampleRate = sample_rate;
 			if (AudioContext !== undefined) {
-				this._audio_context = new AudioContext();
+				this._audio_context = new AudioContext(options);
 			} else if (webkitAudioContext !== undefined) {
-				this._audio_context = new webkitAudioContext();
+				this._audio_context = new webkitAudioContext(options);
 			} else {
 				return false;
 			}
@@ -182,14 +184,17 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 		}
 	},
 	OnAudioProcess : function(event) {
-		let left_buffer = event.inputBuffer.getChannelData(0);
-		let right_buffer = event.inputBuffer.getChannelData(1);
+		let left_buffer = event.outputBuffer.getChannelData(0);
+		let right_buffer = event.outputBuffer.getChannelData(1);
 		if (this._stream_sample_channels >= 1) {
 			let length = left_buffer.length;
-			if (length > this._stream_left_sample_len) {
-				length = this._stream_left_sample_len;
-			}
 			let buffer = left_buffer;
+			if (length > this._stream_left_sample_len) {
+				for (let i = 1; i <= length; i += 1) {
+					buffer[i - 1] = 0;
+				}
+				return;
+			}
 			for (let i = 1; i <= length; i += 1) {
 				buffer[i - 1] = this._stream_left_sample[i - 1] / 32768;
 			}
@@ -200,10 +205,13 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 		}
 		if (this._stream_sample_channels >= 2) {
 			let length = right_buffer.length;
-			if (length > this._stream_right_sample_len) {
-				length = this._stream_right_sample_len;
-			}
 			let buffer = right_buffer;
+			if (length > this._stream_right_sample_len) {
+				for (let i = 1; i <= length; i += 1) {
+					buffer[i - 1] = 0;
+				}
+				return;
+			}
 			for (let i = 1; i <= length; i += 1) {
 				buffer[i - 1] = this._stream_right_sample[i - 1] / 32768;
 			}

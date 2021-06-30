@@ -257,10 +257,13 @@ class AudioSystem
 
         [Language(JavaScript)]
         {
+            var options = new javascript.AudioContextOptions();
+            options.sampleRate = sample_rate;
+
             if (javascript.AudioContext != null)
-            	this._audio_context = new javascript.AudioContext();
+            	this._audio_context = new javascript.AudioContext(options);
             elseif (javascript.webkitAudioContext != null)
-                    this._audio_context = new javascript.webkitAudioContext();
+                this._audio_context = new javascript.webkitAudioContext(options);
             else return false;
 
             this._audio_script_node = this._audio_context.createScriptProcessor(4096, 0, channels);
@@ -277,15 +280,21 @@ class AudioSystem
     [Language(JavaScript)]
     private fun OnAudioProcess(javascript.AudioProcessingEvent event)
     {
-        var left_buffer = event.inputBuffer.getChannelData(0);
-        var right_buffer = event.inputBuffer.getChannelData(1);
+        var left_buffer = event.outputBuffer.getChannelData(0);
+        var right_buffer = event.outputBuffer.getChannelData(1);
 
         if (this._stream_sample_channels >= 1)
         {
             var length = left_buffer.length;
-            if (length > this._stream_left_sample_len) length = this._stream_left_sample_len;
-
             var buffer = cast<List<double>>(left_buffer);
+
+            if (length > this._stream_left_sample_len)
+            {
+                for (var i = 1; i <= length; 1)
+                    buffer[i] = 0;
+                return;
+            }
+
             for (var i = 1; i <= length; 1)
                 buffer[i] = this._stream_left_sample[i] / 32768;
 
@@ -297,9 +306,15 @@ class AudioSystem
         if (this._stream_sample_channels >= 2)
         {
             var length = right_buffer.length;
-            if (length > this._stream_right_sample_len) length = this._stream_right_sample_len;
-
             var buffer = cast<List<double>>(right_buffer);
+
+            if (length > this._stream_right_sample_len)
+            {
+                for (var i = 1; i <= length; 1)
+                    buffer[i] = 0;
+                return;
+            }
+
             for (var i = 1; i <= length; 1)
                 buffer[i] = this._stream_right_sample[i] / 32768;
 
