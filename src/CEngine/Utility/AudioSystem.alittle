@@ -24,6 +24,19 @@ class AudioSystem
     private int				_chunk_creator_id = 0;
     [Language(JavaScript)]
     private Map<string, bool>  _file_map = new Map<string, bool>();
+
+    [Language(JavaScript)]
+    private javascript.AudioContext _audio_context;
+    [Language(JavaScript)]
+    private javascript.ScriptProcessorNode _audio_script_node;
+
+    private int				_stream_sample_rate = 8000;
+    private int				_stream_sample_channels = 1;
+
+    private List<int>		  _stream_left_sample = new List<int>();
+    private int			    _stream_left_sample_len = 0;
+    private List<int>		  _stream_right_sample = new List<int>();
+    private int			    _stream_right_sample_len = 0;
     
     public ctor()
     {
@@ -237,16 +250,97 @@ class AudioSystem
     /////////////////////////////////////////////////////////////////////
     public fun StartStream(int sample_rate, int channels) : bool
     {
+        this.StopStream();
+
+        this._stream_sample_rate = sample_rate;
+        this._stream_sample_channels = channels;
+
+        [Language(JavaScript)]
+        {
+            if (javascript.AudioContext != null)
+            	this._audio_context = new javascript.AudioContext();
+            elseif (javascript.webkitAudioContext != null)
+                    this._audio_context = new javascript.webkitAudioContext();
+            else return false;
+
+            this._audio_script_node = this._audio_context.createScriptProcessor(4096, 0, channels);
+            this._audio_script_node.onaudioprocess = bind(this.OnAudioProcess, this);
+            this._audio_script_node.connect(this._audio_context.destination);
+
+            return true;
+        }
+
+        [Language(Lua)]
         return __CPPAPI_AudioSystem.StartStream(sample_rate, channels);
     }
 
+    [Language(JavaScript)]
+    private fun OnAudioProcess(javascript.AudioProcessingEvent event)
+    {
+        var left_buffer = event.inputBuffer.getChannelData(0);
+        var right_buffer = event.inputBuffer.getChannelData(1);
+
+        if (this._stream_sample_channels >= 1)
+        {
+            var length = left_buffer.length;
+            if (length > this._stream_left_sample_len) length = this._stream_left_sample_len;
+
+            var buffer = cast<List<double>>(left_buffer);
+            for (var i = 1; i <= length; 1)
+                buffer[i] = this._stream_left_sample[i] / 32768;
+
+            for (var i = length + 1; i <= this._stream_left_sample_len; 1)
+                this._stream_left_sample[i - length] = this._stream_left_sample[i];
+            this._stream_left_sample_len -= length;
+        }
+
+        if (this._stream_sample_channels >= 2)
+        {
+            var length = right_buffer.length;
+            if (length > this._stream_right_sample_len) length = this._stream_right_sample_len;
+
+            var buffer = cast<List<double>>(right_buffer);
+            for (var i = 1; i <= length; 1)
+                buffer[i] = this._stream_right_sample[i] / 32768;
+
+            for (var i = length + 1; i <= this._stream_right_sample_len; 1)
+                this._stream_right_sample[i - length] = this._stream_right_sample[i];
+            this._stream_right_sample_len -= length;
+        }
+    }
+
+    // left_sample和right_sample都是short值
     public fun PushStreamSample(int left_sample, int right_sample)
     {
+        [Language(JavaScript)]
+        {
+            this._stream_left_sample_len += 1;
+            this._stream_left_sample[this._stream_left_sample_len] = left_sample;
+
+            this._stream_right_sample_len += 1;
+            this._stream_right_sample[this._stream_right_sample_len] = right_sample;
+        }
+
+        [Language(Lua)]
         __CPPAPI_AudioSystem.PushStreamSample(left_sample, right_sample);
     }
 
     public fun StopStream()
     {
+        [Language(JavaScript)]
+        if (this._audio_context != null)
+        {
+            if (this._audio_script_node != null)
+            {
+                this._audio_script_node.disconnect(this._audio_context.destination);
+                this._audio_script_node.onaudioprocess = null;
+                this._audio_script_node = null;
+            }
+            this._audio_context.close();
+            this._audio_context = null;
+        }
+
+        [Language(Lua)]
         __CPPAPI_AudioSystem.StopStream();
     }
 

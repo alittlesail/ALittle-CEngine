@@ -2781,6 +2781,12 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 	Ctor : function() {
 		this._chunk_creator_id = 0;
 		this._file_map = {};
+		this._stream_sample_rate = 8000;
+		this._stream_sample_channels = 1;
+		this._stream_left_sample = [];
+		this._stream_left_sample_len = 0;
+		this._stream_right_sample = [];
+		this._stream_right_sample_len = 0;
 		this._chunk_map = new Map();
 		this._app_background = false;
 		this._all_mute = false;
@@ -2920,13 +2926,73 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 		info.callback(info.file_path, info.channel);
 	},
 	StartStream : function(sample_rate, channels) {
-		return __CPPAPI_AudioSystem.StartStream(sample_rate, channels);
+		this.StopStream();
+		this._stream_sample_rate = sample_rate;
+		this._stream_sample_channels = channels;
+		{
+			if (AudioContext !== undefined) {
+				this._audio_context = new AudioContext();
+			} else if (webkitAudioContext !== undefined) {
+				this._audio_context = new webkitAudioContext();
+			} else {
+				return false;
+			}
+			this._audio_script_node = this._audio_context.createScriptProcessor(4096, 0, channels);
+			this._audio_script_node.onaudioprocess = this.OnAudioProcess.bind(this);
+			this._audio_script_node.connect(this._audio_context.destination);
+			return true;
+		}
+	},
+	OnAudioProcess : function(event) {
+		let left_buffer = event.inputBuffer.getChannelData(0);
+		let right_buffer = event.inputBuffer.getChannelData(1);
+		if (this._stream_sample_channels >= 1) {
+			let length = left_buffer.length;
+			if (length > this._stream_left_sample_len) {
+				length = this._stream_left_sample_len;
+			}
+			let buffer = left_buffer;
+			for (let i = 1; i <= length; i += 1) {
+				buffer[i - 1] = this._stream_left_sample[i - 1] / 32768;
+			}
+			for (let i = length + 1; i <= this._stream_left_sample_len; i += 1) {
+				this._stream_left_sample[i - length - 1] = this._stream_left_sample[i - 1];
+			}
+			this._stream_left_sample_len = this._stream_left_sample_len - (length);
+		}
+		if (this._stream_sample_channels >= 2) {
+			let length = right_buffer.length;
+			if (length > this._stream_right_sample_len) {
+				length = this._stream_right_sample_len;
+			}
+			let buffer = right_buffer;
+			for (let i = 1; i <= length; i += 1) {
+				buffer[i - 1] = this._stream_right_sample[i - 1] / 32768;
+			}
+			for (let i = length + 1; i <= this._stream_right_sample_len; i += 1) {
+				this._stream_right_sample[i - length - 1] = this._stream_right_sample[i - 1];
+			}
+			this._stream_right_sample_len = this._stream_right_sample_len - (length);
+		}
 	},
 	PushStreamSample : function(left_sample, right_sample) {
-		__CPPAPI_AudioSystem.PushStreamSample(left_sample, right_sample);
+		{
+			this._stream_left_sample_len = this._stream_left_sample_len + (1);
+			this._stream_left_sample[this._stream_left_sample_len - 1] = left_sample;
+			this._stream_right_sample_len = this._stream_right_sample_len + (1);
+			this._stream_right_sample[this._stream_right_sample_len - 1] = right_sample;
+		}
 	},
 	StopStream : function() {
-		__CPPAPI_AudioSystem.StopStream();
+		if (this._audio_context !== undefined) {
+			if (this._audio_script_node !== undefined) {
+				this._audio_script_node.disconnect(this._audio_context.destination);
+				this._audio_script_node.onaudioprocess = undefined;
+				this._audio_script_node = undefined;
+			}
+			this._audio_context.close();
+			this._audio_context = undefined;
+		}
 	},
 	SetStreamMute : function(mute) {
 		if (this._stream_mute === mute) {

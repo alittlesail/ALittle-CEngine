@@ -1,6 +1,12 @@
 {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
+ALittle.RegStruct(-1813792408, "ALittle.TileRange", {
+name : "ALittle.TileRange", ns_name : "ALittle", rl_name : "TileRange", hash_code : -1813792408,
+name_list : ["tex_map","layer_list"],
+type_list : ["Map<int,string>","List<ALittle.TileLayer>"],
+option_map : {}
+})
 ALittle.RegStruct(-1281734132, "ALittle.TileMap", {
 name : "ALittle.TileMap", ns_name : "ALittle", rl_name : "TileMap", hash_code : -1281734132,
 name_list : ["tile_type","side_len","tile_width","tile_height","tile_x","tile_y","col_count","row_count","tex_map","layer_list"],

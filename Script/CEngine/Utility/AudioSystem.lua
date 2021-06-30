@@ -16,8 +16,8 @@ option_map = {}
 })
 ALittle.RegStruct(384201948, "ALittle.ChunkInfo", {
 name = "ALittle.ChunkInfo", ns_name = "ALittle", rl_name = "ChunkInfo", hash_code = 384201948,
-name_list = {"file_path","callback","channel","volume","mute"},
-type_list = {"string","Functor<(string,int)>","int","double","bool"},
+name_list = {"file_path","callback","channel","volume","mute","instance"},
+type_list = {"string","Functor<(string,int)>","int","double","bool","native PIXI.IMediaInstance"},
 option_map = {}
 })
 
@@ -25,6 +25,13 @@ ALittle.AudioSystem = Lua.Class(nil, "ALittle.AudioSystem")
 
 function ALittle.AudioSystem:Ctor()
 	___rawset(self, "_chunk_creator_id", 0)
+	___rawset(self, "_file_map", {})
+	___rawset(self, "_stream_sample_rate", 8000)
+	___rawset(self, "_stream_sample_channels", 1)
+	___rawset(self, "_stream_left_sample", {})
+	___rawset(self, "_stream_left_sample_len", 0)
+	___rawset(self, "_stream_right_sample", {})
+	___rawset(self, "_stream_right_sample_len", 0)
 	___rawset(self, "_chunk_map", {})
 	___rawset(self, "_app_background", false)
 	___rawset(self, "_all_mute", false)
@@ -171,6 +178,9 @@ function ALittle.AudioSystem:HandleAudioChannelStoppedEvent(channel)
 end
 
 function ALittle.AudioSystem:StartStream(sample_rate, channels)
+	self:StopStream()
+	self._stream_sample_rate = sample_rate
+	self._stream_sample_channels = channels
 	return __CPPAPI_AudioSystem:StartStream(sample_rate, channels)
 end
 

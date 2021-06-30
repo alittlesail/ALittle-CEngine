@@ -69,32 +69,6 @@ function ALittle.ControlSystem:UnRegisterPlugin(module_name)
 	plugin._parent_plugin_map[self._module_name] = nil
 end
 
-function ALittle.ControlSystem:RegisterInfoByHttp()
-	local ___COROUTINE = coroutine.running()
-	local path = self._ui_path .. "../JSUI/ui_all_in_one.json"
-	ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path))
-	local error = ALittle.HttpDownloadRequest(self._host, self._port, path, path, nil, true)
-	if error ~= nil then
-		ALittle.Error("ui load failed:" .. error)
-		return
-	end
-	local content, buffer = JavaScript.File_LoadFile(path)
-	if buffer == nil then
-		ALittle.Error("ui load failed:" .. error)
-		return
-	end
-	content = javascript.UTF8ArrayToString(javascript.Uint8Array(buffer))
-	JavaScript.File_DeleteFile(path)
-	local jerror, json = Lua.TCall(ALittle.String_JsonDecode, content)
-	if jerror ~= nil then
-		ALittle.Error("ui json decode failed:" .. jerror)
-		return
-	end
-	for name, value in ___pairs(json) do
-		self:RegisterInfo(name, value)
-	end
-end
-
 function ALittle.ControlSystem:LoadMessageFromFile(T, path)
 	local ___COROUTINE = coroutine.running()
 	local path_prefix = "Module/" .. self._module_name .. "/"

@@ -118,6 +118,7 @@ public class ControlSystem
         plugin._parent_plugin_map[this._module_name] = null;
     }
 
+    [Language(JavaScript)]
     public await fun RegisterInfoByHttp()
     {
         var path = this._ui_path.."../JSUI/ui_all_in_one.json";
