@@ -16,8 +16,8 @@ public class ScrollScreen : DisplayGroup
     private LoopRit _drag_delta_loop_x;
     private LoopRit _drag_delta_loop_y;
     
-    private LoopFunction _x_type_dispatch;
-    private LoopFunction _y_type_dispatch;
+    private LoopObject _x_type_dispatch;
+    private LoopObject _y_type_dispatch;
     
     private LoopLinear _drag_loop_x;
     private LoopLinear _drag_loop_y;
@@ -28,7 +28,7 @@ public class ScrollScreen : DisplayGroup
     private DisplayView _scroll_view;
     
     private DisplayGroup _scroll_content;
-    private LoopFunction _clip_loop;
+    private LoopObject _clip_loop;
     
     private DisplayObject _static_object_h;
     private DisplayObject _static_object_v;
@@ -927,7 +927,7 @@ public class ScrollScreen : DisplayGroup
             A_LoopSystem.RemoveUpdater(this._x_type_dispatch);
             if (event_dispatch != null)
             {
-                this._x_type_dispatch = new LoopFunction(event_dispatch, 1, 0, 300);
+                this._x_type_dispatch = new LoopTimer(event_dispatch, 300);
                 A_LoopSystem.AddUpdater(this._x_type_dispatch);
             }
     
@@ -1009,7 +1009,7 @@ public class ScrollScreen : DisplayGroup
             A_LoopSystem.RemoveUpdater(this._y_type_dispatch);
             if (event_dispatch != null)
             {
-                this._y_type_dispatch = new LoopFunction(event_dispatch, 1, 0, 300);
+                this._y_type_dispatch = new LoopTimer(event_dispatch, 300);
                 A_LoopSystem.AddUpdater(this._y_type_dispatch);
             }
     
@@ -1031,7 +1031,7 @@ public class ScrollScreen : DisplayGroup
     }
     
     ////////////////////////////////////////////////////////////////////////////////////////////-
-    protected fun RefreshClipDisLineImpl(double h_move, double v_move)
+    protected fun RefreshClipDisLineImpl(double h_move, double v_move, int frame_time)
     {
         this._scroll_content.ClipRect(0, 0, this._width, this._height, h_move, v_move);
         if (this._static_object_v != null) this._static_object_v.ClipRect(0, 0, this._width, this._height, h_move, v_move);
@@ -1045,7 +1045,7 @@ public class ScrollScreen : DisplayGroup
         if (this._clip_loop != null && this._clip_loop._user_data == null)
             return;
 
-        this._clip_loop = new LoopFunction(bind(this.RefreshClipDisLineImpl, this, h_move, v_move), 1, 0, 1);
+        this._clip_loop = new LoopFrame(bind(this.RefreshClipDisLineImpl, this, h_move, v_move));
         this._clip_loop._user_data = v_move;
         A_LoopSystem.AddUpdater(this._clip_loop);
     }

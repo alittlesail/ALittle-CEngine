@@ -5,7 +5,7 @@ public class SpritePlay : Sprite
 {
     private int _interval;
     private int _play_index;
-    private LoopFunction _play_loop;
+    private LoopObject _play_loop;
 
     public ctor(ControlSystem ctrl_sys)
     {
@@ -42,7 +42,8 @@ public class SpritePlay : Sprite
         // 立即执行一帧
         this.PlayUpdate();
         // 更新循环
-        this._play_loop = new LoopFunction(bind(this.PlayUpdate, this), -1, this._interval, 0);
+        var loop = new LoopTimer(bind(this.PlayUpdate, this), this._interval);
+        this._play_loop = new LoopRepeat(loop, -1);
         A_WeakLoopSystem.AddUpdater(this._play_loop);
     }
     

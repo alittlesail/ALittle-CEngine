@@ -155,7 +155,7 @@ public class VersionSystemAndroid : VersionSystem
         lua.os.execute("chmod 777 " .. File_BaseFilePath() .. "Update/" .. this._module_name .. "/" .. this._install_name);
 
         // 执行
-        var updater = new LoopFunction(bind(VersionSystemAndroid.InstallImpl, install_name), 1, 0, 1);
+        var updater = new LoopTimer(bind(VersionSystemAndroid.InstallImpl, install_name), 1);
         updater.Start();
     }
 }

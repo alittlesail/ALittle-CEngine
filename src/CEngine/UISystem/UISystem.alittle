@@ -57,7 +57,7 @@ class UISystem
     private Functor<(int, int, int)>    _keydown_callback;
     private Functor<(int, int, int)>    _keyup_callback;
     private Functor<(int, int)>         _view_resize_callback;
-    private LoopFunction                _long_press;
+    private LoopObject                  _long_press;
     private Map<string, FingerInfo>     _finger_info;
 
     public ctor()
@@ -421,7 +421,7 @@ class UISystem
                 long_event.rel_x = this._mfc_rel_x;
                 long_event.rel_y = this._mfc_rel_y;
                 long_event.is_drag = false;
-                this._long_press = new LoopFunction(bind(UISystem.DispatchLongButtonEvent, this._mfc, long_event), 1, 500, 1);
+                this._long_press = new LoopTimer(bind(UISystem.DispatchLongButtonEvent, this._mfc, long_event), 500);
                 this._long_press.Start();
             }
     

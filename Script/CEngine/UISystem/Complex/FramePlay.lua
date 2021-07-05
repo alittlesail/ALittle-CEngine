@@ -90,7 +90,8 @@ function ALittle.FramePlay:Play()
 	self._play_loop_index = 0
 	self:HideAllChild()
 	self:PlayUpdate()
-	self._play_loop = ALittle.LoopFunction(Lua.Bind(self.PlayUpdateLoop, self), -1, self._interval, 0)
+	local loop = ALittle.LoopTimer(Lua.Bind(self.PlayUpdateLoop, self), self._interval)
+	self._play_loop = ALittle.LoopRepeat(loop, -1)
 	A_WeakLoopSystem:AddUpdater(self._play_loop)
 end
 

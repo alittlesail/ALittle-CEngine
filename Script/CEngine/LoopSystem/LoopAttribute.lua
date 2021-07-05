@@ -21,26 +21,11 @@ function ALittle.LoopAttribute:Ctor(target, property, target_value, delay_time)
 	___rawset(self, "_total_delay_time", delay_time)
 	___rawset(self, "_accumulate_count", 0)
 	___rawset(self, "_accumulate_delay_time", 0)
-	___rawset(self, "_complete_callback", nil)
-end
-
-function ALittle.LoopAttribute.__getter:complete_callback()
-	return self._complete_callback
-end
-
-function ALittle.LoopAttribute.__setter:complete_callback(value)
-	self._complete_callback = value
 end
 
 function ALittle.LoopAttribute:Reset()
 	self._accumulate_count = 0
 	self._accumulate_delay_time = 0
-end
-
-function ALittle.LoopAttribute:Completed()
-	if self._complete_callback ~= nil then
-		self._complete_callback()
-	end
 end
 
 function ALittle.LoopAttribute:IsCompleted()
@@ -76,15 +61,17 @@ function ALittle.LoopAttribute:Update(frame_time)
 	if self._accumulate_delay_time < self._total_delay_time then
 		self._accumulate_delay_time = self._accumulate_delay_time + (frame_time)
 		if self._accumulate_delay_time < self._total_delay_time then
-			return
+			return 0
 		end
+		frame_time = self._accumulate_delay_time - self._total_delay_time
 		self._accumulate_delay_time = self._total_delay_time
 	end
 	if self._accumulate_count >= 1 then
-		return
+		return frame_time
 	end
 	self._accumulate_count = 1
 	self._target[self._property] = self._target_value
+	return frame_time
 end
 
 end

@@ -37,7 +37,8 @@ function ALittle.SpritePlay:Play()
 	self._row_index = 1
 	self._col_index = 1
 	self:PlayUpdate()
-	self._play_loop = ALittle.LoopFunction(Lua.Bind(self.PlayUpdate, self), -1, self._interval, 0)
+	local loop = ALittle.LoopTimer(Lua.Bind(self.PlayUpdate, self), self._interval)
+	self._play_loop = ALittle.LoopRepeat(loop, -1)
 	A_WeakLoopSystem:AddUpdater(self._play_loop)
 end
 

@@ -14,7 +14,7 @@ public class FramePlay : DisplayLayout
     private int     _play_child_index;
     private int     _play_loop_count;
     private int     _play_loop_index;
-    private LoopFunction    _play_loop;
+    private LoopObject    _play_loop;
     private double  _base_y;
     private bool    _auto_play;
     
@@ -106,7 +106,8 @@ public class FramePlay : DisplayLayout
         // 立即执行一帧
         this.PlayUpdate();
         // 更新循环
-        this._play_loop = new LoopFunction(bind(this.PlayUpdateLoop, this), -1, this._interval, 0);
+        var loop = new LoopTimer(bind(this.PlayUpdateLoop, this), this._interval);
+        this._play_loop = new LoopRepeat(loop, -1);
         A_WeakLoopSystem.AddUpdater(this._play_loop);
     }
     

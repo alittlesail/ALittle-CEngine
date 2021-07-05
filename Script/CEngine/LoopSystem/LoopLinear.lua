@@ -36,14 +36,6 @@ function ALittle.LoopLinear:Ctor(target, property, target_value, total_time, del
 	___rawset(self, "_init_value", nil)
 end
 
-function ALittle.LoopLinear.__getter:complete_callback()
-	return self._complete_callback
-end
-
-function ALittle.LoopLinear.__setter:complete_callback(value)
-	self._complete_callback = value
-end
-
 function ALittle.LoopLinear.__getter:speed()
 	if self._speed ~= nil then
 		return self._speed
@@ -94,12 +86,6 @@ function ALittle.LoopLinear:IsCompleted()
 	return self._accumulate_time >= self._total_time
 end
 
-function ALittle.LoopLinear:Completed()
-	if self._complete_callback ~= nil then
-		self._complete_callback()
-	end
-end
-
 function ALittle.LoopLinear:SetCompleted()
 	if self._accumulate_time >= self._total_time then
 		return
@@ -111,7 +97,7 @@ function ALittle.LoopLinear:Update(frame_time)
 	if self._accumulate_delay_time < self._total_delay_time then
 		self._accumulate_delay_time = self._accumulate_delay_time + (frame_time)
 		if self._accumulate_delay_time < self._total_delay_time then
-			return
+			return 0
 		end
 		frame_time = self._accumulate_delay_time - self._total_delay_time
 		self._accumulate_delay_time = self._total_delay_time
@@ -120,14 +106,18 @@ function ALittle.LoopLinear:Update(frame_time)
 		self._init_value = self._target[self._property]
 	end
 	self._accumulate_time = self._accumulate_time + (frame_time)
-	if self._accumulate_time > self._total_time then
+	if self._accumulate_time >= self._total_time then
+		frame_time = self._accumulate_time - self._total_time
 		self._accumulate_time = self._total_time
+	else
+		frame_time = 0
 	end
 	local current_value = (self._accumulate_time * self._target_value + (self._total_time - self._accumulate_time) * self._init_value) / self._total_time
 	self._target[self._property] = current_value
 	if self._func ~= nil then
 		self._func()
 	end
+	return frame_time
 end
 
 end

@@ -12,15 +12,15 @@ public class ScrollList : DisplayView
     private List<double> _drag_delta_table;
     private int _drag_delta_table_count;
     private double _drag_rate;
-    private LoopFunction _drag_delta_loop_y;
+    private LoopObject _drag_delta_loop_y;
     private LoopLinear _drag_loop_y;
-    private LoopFunction _drag_delta_loop_x;
+    private LoopObject _drag_delta_loop_x;
     private LoopLinear _drag_loop_x;
 
     private ScrollBar _scroll_bar;
     private LoopList _scroll_bar_loop;
     private bool _open_extends_drag;
-    private LoopFunction _clip_loop;
+    private LoopObject _clip_loop;
     private bool _clip_atonce;
 
     private int _drag_time;
@@ -1035,7 +1035,7 @@ public class ScrollList : DisplayView
                 this._drag_delta_x = drag_delta_x;
     
                 A_LoopSystem.RemoveUpdater(this._drag_delta_loop_x);
-                this._drag_delta_loop_x = new LoopFunction(bind(this.RefreshLinearX, this), -1, 1, 0);
+                this._drag_delta_loop_x = new LoopFrame(bind(this.RefreshLinearX, this));
                 A_LoopSystem.AddUpdater(this._drag_delta_loop_x);
             }
         }
@@ -1109,14 +1109,14 @@ public class ScrollList : DisplayView
                 this._drag_delta_y = drag_delta_y;
     
                 A_LoopSystem.RemoveUpdater(this._drag_delta_loop_y);
-                this._drag_delta_loop_y = new LoopFunction(bind(this.RefreshLinearY, this), -1, 1, 0);
+                this._drag_delta_loop_y = new LoopFrame(bind(this.RefreshLinearY, this));
                 A_LoopSystem.AddUpdater(this._drag_delta_loop_y);
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////////
     // 惯性滚动函数
-    protected fun RefreshLinearX()
+    protected fun RefreshLinearX(int frame_time)
     {
         this._scroll_linear.x = this._scroll_linear.x + this._drag_delta_x;
         var linear_width = this._scroll_linear.width;
@@ -1241,7 +1241,7 @@ public class ScrollList : DisplayView
     }
     
     // 惯性滚动函数
-    protected fun RefreshLinearY()
+    protected fun RefreshLinearY(int frame_time)
     {
         this._scroll_linear.y = this._scroll_linear.y + this._drag_delta_y;
         var linear_height = this._scroll_linear.height;
@@ -1395,7 +1395,7 @@ public class ScrollList : DisplayView
         if (this._clip_loop != null && this._clip_loop._user_data == null)
             return;
 
-        this._clip_loop = new LoopFunction(bind(this.RefreshClipDisLineImpl, this, v_move), 1, 0, 1);
+        this._clip_loop = new LoopTimer(bind(this.RefreshClipDisLineImpl, this, v_move), 1);
         this._clip_loop._user_data = v_move;
         A_LoopSystem.AddUpdater(this._clip_loop);
     }

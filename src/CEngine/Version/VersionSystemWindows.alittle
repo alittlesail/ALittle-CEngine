@@ -25,7 +25,7 @@ public class VersionSystemWindows : VersionSystem
         if (install_name == null)
             install_name = File_BaseFilePath() .. this._update_path .. this._install_name;
 
-        var updater = new LoopFunction(bind(VersionSystemWindows.InstallImpl, install_name), 1, 0, 1);
+        var updater = new LoopTimer(bind(VersionSystemWindows.InstallImpl, install_name), 1);
         updater.Start();
     }
 }

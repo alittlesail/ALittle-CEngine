@@ -32,27 +32,12 @@ function ALittle.LoopRit:Ctor(target, property, target_value, total_time, delay_
 	end
 	___rawset(self, "_property", property)
 	___rawset(self, "_init_value", nil)
-	___rawset(self, "_complete_callback", nil)
-end
-
-function ALittle.LoopRit.__getter:complete_callback()
-	return self._complete_callback
-end
-
-function ALittle.LoopRit.__setter:complete_callback(value)
-	self._complete_callback = value
 end
 
 function ALittle.LoopRit:Reset()
 	self._accumulate_time = 0
 	self._accumulate_delay_time = 0
 	self._init_value = nil
-end
-
-function ALittle.LoopRit:Completed()
-	if self._complete_callback ~= nil then
-		self._complete_callback()
-	end
 end
 
 function ALittle.LoopRit:IsCompleted()
@@ -96,7 +81,7 @@ function ALittle.LoopRit:Update(frame_time)
 	if self._accumulate_delay_time < self._total_delay_time then
 		self._accumulate_delay_time = self._accumulate_delay_time + (frame_time)
 		if self._accumulate_delay_time < self._total_delay_time then
-			return
+			return 0
 		end
 		frame_time = self._accumulate_delay_time - self._total_delay_time
 		self._accumulate_delay_time = self._total_delay_time
@@ -105,14 +90,18 @@ function ALittle.LoopRit:Update(frame_time)
 		self._init_value = self._target[self._property]
 	end
 	self._accumulate_time = self._accumulate_time + (frame_time)
-	if self._accumulate_time > self._total_time then
+	if self._accumulate_time >= self._total_time then
+		frame_time = self._accumulate_time - self._total_time
 		self._accumulate_time = self._total_time
+	else
+		frame_time = 0
 	end
 	local current_value = (self._target_value - self._init_value) * ALittle.Math_Sin((self._accumulate_time / self._total_time) * 1.57) + self._init_value
 	self._target[self._property] = current_value
 	if self._func ~= nil then
 		self._func()
 	end
+	return frame_time
 end
 
 end

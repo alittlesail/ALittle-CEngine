@@ -11,7 +11,6 @@ public class LoopRit : LoopObject
     private int _accumulate_delay_time;         // 当前累积的延时时间
     private string _property;                   // 速度
     private Functor<()> _func;                  // 每次动画都会调用这个函数，用于外部逻辑同步，可以不填
-    private Functor<()> _complete_callback;     // 完成后会调用这个函数
     private double _init_value;                 // 起始值
     
     public ctor(DisplayObject target, string property, double target_value, int total_time, int delay_time, [Nullable] Functor<()> func)
@@ -36,17 +35,6 @@ public class LoopRit : LoopObject
     
         this._property = property;
         this._init_value = null;
-        this._complete_callback = null;    // 完成后会调用这个函数
-    }
-
-    public get complete_callback() : Functor<()>
-    {
-        return this._complete_callback;
-    }
-
-    public set complete_callback(Functor<()> value)
-    {
-        this._complete_callback = value;
     }
 
     public fun Reset()
@@ -55,13 +43,7 @@ public class LoopRit : LoopObject
         this._accumulate_delay_time = 0;
         this._init_value = null;
     }
-
-    public fun Completed()
-    {
-        if (this._complete_callback != null)
-            this._complete_callback();
-    }
-
+    
     public fun IsCompleted() : bool
     {
         return this._accumulate_time >= this._total_time;
@@ -70,8 +52,7 @@ public class LoopRit : LoopObject
     // 设置完成
     public fun SetCompleted()
     {
-        if (this._accumulate_time >= this._total_time)
-            return;
+        if (this._accumulate_time >= this._total_time) return;
         this.SetTime(this._total_time + this._total_delay_time);
     }
 
@@ -112,23 +93,32 @@ public class LoopRit : LoopObject
         return time - this._total_time, true;
     }
 
-    protected fun Update(int frame_time)
+    protected fun Update(int frame_time) : int
     {
         if (this._accumulate_delay_time < this._total_delay_time)
         {
             this._accumulate_delay_time += frame_time;
-            if (this._accumulate_delay_time < this._total_delay_time)
-                return;
+            if (this._accumulate_delay_time < this._total_delay_time) return 0;
             frame_time = this._accumulate_delay_time - this._total_delay_time;
             this._accumulate_delay_time = this._total_delay_time;
         }
         if (this._init_value == null)
             this._init_value = cast<Map<string, any>>(this._target)[this._property];
         this._accumulate_time += frame_time;
-        if (this._accumulate_time > this._total_time)
+        if (this._accumulate_time >= this._total_time)
+        {
+            frame_time = this._accumulate_time - this._total_time;
             this._accumulate_time = this._total_time;
+        }
+        else
+        {
+            frame_time = 0;
+        }
+            
         var current_value = (this._target_value - this._init_value) * Math_Sin((this._accumulate_time / this._total_time) * 1.57) + this._init_value;
         cast<Map<string, any>>(this._target)[this._property] = current_value;
         if (this._func != null) this._func();
+
+        return frame_time;
     }
 }

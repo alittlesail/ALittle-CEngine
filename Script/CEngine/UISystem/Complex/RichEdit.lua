@@ -579,7 +579,7 @@ function ALittle.RichEdit:Ctor(ctrl_sys)
 	self:AddEventListener(___all_struct[-439548260], self, self.HandleLongLButtonDown)
 	self:ClearText()
 	if self._loop == nil then
-		___rawset(self, "_loop", ALittle.LoopFunction(Lua.Bind(self.Update, self), -1, 1, 1))
+		___rawset(self, "_loop", ALittle.LoopFrame(Lua.Bind(self.Update, self)))
 	end
 	A_LoopSystem:AddUpdater(self._loop)
 end
@@ -1057,7 +1057,7 @@ function ALittle.RichEdit:GetLineCount()
 	return self._line_count
 end
 
-function ALittle.RichEdit:Update()
+function ALittle.RichEdit:Update(frame_time)
 	if self._cursor.abs_visible then
 		self._current_flash_alpha = self._current_flash_alpha + self._current_flash_dir
 		if (self._current_flash_dir < 0 and self._current_flash_alpha < -0.05) or (self._current_flash_dir > 0 and self._current_flash_alpha > 1.5) then
@@ -2359,7 +2359,7 @@ function ALittle.RichEdit:Draw()
 	if self._draw_loop ~= nil then
 		return
 	end
-	self._draw_loop = ALittle.LoopFunction(Lua.Bind(self.DrawImpl, self), 1, 0, 1)
+	self._draw_loop = ALittle.LoopTimer(Lua.Bind(self.DrawImpl, self), 1)
 	A_LoopSystem:AddUpdater(self._draw_loop)
 end
 

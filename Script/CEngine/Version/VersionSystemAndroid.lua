@@ -117,7 +117,7 @@ function ALittle.VersionSystemAndroid:Install(install_name)
 	os.execute("chmod 777 " .. ALittle.File_BaseFilePath() .. "Update")
 	os.execute("chmod 777 " .. ALittle.File_BaseFilePath() .. "Update/" .. self._module_name)
 	os.execute("chmod 777 " .. ALittle.File_BaseFilePath() .. "Update/" .. self._module_name .. "/" .. self._install_name)
-	local updater = ALittle.LoopFunction(Lua.Bind(ALittle.VersionSystemAndroid.InstallImpl, install_name), 1, 0, 1)
+	local updater = ALittle.LoopTimer(Lua.Bind(ALittle.VersionSystemAndroid.InstallImpl, install_name), 1)
 	updater:Start()
 end
 

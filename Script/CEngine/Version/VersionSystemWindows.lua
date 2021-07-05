@@ -27,7 +27,7 @@ function ALittle.VersionSystemWindows:Install(install_name)
 	if install_name == nil then
 		install_name = ALittle.File_BaseFilePath() .. self._update_path .. self._install_name
 	end
-	local updater = ALittle.LoopFunction(Lua.Bind(ALittle.VersionSystemWindows.InstallImpl, install_name), 1, 0, 1)
+	local updater = ALittle.LoopTimer(Lua.Bind(ALittle.VersionSystemWindows.InstallImpl, install_name), 1)
 	updater:Start()
 end
 

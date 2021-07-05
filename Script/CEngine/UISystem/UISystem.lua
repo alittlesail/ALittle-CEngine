@@ -281,7 +281,7 @@ function ALittle.UISystem:HandleButtonDown(T, x, y, count)
 			long_event.rel_x = self._mfc_rel_x
 			long_event.rel_y = self._mfc_rel_y
 			long_event.is_drag = false
-			self._long_press = ALittle.LoopFunction(Lua.Bind(ALittle.UISystem.DispatchLongButtonEvent, self._mfc, long_event), 1, 500, 1)
+			self._long_press = ALittle.LoopTimer(Lua.Bind(ALittle.UISystem.DispatchLongButtonEvent, self._mfc, long_event), 500)
 			self._long_press:Start()
 		end
 		if self._sfc == nil then

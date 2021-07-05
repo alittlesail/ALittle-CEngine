@@ -39,7 +39,7 @@ public class TextEdit : DisplayObject
     private string _regex;        // 正则表达式
     private int _limit_len;    // 文本长度限制
 
-    private LoopFunction _loop; // 光标动画
+    private LoopObject _loop; // 光标动画
     
     [Language(JavaScript)]
     private bool _move_in;
@@ -143,7 +143,7 @@ public class TextEdit : DisplayObject
     }
 
     // 播放光标闪烁动画
-    protected fun Update()
+    protected fun Update(int frame_time)
     {
         if (this._is_selecting == false)
         {
@@ -399,7 +399,7 @@ public class TextEdit : DisplayObject
     {
         this._show.ShowCursor(true);
         if (this._loop == null)
-            this._loop = new LoopFunction(bind(this.Update, this), -1, 1, 1);
+            this._loop = new LoopFrame(bind(this.Update, this));
         A_LoopSystem.AddUpdater(this._loop);
     
         if (this._editable)

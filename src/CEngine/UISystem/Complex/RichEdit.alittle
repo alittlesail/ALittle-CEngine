@@ -649,9 +649,9 @@ public class RichEdit : DisplayLayout
     private string _regex;
     private int _limit_len;
     
-    private LoopFunction _draw_loop;
+    private LoopObject _draw_loop;
 
-    private LoopFunction _loop; // 光标动画
+    private LoopObject _loop; // 光标动画
     
     public ctor(ControlSystem ctrl_sys)
     {
@@ -791,7 +791,7 @@ public class RichEdit : DisplayLayout
     
         // 添加光标闪烁
         if (this._loop == null)
-            this._loop = new LoopFunction(bind(this.Update, this), -1, 1, 1);
+            this._loop = new LoopFrame(bind(this.Update, this));
         A_LoopSystem.AddUpdater(this._loop);
     }
     
@@ -1379,7 +1379,7 @@ public class RichEdit : DisplayLayout
     }
     
     ////////////////////////////////////////-内部函数，谨慎使用////////////////////////////////////////////
-    protected fun Update()
+    protected fun Update(int frame_time)
     {
         if (this._cursor.abs_visible)
         {
@@ -3156,7 +3156,7 @@ public class RichEdit : DisplayLayout
         if (this._draw_loop != null)
             return;
             
-        this._draw_loop = new LoopFunction(bind(this.DrawImpl, this), 1, 0, 1);
+        this._draw_loop = new LoopTimer(bind(this.DrawImpl, this), 1);
         A_LoopSystem.AddUpdater(this._draw_loop);
     }
     

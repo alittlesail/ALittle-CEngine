@@ -54,7 +54,7 @@ function ALittle.TextEdit:Redraw()
 	self._show:NeedDraw()
 end
 
-function ALittle.TextEdit:Update()
+function ALittle.TextEdit:Update(frame_time)
 	if self._is_selecting == false then
 		self._current_flash_alpha = self._current_flash_alpha + self._current_flash_dir
 		if (self._current_flash_dir < 0 and self._current_flash_alpha < -0.05) or (self._current_flash_dir > 0 and self._current_flash_alpha > 1.5) then
@@ -275,7 +275,7 @@ end
 function ALittle.TextEdit:HandleFocusIn(event)
 	self._show:ShowCursor(true)
 	if self._loop == nil then
-		self._loop = ALittle.LoopFunction(Lua.Bind(self.Update, self), -1, 1, 1)
+		self._loop = ALittle.LoopFrame(Lua.Bind(self.Update, self))
 	end
 	A_LoopSystem:AddUpdater(self._loop)
 	if self._editable then

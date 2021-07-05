@@ -810,7 +810,7 @@ function ALittle.ScrollList:HandleDragEnd(event)
 			end
 			self._drag_delta_x = drag_delta_x
 			A_LoopSystem:RemoveUpdater(self._drag_delta_loop_x)
-			self._drag_delta_loop_x = ALittle.LoopFunction(Lua.Bind(self.RefreshLinearX, self), -1, 1, 0)
+			self._drag_delta_loop_x = ALittle.LoopFrame(Lua.Bind(self.RefreshLinearX, self))
 			A_LoopSystem:AddUpdater(self._drag_delta_loop_x)
 		end
 	else
@@ -861,13 +861,13 @@ function ALittle.ScrollList:HandleDragEnd(event)
 			end
 			self._drag_delta_y = drag_delta_y
 			A_LoopSystem:RemoveUpdater(self._drag_delta_loop_y)
-			self._drag_delta_loop_y = ALittle.LoopFunction(Lua.Bind(self.RefreshLinearY, self), -1, 1, 0)
+			self._drag_delta_loop_y = ALittle.LoopFrame(Lua.Bind(self.RefreshLinearY, self))
 			A_LoopSystem:AddUpdater(self._drag_delta_loop_y)
 		end
 	end
 end
 
-function ALittle.ScrollList:RefreshLinearX()
+function ALittle.ScrollList:RefreshLinearX(frame_time)
 	self._scroll_linear.x = self._scroll_linear.x + self._drag_delta_x
 	local linear_width = self._scroll_linear.width
 	local loop_end = false
@@ -960,7 +960,7 @@ function ALittle.ScrollList:RefreshLinearX()
 	end
 end
 
-function ALittle.ScrollList:RefreshLinearY()
+function ALittle.ScrollList:RefreshLinearY(frame_time)
 	self._scroll_linear.y = self._scroll_linear.y + self._drag_delta_y
 	local linear_height = self._scroll_linear.height
 	local loop_end = false
@@ -1075,7 +1075,7 @@ function ALittle.ScrollList:RefreshClipDisLine(v_move)
 	if self._clip_loop ~= nil and self._clip_loop._user_data == nil then
 		return
 	end
-	self._clip_loop = ALittle.LoopFunction(Lua.Bind(self.RefreshClipDisLineImpl, self, v_move), 1, 0, 1)
+	self._clip_loop = ALittle.LoopTimer(Lua.Bind(self.RefreshClipDisLineImpl, self, v_move), 1)
 	self._clip_loop._user_data = v_move
 	A_LoopSystem:AddUpdater(self._clip_loop)
 end

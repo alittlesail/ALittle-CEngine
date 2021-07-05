@@ -11,7 +11,6 @@ public class LoopLinear : LoopObject
     private int _accumulate_delay_time; // 当前累积的延时时间
     private string _property;           // 属性
     private Functor<()> _func;                  // 每次动画都会调用这个函数，用于外部逻辑同步，可以不填
-    private Functor<()> _complete_callback;     // 完成后会调用这个函数
     private double _speed;              // 速度
     private double _init_value;         // 起始值
 
@@ -38,16 +37,6 @@ public class LoopLinear : LoopObject
         this._complete_callback = null;    // 完成后会调用这个函数
         this._speed = null;
         this._init_value = null;
-    }
-
-    public get complete_callback() : Functor<()>
-    {
-        return this._complete_callback;
-    }
-
-    public set complete_callback(Functor<()> value)
-    {
-        this._complete_callback = value;
     }
 
     public get speed() : double
@@ -113,12 +102,6 @@ public class LoopLinear : LoopObject
         return this._accumulate_time >= this._total_time;
     }
 
-    public fun Completed()
-    {
-        if (this._complete_callback != null)
-            this._complete_callback();
-    }
-
     // 设置为完成
     public fun SetCompleted()
     {
@@ -127,13 +110,12 @@ public class LoopLinear : LoopObject
     }
 
     // 更新
-    protected fun Update(int frame_time)
+    protected fun Update(int frame_time) : int
     {
         if (this._accumulate_delay_time < this._total_delay_time)
         {
             this._accumulate_delay_time += frame_time;
-            if (this._accumulate_delay_time < this._total_delay_time)
-                return;
+            if (this._accumulate_delay_time < this._total_delay_time) return 0;
             frame_time = this._accumulate_delay_time - this._total_delay_time;
             this._accumulate_delay_time = this._total_delay_time;
         }
@@ -141,11 +123,20 @@ public class LoopLinear : LoopObject
             this._init_value = cast<Map<string, any>>(this._target)[this._property];
 
         this._accumulate_time += frame_time;
-        if (this._accumulate_time > this._total_time)
+        if (this._accumulate_time >= this._total_time)
+        {
+            frame_time = this._accumulate_time - this._total_time;
             this._accumulate_time = this._total_time;
-
+        }
+        else
+        {
+            frame_time = 0;
+        }
+            
         var current_value = (this._accumulate_time * this._target_value + (this._total_time - this._accumulate_time) * this._init_value) / this._total_time;
         cast<Map<string, any>>(this._target)[this._property] = current_value;
         if (this._func != null) this._func();
+
+        return frame_time;
     }
 }
