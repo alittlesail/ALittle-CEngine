@@ -14,22 +14,10 @@ ALittle.LoopAttribute = JavaScript.Class(ALittle.LoopObject, {
 		this._total_delay_time = delay_time;
 		this._accumulate_count = 0;
 		this._accumulate_delay_time = 0;
-		this._complete_callback = undefined;
-	},
-	get complete_callback() {
-		return this._complete_callback;
-	},
-	set complete_callback(value) {
-		this._complete_callback = value;
 	},
 	Reset : function() {
 		this._accumulate_count = 0;
 		this._accumulate_delay_time = 0;
-	},
-	Completed : function() {
-		if (this._complete_callback !== undefined) {
-			this._complete_callback();
-		}
 	},
 	IsCompleted : function() {
 		return this._accumulate_count >= 1;
@@ -61,15 +49,17 @@ ALittle.LoopAttribute = JavaScript.Class(ALittle.LoopObject, {
 		if (this._accumulate_delay_time < this._total_delay_time) {
 			this._accumulate_delay_time = this._accumulate_delay_time + (frame_time);
 			if (this._accumulate_delay_time < this._total_delay_time) {
-				return;
+				return 0;
 			}
+			frame_time = this._accumulate_delay_time - this._total_delay_time;
 			this._accumulate_delay_time = this._total_delay_time;
 		}
 		if (this._accumulate_count >= 1) {
-			return;
+			return frame_time;
 		}
 		this._accumulate_count = 1;
 		this._target[this._property] = this._target_value;
+		return frame_time;
 	},
 }, "ALittle.LoopAttribute");
 

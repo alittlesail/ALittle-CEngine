@@ -89,7 +89,7 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 	get default_text_alpha() {
 		return this._default_text_alpha;
 	},
-	Update : function() {
+	Update : function(frame_time) {
 		if (this._is_selecting === false) {
 			this._current_flash_alpha = this._current_flash_alpha + this._current_flash_dir;
 			if ((this._current_flash_dir < 0 && this._current_flash_alpha < -0.05) || (this._current_flash_dir > 0 && this._current_flash_alpha > 1.5)) {
@@ -235,9 +235,9 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 	HandleFocusIn : function(event) {
 		this._show.ShowCursor(true);
 		if (this._loop === undefined) {
-			this._loop = ALittle.NewObject(ALittle.LoopFunction, this.Update.bind(this), -1, 1, 1);
+			this._loop = ALittle.NewObject(ALittle.LoopFrame, this.Update.bind(this));
 		}
-		A_LoopSystem.AddUpdater(this._loop);
+		this._loop.Start();
 		if (this._editable) {
 			let [global_x, global_y] = this.LocalToGlobal();
 			ALittle.System_SetIMERect(__floor(global_x), __floor(global_y), __floor(this._width * this.scale_x), __floor(this._height * this.scale_y) + this._ims_padding);
@@ -254,7 +254,10 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 		this._show.SetDisabled(!this._move_in);
 		this._is_selecting = false;
 		this._show.ShowCursor(false);
-		A_LoopSystem.RemoveUpdater(this._loop);
+		if (this._loop !== undefined) {
+			this._loop.Stop();
+			this._loop = undefined;
+		}
 		ALittle.System_CloseIME();
 		if (this.text === "") {
 			if (this._default_text === undefined) {

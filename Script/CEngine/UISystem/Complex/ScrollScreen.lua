@@ -831,7 +831,7 @@ function ALittle.ScrollScreen:HandleDragEnd(event)
 	self._drag_delta_y = 0
 end
 
-function ALittle.ScrollScreen:RefreshClipDisLineImpl(h_move, v_move, frame_time)
+function ALittle.ScrollScreen:RefreshClipDisLineImpl(h_move, v_move)
 	self._scroll_content:ClipRect(0, 0, self._width, self._height, h_move, v_move)
 	if self._static_object_v ~= nil then
 		self._static_object_v:ClipRect(0, 0, self._width, self._height, h_move, v_move)
@@ -846,7 +846,11 @@ function ALittle.ScrollScreen:RefreshClipDisLine(h_move, v_move)
 	if self._clip_loop ~= nil and self._clip_loop._user_data == nil then
 		return
 	end
-	self._clip_loop = ALittle.LoopFrame(Lua.Bind(self.RefreshClipDisLineImpl, self, h_move, v_move))
+	if self._clip_loop ~= nil then
+		self._clip_loop:Stop()
+		self._clip_loop = nil
+	end
+	self._clip_loop = ALittle.LoopTimer(Lua.Bind(self.RefreshClipDisLineImpl, self, h_move, v_move), 1)
 	self._clip_loop._user_data = v_move
 	A_LoopSystem:AddUpdater(self._clip_loop)
 end

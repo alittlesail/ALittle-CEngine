@@ -709,7 +709,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 			}
 			A_LoopSystem.RemoveUpdater(this._x_type_dispatch);
 			if (event_dispatch !== undefined) {
-				this._x_type_dispatch = ALittle.NewObject(ALittle.LoopFunction, event_dispatch, 1, 0, 300);
+				this._x_type_dispatch = ALittle.NewObject(ALittle.LoopTimer, event_dispatch, 300);
 				A_LoopSystem.AddUpdater(this._x_type_dispatch);
 			}
 			if (this._open_extends_drag === false) {
@@ -769,7 +769,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 			}
 			A_LoopSystem.RemoveUpdater(this._y_type_dispatch);
 			if (event_dispatch !== undefined) {
-				this._y_type_dispatch = ALittle.NewObject(ALittle.LoopFunction, event_dispatch, 1, 0, 300);
+				this._y_type_dispatch = ALittle.NewObject(ALittle.LoopTimer, event_dispatch, 300);
 				A_LoopSystem.AddUpdater(this._y_type_dispatch);
 			}
 			if (this._open_extends_drag === false) {
@@ -800,7 +800,11 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		if (this._clip_loop !== undefined && this._clip_loop._user_data === undefined) {
 			return;
 		}
-		this._clip_loop = ALittle.NewObject(ALittle.LoopFunction, this.RefreshClipDisLineImpl.bind(this, h_move, v_move), 1, 0, 1);
+		if (this._clip_loop !== undefined) {
+			this._clip_loop.Stop();
+			this._clip_loop = undefined;
+		}
+		this._clip_loop = ALittle.NewObject(ALittle.LoopTimer, this.RefreshClipDisLineImpl.bind(this, h_move, v_move), 1);
 		this._clip_loop._user_data = v_move;
 		A_LoopSystem.AddUpdater(this._clip_loop);
 	},

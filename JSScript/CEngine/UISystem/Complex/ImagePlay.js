@@ -60,7 +60,8 @@ ALittle.ImagePlay = JavaScript.Class(ALittle.DisplayLayout, {
 			v.visible = false;
 		}
 		this.PlayUpdate();
-		this._play_loop = ALittle.NewObject(ALittle.LoopFunction, this.PlayUpdate.bind(this), -1, this._interval, 0);
+		let loop = ALittle.NewObject(ALittle.LoopTimer, this.PlayUpdate.bind(this), this._interval);
+		this._play_loop = ALittle.NewObject(ALittle.LoopRepeat, loop, -1);
 		A_WeakLoopSystem.AddUpdater(this._play_loop);
 	},
 	Stop : function() {

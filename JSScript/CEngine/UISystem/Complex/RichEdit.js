@@ -578,7 +578,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this.AddEventListener(___all_struct.get(-439548260), this, this.HandleLongLButtonDown);
 		this.ClearText();
 		if (this._loop === undefined) {
-			this._loop = ALittle.NewObject(ALittle.LoopFunction, this.Update.bind(this), -1, 1, 1);
+			this._loop = ALittle.NewObject(ALittle.LoopFrame, this.Update.bind(this));
 		}
 		A_LoopSystem.AddUpdater(this._loop);
 	},
@@ -987,7 +987,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 	GetLineCount : function() {
 		return this._line_count;
 	},
-	Update : function() {
+	Update : function(frame_time) {
 		if (this._cursor.abs_visible) {
 			this._current_flash_alpha = this._current_flash_alpha + this._current_flash_dir;
 			if ((this._current_flash_dir < 0 && this._current_flash_alpha < -0.05) || (this._current_flash_dir > 0 && this._current_flash_alpha > 1.5)) {
@@ -2284,7 +2284,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		if (this._draw_loop !== undefined) {
 			return;
 		}
-		this._draw_loop = ALittle.NewObject(ALittle.LoopFunction, this.DrawImpl.bind(this), 1, 0, 1);
+		this._draw_loop = ALittle.NewObject(ALittle.LoopTimer, this.DrawImpl.bind(this), 1);
 		A_LoopSystem.AddUpdater(this._draw_loop);
 	},
 	CursorOffsetLR : function(left) {

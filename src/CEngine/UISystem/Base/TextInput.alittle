@@ -370,7 +370,7 @@ public class TextInput : DisplayObject
         this._show.ShowCursor(true);
         if (this._loop == null)
             this._loop = new LoopFrame(bind(this.Update, this));
-        A_LoopSystem.AddUpdater(this._loop);
+        this._loop.Start();
     
         if (this._editable)
         {
@@ -402,7 +402,11 @@ public class TextInput : DisplayObject
 
         this._is_selecting = false;
         this._show.ShowCursor(false);
-        A_LoopSystem.RemoveUpdater(this._loop);
+        if (this._loop != null)
+        {
+            this._loop.Stop();
+            this._loop = null;
+        }
     
         System_CloseIME();
     

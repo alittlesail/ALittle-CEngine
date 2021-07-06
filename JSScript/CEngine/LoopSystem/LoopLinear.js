@@ -28,12 +28,6 @@ ALittle.LoopLinear = JavaScript.Class(ALittle.LoopObject, {
 		this._speed = undefined;
 		this._init_value = undefined;
 	},
-	get complete_callback() {
-		return this._complete_callback;
-	},
-	set complete_callback(value) {
-		this._complete_callback = value;
-	},
 	get speed() {
 		if (this._speed !== undefined) {
 			return this._speed;
@@ -80,11 +74,6 @@ ALittle.LoopLinear = JavaScript.Class(ALittle.LoopObject, {
 	IsCompleted : function() {
 		return this._accumulate_time >= this._total_time;
 	},
-	Completed : function() {
-		if (this._complete_callback !== undefined) {
-			this._complete_callback();
-		}
-	},
 	SetCompleted : function() {
 		if (this._accumulate_time >= this._total_time) {
 			return;
@@ -95,7 +84,7 @@ ALittle.LoopLinear = JavaScript.Class(ALittle.LoopObject, {
 		if (this._accumulate_delay_time < this._total_delay_time) {
 			this._accumulate_delay_time = this._accumulate_delay_time + (frame_time);
 			if (this._accumulate_delay_time < this._total_delay_time) {
-				return;
+				return 0;
 			}
 			frame_time = this._accumulate_delay_time - this._total_delay_time;
 			this._accumulate_delay_time = this._total_delay_time;
@@ -104,14 +93,18 @@ ALittle.LoopLinear = JavaScript.Class(ALittle.LoopObject, {
 			this._init_value = this._target[this._property];
 		}
 		this._accumulate_time = this._accumulate_time + (frame_time);
-		if (this._accumulate_time > this._total_time) {
+		if (this._accumulate_time >= this._total_time) {
+			frame_time = this._accumulate_time - this._total_time;
 			this._accumulate_time = this._total_time;
+		} else {
+			frame_time = 0;
 		}
 		let current_value = (this._accumulate_time * this._target_value + (this._total_time - this._accumulate_time) * this._init_value) / this._total_time;
 		this._target[this._property] = current_value;
 		if (this._func !== undefined) {
 			this._func();
 		}
+		return frame_time;
 	},
 }, "ALittle.LoopLinear");
 

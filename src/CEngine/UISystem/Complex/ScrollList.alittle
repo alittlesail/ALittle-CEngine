@@ -299,7 +299,7 @@ public class ScrollList : DisplayView
                 A_LoopSystem.RemoveUpdater(this._drag_loop_x);
                 var time = (target_x - this._scroll_linear.x) / speed;
                 this._drag_loop_x = new LoopLinear(this._scroll_linear, "x", target_x, __floor(time), 0, func);
-                A_LoopSystem.AddUpdater(this._drag_loop_x);
+                this._drag_loop_x.Start();
             }
             else
             {
@@ -309,7 +309,7 @@ public class ScrollList : DisplayView
                     var func = bind(ScrollList.RefreshClipDisLine, this, null);
                     A_LoopSystem.RemoveUpdater(this._drag_loop_x);
                     this._drag_loop_x = new LoopLinear(this._scroll_linear, "x", target_x, 200, 0, func);
-                    A_LoopSystem.AddUpdater(this._drag_loop_x);
+                    this._drag_loop_x.Start();
                 }
                 else
                 {

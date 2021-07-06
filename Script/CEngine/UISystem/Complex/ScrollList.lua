@@ -220,13 +220,13 @@ function ALittle.ScrollList:RefreshChild(loop)
 			A_LoopSystem:RemoveUpdater(self._drag_loop_x)
 			local time = (target_x - self._scroll_linear.x) / speed
 			self._drag_loop_x = ALittle.LoopLinear(self._scroll_linear, "x", target_x, __floor(time), 0, func)
-			A_LoopSystem:AddUpdater(self._drag_loop_x)
+			self._drag_loop_x:Start()
 		else
 			if loop then
 				local func = Lua.Bind(ALittle.ScrollList.RefreshClipDisLine, self, nil)
 				A_LoopSystem:RemoveUpdater(self._drag_loop_x)
 				self._drag_loop_x = ALittle.LoopLinear(self._scroll_linear, "x", target_x, 200, 0, func)
-				A_LoopSystem:AddUpdater(self._drag_loop_x)
+				self._drag_loop_x:Start()
 			else
 				self._scroll_linear.x = target_x
 			end

@@ -25,23 +25,11 @@ ALittle.LoopRit = JavaScript.Class(ALittle.LoopObject, {
 		}
 		this._property = property;
 		this._init_value = undefined;
-		this._complete_callback = undefined;
-	},
-	get complete_callback() {
-		return this._complete_callback;
-	},
-	set complete_callback(value) {
-		this._complete_callback = value;
 	},
 	Reset : function() {
 		this._accumulate_time = 0;
 		this._accumulate_delay_time = 0;
 		this._init_value = undefined;
-	},
-	Completed : function() {
-		if (this._complete_callback !== undefined) {
-			this._complete_callback();
-		}
 	},
 	IsCompleted : function() {
 		return this._accumulate_time >= this._total_time;
@@ -81,7 +69,7 @@ ALittle.LoopRit = JavaScript.Class(ALittle.LoopObject, {
 		if (this._accumulate_delay_time < this._total_delay_time) {
 			this._accumulate_delay_time = this._accumulate_delay_time + (frame_time);
 			if (this._accumulate_delay_time < this._total_delay_time) {
-				return;
+				return 0;
 			}
 			frame_time = this._accumulate_delay_time - this._total_delay_time;
 			this._accumulate_delay_time = this._total_delay_time;
@@ -90,14 +78,18 @@ ALittle.LoopRit = JavaScript.Class(ALittle.LoopObject, {
 			this._init_value = this._target[this._property];
 		}
 		this._accumulate_time = this._accumulate_time + (frame_time);
-		if (this._accumulate_time > this._total_time) {
+		if (this._accumulate_time >= this._total_time) {
+			frame_time = this._accumulate_time - this._total_time;
 			this._accumulate_time = this._total_time;
+		} else {
+			frame_time = 0;
 		}
 		let current_value = (this._target_value - this._init_value) * ALittle.Math_Sin((this._accumulate_time / this._total_time) * 1.57) + this._init_value;
 		this._target[this._property] = current_value;
 		if (this._func !== undefined) {
 			this._func();
 		}
+		return frame_time;
 	},
 }, "ALittle.LoopRit");
 

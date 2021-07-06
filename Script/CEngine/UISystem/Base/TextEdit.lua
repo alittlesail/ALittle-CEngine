@@ -277,7 +277,7 @@ function ALittle.TextEdit:HandleFocusIn(event)
 	if self._loop == nil then
 		self._loop = ALittle.LoopFrame(Lua.Bind(self.Update, self))
 	end
-	A_LoopSystem:AddUpdater(self._loop)
+	self._loop:Start()
 	if self._editable then
 		local global_x, global_y = self:LocalToGlobal()
 		global_x = global_x + (self.cursor_x)
@@ -293,7 +293,10 @@ end
 function ALittle.TextEdit:HandleFocusOut(event)
 	self._is_selecting = false
 	self._show:ShowCursor(false)
-	A_LoopSystem:RemoveUpdater(self._loop)
+	if self._loop ~= nil then
+		self._loop:Stop()
+		self._loop = nil
+	end
 	ALittle.System_CloseIME()
 	if self.text == "" then
 		if self._default_text == nil then

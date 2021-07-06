@@ -72,7 +72,8 @@ ALittle.FramePlay = JavaScript.Class(ALittle.DisplayLayout, {
 		this._play_loop_index = 0;
 		this.HideAllChild();
 		this.PlayUpdate();
-		this._play_loop = ALittle.NewObject(ALittle.LoopFunction, this.PlayUpdateLoop.bind(this), -1, this._interval, 0);
+		let loop = ALittle.NewObject(ALittle.LoopTimer, this.PlayUpdateLoop.bind(this), this._interval);
+		this._play_loop = ALittle.NewObject(ALittle.LoopRepeat, loop, -1);
 		A_WeakLoopSystem.AddUpdater(this._play_loop);
 	},
 	Stop : function() {

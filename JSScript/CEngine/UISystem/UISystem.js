@@ -251,7 +251,7 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 				long_event.rel_x = this._mfc_rel_x;
 				long_event.rel_y = this._mfc_rel_y;
 				long_event.is_drag = false;
-				this._long_press = ALittle.NewObject(ALittle.LoopFunction, ALittle.UISystem.DispatchLongButtonEvent.bind(undefined, this._mfc, long_event), 1, 500, 1);
+				this._long_press = ALittle.NewObject(ALittle.LoopTimer, ALittle.UISystem.DispatchLongButtonEvent.bind(undefined, this._mfc, long_event), 500);
 				this._long_press.Start();
 			}
 			if (this._sfc === undefined) {

@@ -198,13 +198,13 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 				A_LoopSystem.RemoveUpdater(this._drag_loop_x);
 				let time = (target_x - this._scroll_linear.x) / speed;
 				this._drag_loop_x = ALittle.NewObject(ALittle.LoopLinear, this._scroll_linear, "x", target_x, __floor(time), 0, func);
-				A_LoopSystem.AddUpdater(this._drag_loop_x);
+				this._drag_loop_x.Start();
 			} else {
 				if (loop) {
 					let func = ALittle.ScrollList.RefreshClipDisLine.bind(this, undefined);
 					A_LoopSystem.RemoveUpdater(this._drag_loop_x);
 					this._drag_loop_x = ALittle.NewObject(ALittle.LoopLinear, this._scroll_linear, "x", target_x, 200, 0, func);
-					A_LoopSystem.AddUpdater(this._drag_loop_x);
+					this._drag_loop_x.Start();
 				} else {
 					this._scroll_linear.x = target_x;
 				}
@@ -758,7 +758,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 				}
 				this._drag_delta_x = drag_delta_x;
 				A_LoopSystem.RemoveUpdater(this._drag_delta_loop_x);
-				this._drag_delta_loop_x = ALittle.NewObject(ALittle.LoopFunction, this.RefreshLinearX.bind(this), -1, 1, 0);
+				this._drag_delta_loop_x = ALittle.NewObject(ALittle.LoopFrame, this.RefreshLinearX.bind(this));
 				A_LoopSystem.AddUpdater(this._drag_delta_loop_x);
 			}
 		} else {
@@ -809,12 +809,12 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 				}
 				this._drag_delta_y = drag_delta_y;
 				A_LoopSystem.RemoveUpdater(this._drag_delta_loop_y);
-				this._drag_delta_loop_y = ALittle.NewObject(ALittle.LoopFunction, this.RefreshLinearY.bind(this), -1, 1, 0);
+				this._drag_delta_loop_y = ALittle.NewObject(ALittle.LoopFrame, this.RefreshLinearY.bind(this));
 				A_LoopSystem.AddUpdater(this._drag_delta_loop_y);
 			}
 		}
 	},
-	RefreshLinearX : function() {
+	RefreshLinearX : function(frame_time) {
 		this._scroll_linear.x = this._scroll_linear.x + this._drag_delta_x;
 		let linear_width = this._scroll_linear.width;
 		let loop_end = false;
@@ -906,7 +906,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 			this.HideRightScrollBar();
 		}
 	},
-	RefreshLinearY : function() {
+	RefreshLinearY : function(frame_time) {
 		this._scroll_linear.y = this._scroll_linear.y + this._drag_delta_y;
 		let linear_height = this._scroll_linear.height;
 		let loop_end = false;
@@ -1017,7 +1017,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		if (this._clip_loop !== undefined && this._clip_loop._user_data === undefined) {
 			return;
 		}
-		this._clip_loop = ALittle.NewObject(ALittle.LoopFunction, this.RefreshClipDisLineImpl.bind(this, v_move), 1, 0, 1);
+		this._clip_loop = ALittle.NewObject(ALittle.LoopTimer, this.RefreshClipDisLineImpl.bind(this, v_move), 1);
 		this._clip_loop._user_data = v_move;
 		A_LoopSystem.AddUpdater(this._clip_loop);
 	},
