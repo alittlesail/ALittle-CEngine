@@ -580,7 +580,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		if (this._loop === undefined) {
 			this._loop = ALittle.NewObject(ALittle.LoopFrame, this.Update.bind(this));
 		}
-		A_LoopSystem.AddUpdater(this._loop);
+		A_WeakLoopSystem.AddUpdater(this._loop);
 	},
 	GetCursor : function() {
 		return this._cursor;

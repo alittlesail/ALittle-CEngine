@@ -400,7 +400,7 @@ public class TextEdit : DisplayObject
         this._show.ShowCursor(true);
         if (this._loop == null)
             this._loop = new LoopFrame(bind(this.Update, this));
-        this._loop.Start();
+        A_WeakLoopSystem.AddUpdater(this._loop);
     
         if (this._editable)
         {
@@ -434,7 +434,7 @@ public class TextEdit : DisplayObject
         this._show.ShowCursor(false);
         if (this._loop != null)
         {
-            this._loop.Stop();
+            A_WeakLoopSystem.RemoveUpdater(this._loop);
             this._loop = null;
         }
         System_CloseIME();

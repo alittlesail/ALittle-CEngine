@@ -792,7 +792,7 @@ public class RichEdit : DisplayLayout
         // 添加光标闪烁
         if (this._loop == null)
             this._loop = new LoopFrame(bind(this.Update, this));
-        A_LoopSystem.AddUpdater(this._loop);
+        A_WeakLoopSystem.AddUpdater(this._loop);
     }
     
     // 获取光标的位置
