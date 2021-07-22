@@ -462,7 +462,7 @@ function ALittle.RichInput:Ctor(ctrl_sys)
 	if self._loop == nil then
 		___rawset(self, "_loop", ALittle.LoopFrame(Lua.Bind(self.Update, self)))
 	end
-	A_LoopSystem:AddUpdater(self._loop)
+	A_WeakLoopSystem:AddUpdater(self._loop)
 end
 
 function ALittle.RichInput:GetCursor()

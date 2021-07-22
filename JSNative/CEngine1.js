@@ -6825,7 +6825,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 		if (this._loop === undefined) {
 			this._loop = ALittle.NewObject(ALittle.LoopFrame, this.Update.bind(this));
 		}
-		this._loop.Start();
+		A_WeakLoopSystem.AddUpdater(this._loop);
 		if (this._editable) {
 			let [global_x, global_y] = this.LocalToGlobal();
 			global_x = global_x + (this.cursor_x);
@@ -6845,7 +6845,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 		this._is_selecting = false;
 		this._show.ShowCursor(false);
 		if (this._loop !== undefined) {
-			this._loop.Stop();
+			A_WeakLoopSystem.RemoveUpdater(this._loop);
 			this._loop = undefined;
 		}
 		ALittle.System_CloseIME();
@@ -7394,7 +7394,7 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 		if (this._loop === undefined) {
 			this._loop = ALittle.NewObject(ALittle.LoopFrame, this.Update.bind(this));
 		}
-		this._loop.Start();
+		A_WeakLoopSystem.AddUpdater(this._loop);
 		if (this._editable) {
 			let [global_x, global_y] = this.LocalToGlobal();
 			ALittle.System_SetIMERect(__floor(global_x), __floor(global_y), __floor(this._width * this.scale_x), __floor(this._height * this.scale_y) + this._ims_padding);
@@ -7412,7 +7412,7 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 		this._is_selecting = false;
 		this._show.ShowCursor(false);
 		if (this._loop !== undefined) {
-			this._loop.Stop();
+			A_WeakLoopSystem.RemoveUpdater(this._loop);
 			this._loop = undefined;
 		}
 		ALittle.System_CloseIME();

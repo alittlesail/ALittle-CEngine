@@ -259,7 +259,7 @@ function ALittle.TextInput:HandleFocusIn(event)
 	if self._loop == nil then
 		self._loop = ALittle.LoopFrame(Lua.Bind(self.Update, self))
 	end
-	self._loop:Start()
+	A_WeakLoopSystem:AddUpdater(self._loop)
 	if self._editable then
 		local global_x, global_y = self:LocalToGlobal()
 		ALittle.System_SetIMERect(__floor(global_x), __floor(global_y), __floor(self._width * self.scale_x), __floor(self._height * self.scale_y) + self._ims_padding)
@@ -274,7 +274,7 @@ function ALittle.TextInput:HandleFocusOut(event)
 	self._is_selecting = false
 	self._show:ShowCursor(false)
 	if self._loop ~= nil then
-		self._loop:Stop()
+		A_WeakLoopSystem:RemoveUpdater(self._loop)
 		self._loop = nil
 	end
 	ALittle.System_CloseIME()
