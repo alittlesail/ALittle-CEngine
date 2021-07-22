@@ -8,6 +8,7 @@ public class __CPPAPIHttpInterface : ALittle.IHttpSenderNative
     public fun Start() {}
     public fun Stop() {}
     public fun GetStatus() : string {}
+    public fun GetHead() : string {}
     public fun GetResponse() : string {}
     public fun GetURL() : string {}
 }
