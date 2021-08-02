@@ -279,32 +279,16 @@ public static File_WriteJsonToFile(any content, string file_path) : bool
 // day_count_before 表示删除几天前的日志
 public static DeleteLog(int day_count_before)
 {
-    [Language(Lua)]
+    if (day_count_before <= 0) return;
+
+    var log_path = File_ExternalFilePath() .. "Log";
+    if (File_GetFileAttr(log_path) == null) return;
+
+    var cut_time = ALittle.Time_GetCurTime() - day_count_before * 3600 * 24;
+    var file_map = ALittle.File_GetFileAttrByDir(log_path);
+    for (var path, attr in file_map)
     {
-        if (day_count_before <= 0)
-            return;
-    
-        var log_path = File_ExternalFilePath() .. "Log";
-        if (File_GetFileAttr(log_path) == null)
-            return;
-    
-        var time_table = cast<lua.dateinfo>(lua.os.date("*t"));
-        time_table.day = time_table.day - day_count_before;
-        var time_string = lua.os.date("%Y-%m-%d", lua.os.time(time_table))..".log";
-    
-        var file_list = carp.GetFileNameListInFolder(log_path);
-        var delete_list = new List<string>();
-        var delete_count = 0;
-        for (var index, file in file_list)
-        {
-            if (file <= time_string)
-            {
-                ++ delete_count;
-                delete_list[delete_count] = file;
-            }
-        }
-        
-        for (var k, v in delete_list)
-            File_DeleteFile(File_ExternalFilePath() .. "Log/" .. v);
+        if (attr.create_time <= cut_time)
+            File_DeleteFile(path);
     }
 }

@@ -154,28 +154,18 @@ function ALittle.File_WriteJsonToFile(content, file_path)
 end
 
 function ALittle.DeleteLog(day_count_before)
-	do
-		if day_count_before <= 0 then
-			return
-		end
-		local log_path = ALittle.File_ExternalFilePath() .. "Log"
-		if ALittle.File_GetFileAttr(log_path) == nil then
-			return
-		end
-		local time_table = os.date("*t")
-		time_table.day = time_table.day - day_count_before
-		local time_string = os.date("%Y-%m-%d", os.time(time_table)) .. ".log"
-		local file_list = carp.GetFileNameListInFolder(log_path)
-		local delete_list = {}
-		local delete_count = 0
-		for index, file in ___ipairs(file_list) do
-			if file <= time_string then
-				delete_count = delete_count + 1
-				delete_list[delete_count] = file
-			end
-		end
-		for k, v in ___ipairs(delete_list) do
-			ALittle.File_DeleteFile(ALittle.File_ExternalFilePath() .. "Log/" .. v)
+	if day_count_before <= 0 then
+		return
+	end
+	local log_path = ALittle.File_ExternalFilePath() .. "Log"
+	if ALittle.File_GetFileAttr(log_path) == nil then
+		return
+	end
+	local cut_time = ALittle.Time_GetCurTime() - day_count_before * 3600 * 24
+	local file_map = ALittle.File_GetFileAttrByDir(log_path)
+	for path, attr in ___pairs(file_map) do
+		if attr.create_time <= cut_time then
+			ALittle.File_DeleteFile(path)
 		end
 	end
 end
