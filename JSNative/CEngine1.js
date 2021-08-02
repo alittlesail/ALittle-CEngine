@@ -2257,6 +2257,23 @@ ALittle.File_WriteJsonToFile = function(content, file_path) {
 }
 
 ALittle.DeleteLog = function(day_count_before) {
+	if (day_count_before <= 0) {
+		return;
+	}
+	let log_path = ALittle.File_ExternalFilePath() + "Log";
+	if (ALittle.File_GetFileAttr(log_path) === undefined) {
+		return;
+	}
+	let cut_time = ALittle.Time_GetCurTime() - day_count_before * 3600 * 24;
+	let file_map = ALittle.File_GetFileAttrByDir(log_path);
+	let ___OBJECT_1 = file_map;
+	for (let path in ___OBJECT_1) {
+		let attr = ___OBJECT_1[path];
+		if (attr === undefined) continue;
+		if (attr.create_time <= cut_time) {
+			ALittle.File_DeleteFile(path);
+		}
+	}
 }
 
 }
