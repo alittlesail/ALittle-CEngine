@@ -9,12 +9,6 @@ public class VersionSystemIOS : VersionSystem
         this._install_name = "Install.ipa";
     }
 
-    // IOS的版本刷新和Android是一样的
-    public static RefreshVersion()
-    {
-        VersionSystemAndroid.RefreshVersion();
-    }
-
     public fun Install([Nullable] string install_name)
     {
         // 跳出AppStore，提示用户下载重新安装

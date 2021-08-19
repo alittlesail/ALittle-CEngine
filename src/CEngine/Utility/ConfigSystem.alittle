@@ -9,7 +9,7 @@ public class LuaClientFileLoader : IFileLoader
     {
         var file = new carp.CarpLocalFile();
         file.SetPath(file_path);
-        if (!file.Load(false)) return null;
+        if (!file.Load()) return null;
         var content = file.GetContent();
         file.Clear();
         return content;

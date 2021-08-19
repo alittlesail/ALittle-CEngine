@@ -2,7 +2,7 @@
 register namespace carp;
 
 public static FileMd5(string file_path) : string {}
-public static CopyFile(string src_path, string dst_path, bool only_assets) : bool {}
+public static CopyFile(string src_path, string dst_path) : bool {}
 
 // size <= 0 表示全部保存
 public static SaveFile(string target_path, string content, int size) : bool {}
@@ -13,7 +13,7 @@ public static ExternalFilePath() : string {}
 public class CarpLocalFile
 {
     public fun SetPath(string path) {}
-    public fun Load(bool only_assets) : bool {}
+    public fun Load() : bool {}
     public fun Clear() {}
     public fun Decrypt(string key) {}
     public fun Encrypt(string key) {}

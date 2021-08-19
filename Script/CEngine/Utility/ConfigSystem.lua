@@ -13,7 +13,7 @@ ALittle.LuaClientFileLoader = Lua.Class(ALittle.IFileLoader, "ALittle.LuaClientF
 function ALittle.LuaClientFileLoader:Load(file_path)
 	local file = carp.CarpLocalFile()
 	file:SetPath(file_path)
-	if not file:Load(false) then
+	if not file:Load() then
 		return nil
 	end
 	local content = file:GetContent()

@@ -15,12 +15,9 @@ function ALittle.VersionSystemWindows:Ctor(account_name, module_name)
 	___rawset(self, "_install_name", "Install.exe")
 end
 
-function ALittle.VersionSystemWindows.RefreshVersion()
-end
-
 function ALittle.VersionSystemWindows.InstallImpl(install_name)
 	ALittle.System_InstallProgram(install_name .. " /silent /norestart")
-	ALittle.System_ForceExit()
+	ALittle.System_Exit()
 end
 
 function ALittle.VersionSystemWindows:Install(install_name)

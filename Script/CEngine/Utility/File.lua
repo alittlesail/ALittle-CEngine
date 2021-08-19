@@ -21,7 +21,7 @@ function ALittle.LocalFile:Load(path)
 	do
 		local file = carp.CarpLocalFile()
 		file:SetPath(path)
-		if not file:Load(false) then
+		if not file:Load() then
 			return false
 		end
 		self._lua_file = file
@@ -77,10 +77,6 @@ function ALittle.File_ExternalFilePath()
 	return carp.ExternalFilePath()
 end
 
-function ALittle.File_CopyFileFromAsset(src_path, dst_path)
-	return carp.CopyFile(src_path, dst_path, true)
-end
-
 function ALittle.File_SaveFile(target_path, content, size)
 	return carp.SaveFile(target_path, content, size)
 end
@@ -93,7 +89,7 @@ function ALittle.File_ReadTextFromFile(file_path, crypt_mode)
 	do
 		local file = carp.CarpLocalFile()
 		file:SetPath(file_path)
-		if file:Load(false) == false then
+		if file:Load() == false then
 			return nil
 		end
 		if crypt_mode then
@@ -113,28 +109,8 @@ function ALittle.File_ReadJsonFromFile(file_path, crypt_mode)
 	do
 		local file = carp.CarpLocalFile()
 		file:SetPath(file_path)
-		if file:Load(false) == false then
+		if file:Load() == false then
 			return nil, file_path .. " load failed"
-		end
-		if crypt_mode then
-			file:Decrypt(nil)
-		end
-		local content = file:GetContent()
-		file:Clear()
-		local error, new_content = Lua.TCall(cjson.decode, content)
-		if error == nil then
-			return new_content, content
-		end
-		return nil, new_content
-	end
-end
-
-function ALittle.File_ReadJsonFromAsset(file_path, crypt_mode)
-	do
-		local file = carp.CarpLocalFile()
-		file:SetPath(file_path)
-		if file:Load(true) == false then
-			return nil, file_path .. " load failed!"
 		end
 		if crypt_mode then
 			file:Decrypt(nil)

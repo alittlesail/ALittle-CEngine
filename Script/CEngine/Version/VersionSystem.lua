@@ -84,7 +84,11 @@ function ALittle.VersionSystem:Ctor(account_name, module_name)
 	___rawset(self, "_update_path", "Update/" .. module_name .. "/")
 	___rawset(self, "_check", nil)
 	___rawset(self, "_callback", nil)
-	___rawset(self, "_cur_in_version", "CurVersion.db")
+	___rawset(self, "_cur_in_version", "CurVersionPackage.db")
+	local platform = ALittle.System_GetPlatform()
+	if platform == "Android" or platform == "iOS" then
+		___rawset(self, "_cur_in_version", "CurVersion.db")
+	end
 	___rawset(self, "_cur_in_version_tmp", "CurVersionTmp.db")
 	___rawset(self, "_tmp_in_version", "TmpVersion.db")
 	___rawset(self, "_new_in_version", "NewVersion.db")
@@ -115,17 +119,6 @@ function ALittle.VersionSystem.CreateVersionSystem(account_name, module_name)
 		return ALittle.VersionSystemWindows(account_name, module_name)
 	end
 	return nil
-end
-
-function ALittle.VersionSystem.RefreshVersion()
-	local platform = ALittle.System_GetPlatform()
-	if platform == "Android" then
-		ALittle.VersionSystemAndroid.RefreshVersion()
-	elseif platform == "iOS" then
-		ALittle.VersionSystemIOS.RefreshVersion()
-	elseif platform == "Windows" then
-		ALittle.VersionSystemWindows.RefreshVersion()
-	end
 end
 
 function ALittle.VersionSystem:GetVersionInfo(db_path, get_log_count)
@@ -188,13 +181,111 @@ function ALittle.VersionSystem.__getter:current_update_size()
 	return self._current_update_size + self._current_file_size
 end
 
+function ALittle.VersionSystem.RefreshVersion()
+	local platform = ALittle.System_GetPlatform()
+	if platform == "Android" or platform == "iOS" then
+		ALittle.VersionSystem.AppRefreshVersion()
+	else
+		ALittle.VersionSystem.DestopRefreshVersion()
+	end
+end
+
+function ALittle.VersionSystem.DestopRefreshVersion()
+end
+
+function ALittle.VersionSystem.AppRefreshVersion()
+	if ALittle.File_GetFileAttr(ALittle.File_BaseFilePath() .. "Module") == nil then
+		return
+	end
+	local folder_list = carp.GetFolderNameListInFolder(ALittle.File_BaseFilePath() .. "Module")
+	for index, file in ___ipairs(folder_list) do
+		local module_path = "Module/" .. file
+		if ALittle.File_GetFileAttr(ALittle.File_BaseFilePath() .. module_path .. "/CurVersion.db") ~= nil then
+			local change = false
+			local succeed = ALittle.File_CopyFile(module_path .. "/CurVersionPackage.db", ALittle.File_BaseFilePath() .. module_path .. "/CurVersionInstall.db")
+			if succeed then
+				local sqlite_out = sqlite3.open(ALittle.File_BaseFilePath() .. module_path .. "/CurVersion.db")
+				if sqlite_out ~= nil then
+					local sqlite_in = sqlite3.open(ALittle.File_BaseFilePath() .. module_path .. "/CurVersionInstall.db")
+					if sqlite_in ~= nil then
+						local sql = "SELECT c_update_time,c_update_index FROM SmallVersion ORDER BY c_update_time DESC,c_update_index DESC LIMIT 1"
+						local stmt_in = sqlite_in:prepare(sql)
+						local update_time_in = nil
+						for row in stmt_in:nrows() do
+							update_time_in = row
+						end
+						stmt_in:reset()
+						local stmt_out = sqlite_out:prepare(sql)
+						local update_time_out = nil
+						for row in stmt_out:nrows() do
+							update_time_out = row
+						end
+						stmt_out:reset()
+						local comp = ALittle.VersionSystem.UpdateTimeIndexComp(update_time_in, update_time_out)
+						if comp > 0 then
+							local stmt = sqlite_in:prepare("SELECT * FROM SmallVersion WHERE c_update_time>? OR (c_update_time=? AND c_update_index>?)")
+							stmt:bind_values(update_time_out.c_update_time, update_time_out.c_update_time, update_time_out.c_update_index)
+							for row in stmt:nrows() do
+								ALittle.Log("安装包的版本比热更新版本高，删掉热更新文件:", ALittle.File_BaseFilePath() .. module_path .. "/" .. row.c_file_path)
+								ALittle.File_DeleteFile(ALittle.File_BaseFilePath() .. module_path .. "/" .. row.c_file_path)
+								change = true
+							end
+							stmt:reset()
+							sql = "SELECT * FROM BigVersion"
+							stmt_in = sqlite_in:prepare(sql)
+							local big_version_in = nil
+							for row in stmt_in:nrows() do
+								big_version_in = row
+							end
+							stmt_in:reset()
+							stmt_out = sqlite_out:prepare(sql)
+							local big_version_out = nil
+							for row in stmt_out:nrows() do
+								big_version_out = row
+							end
+							stmt_out:reset()
+							if big_version_in ~= nil and big_version_out ~= nil and big_version_in.c_db_version ~= big_version_out.c_db_version then
+								change = true
+								stmt_out = sqlite_out:prepare("SELECT * FROM SmallVersion WHERE c_is_delete=0")
+								stmt_in = sqlite_in:prepare("SELECT * FROM SmallVersion WHERE c_is_delete=0 AND c_file_path=?")
+								for row in stmt_out:nrows() do
+									stmt_in:bind_values(row.c_file_path)
+									local has = false
+									for _ in stmt_in:nrows() do
+										has = true
+										break
+									end
+									stmt_in:reset()
+									if has == false then
+										ALittle.Log("删掉残留文件:", ALittle.File_BaseFilePath() .. module_path .. "/" .. row.c_file_path)
+										ALittle.File_DeleteFile(ALittle.File_BaseFilePath() .. module_path .. "/" .. row.c_file_path)
+									end
+								end
+								stmt_out:reset()
+							end
+						end
+						sqlite_in:close()
+					end
+					sqlite_out:close()
+				end
+			end
+			if change == true then
+				ALittle.File_DeleteFile(ALittle.File_BaseFilePath() .. module_path .. "/CurVersion.db")
+				ALittle.File_RenameFile(ALittle.File_BaseFilePath() .. module_path .. "/CurVersionInstall.db", ALittle.File_BaseFilePath() .. module_path .. "/CurVersion.db")
+			else
+				ALittle.File_DeleteFile(ALittle.File_BaseFilePath() .. module_path .. "/CurVersionInstall.db")
+			end
+		end
+	end
+end
+
 function ALittle.VersionSystem:UpdateModule()
 	local update_path = ALittle.File_BaseFilePath() .. "Update/" .. self._module_name
 	local module_path = ALittle.File_BaseFilePath() .. "Module/" .. self._module_name
-	if ALittle.File_GetFileAttr(module_path .. "/CurVersion.db") == nil then
+	if ALittle.File_GetFileAttr(module_path .. "/" .. self._cur_in_version) == nil then
 		ALittle.File_MakeDeepDir(module_path)
-		ALittle.File_CopyFileFromAsset("Module/" .. self._module_name .. "/CurVersion.db", module_path .. "/CurVersionInstall.db")
-		ALittle.File_RenameFile(module_path .. "/CurVersionInstall.db", module_path .. "/CurVersion.db")
+		ALittle.File_CopyFile("Module/" .. self._module_name .. "/CurVersionPackage.db", module_path .. "/CurVersionInstall.db")
+		ALittle.File_RenameFile(module_path .. "/CurVersionInstall.db", module_path .. "/" .. self._cur_in_version)
 	end
 	if ALittle.File_GetFileAttr(update_path) == nil then
 		return
@@ -354,7 +445,7 @@ function ALittle.VersionSystem:UpdateVersion(ip, port, callback, check, repeat_c
 		local param = {}
 		param.platform = ALittle.System_GetPlatform()
 		param.version_id = self._update_info.version_info.version_id
-		param.file_path = "CurVersion.db"
+		param.file_path = "CurVersionPackage.db"
 		self._current_request = HttpFileSender(self._ip, self._port, ALittle.File_BaseFilePath() .. self._update_path .. self._new_version_tmp, 0, nil)
 		local error = ALittle.IHttpFileSender.InvokeDownload("VersionServer.QDownloadVersionFile", self._current_request, param)
 		self._current_request = nil
@@ -444,9 +535,9 @@ function ALittle.VersionSystem:DownloadNext()
 		if self._install_info ~= nil then
 			return 13
 		end
-		if ALittle.File_GetFileAttr(ALittle.File_BaseFilePath() .. self._update_path .. "Engine") ~= nil then
-			ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. self._module_path .. "Engine")
-			ALittle.File_CopyDeepDir(ALittle.File_BaseFilePath() .. self._update_path .. "Engine", ALittle.File_BaseFilePath() .. self._module_path .. "Engine", nil, false)
+		if ALittle.File_GetFileAttr(ALittle.File_BaseFilePath() .. self._update_path .. "CEngine") ~= nil then
+			ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. self._module_path .. "CEngine")
+			ALittle.File_CopyDeepDir(ALittle.File_BaseFilePath() .. self._update_path .. "CEngine", ALittle.File_BaseFilePath() .. self._module_path .. "CEngine", nil, false)
 		end
 		return 12
 	end

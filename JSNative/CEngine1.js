@@ -251,6 +251,7 @@ window.__ALITTLEAPI_SystemSaveFile = function(path) {
 }
 
 window.__ALITTLEAPI_SetupMainModule = function(base_path, module_name, debug_info) {
+	ALittle.VersionSystem.RefreshVersion();
 	A_ModuleSystem.MainSetup(base_path, module_name, debug_info);
 }
 
@@ -2217,10 +2218,6 @@ ALittle.File_ExternalFilePath = function() {
 	return "";
 }
 
-ALittle.File_CopyFileFromAsset = function(src_path, dst_path) {
-	return JavaScript.File_CopyFile(src_path, dst_path);
-}
-
 ALittle.File_SaveFile = function(target_path, content, size) {
 	return JavaScript.File_SaveFile(target_path, content, undefined);
 }
@@ -2245,10 +2242,6 @@ ALittle.File_WriteTextToFile = function(content, file_path) {
 }
 
 ALittle.File_ReadJsonFromFile = function(file_path, crypt_mode) {
-	return [ALittle.File_ReadJsonFromStdFile(file_path)];
-}
-
-ALittle.File_ReadJsonFromAsset = function(file_path, crypt_mode) {
 	return [ALittle.File_ReadJsonFromStdFile(file_path)];
 }
 

@@ -9,14 +9,10 @@ public class VersionSystemWindows : VersionSystem
         this._install_name = "Install.exe";
     }
 
-    public static RefreshVersion()
-    {
-    }
-
     public static InstallImpl(string install_name)
     {
         System_InstallProgram(install_name .. " /silent /norestart");
-        System_ForceExit();
+        System_Exit();
     }
 
     public fun Install([Nullable] string install_name)

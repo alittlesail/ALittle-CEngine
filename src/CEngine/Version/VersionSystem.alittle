@@ -53,7 +53,7 @@ public struct VersionDownloadInfo : SmallVersionInfo
 public struct BigVersionInfo
 {
     string c_big_version; // 大版本号，用来标记是否强制更新
-    string c_install_version; // 安装版本号，用来标记是否强制更新
+    string c_install_version; // 安装版本号，用来标记是否强制安装
     string c_db_version; // 数据库版本号，用来标记是否进行一次全面的文件对比
 }
 
@@ -148,7 +148,9 @@ public class VersionSystem
         this._callback = null;        // 版本更新后的回调函数（回调参数有：更新状态[-1:更新失败，0：正在更新，1：更新成功，2：不需要更新，3：版本文件下载失败]，下载的文件名，当前大小，总大小）
     
         // 版本文件名当前正在处理的版本文件名
-        this._cur_in_version = "CurVersion.db"; // 文件在模块的根目录，用于记录当前的版本号
+        this._cur_in_version = "CurVersionPackage.db"; // 文件在模块的根目录，用于记录当前的版本号
+        var platform = System_GetPlatform();
+        if (platform == "Android" || platform == "iOS") this._cur_in_version = "CurVersion.db";
         this._cur_in_version_tmp = "CurVersionTmp.db"; // // CurVersion.db的临时文件名
         this._tmp_in_version = "TmpVersion.db"; // 文件在Update里面的模块根目录，用于标记版本在下载并且还没下载完
         this._new_in_version = "NewVersion.db"; // 文件在Update里面的模块根目录，用于记录当前最新版本的版本信息
@@ -183,17 +185,6 @@ public class VersionSystem
         elseif (platform == "Windows")
             return new VersionSystemWindows(account_name, module_name);
         return null;
-    }
-
-    public static RefreshVersion()
-    {
-        var platform = System_GetPlatform();
-        if (platform == "Android")
-            VersionSystemAndroid.RefreshVersion();
-        elseif (platform == "iOS")
-            VersionSystemIOS.RefreshVersion();
-        elseif (platform == "Windows")
-            VersionSystemWindows.RefreshVersion();
     }
 
     // 获取版本信息
@@ -270,39 +261,182 @@ public class VersionSystem
         return this._current_update_size + this._current_file_size;
     }
 
-    // 执行版本更新
+    public static RefreshVersion()
+    {
+        var platform = System_GetPlatform();
+        if (platform == "Android" || platform == "iOS")
+            VersionSystem.AppRefreshVersion();
+        else
+        	VersionSystem.DestopRefreshVersion();
+    }
+
+    // 如果是桌面软件
+    private static DestopRefreshVersion()
+    {
+    }
+
+    // 如果安装包里面的版本文件比外面的新，那么就把外面的覆盖掉
+    private static AppRefreshVersion()
+    {
+        // 检查模块路径是否存在，如果不存在就直接返回
+        if (File_GetFileAttr(File_BaseFilePath() .. "Module") == null) return;
+
+            // 获取模块文件下的所有模块名称
+        var folder_list = carp.GetFolderNameListInFolder(File_BaseFilePath() .. "Module");
+        // 遍历模块列表
+        for (var index, file in folder_list)
+        {
+            // 获取模块路径
+            var module_path = "Module/" .. file;
+            // 检查外面是否有CurVersion.db文件
+            // 如果没有说明就不用对比了，外面也没有对应的应用文件
+            if (File_GetFileAttr(File_BaseFilePath() .. module_path .. "/CurVersion.db") != null)
+            {
+                var change = false;
+                // 把APK里面的CurVersionPackage.db文件复制出来，不然Sqlite3打不开
+                var succeed = File_CopyFile(module_path .. "/CurVersionPackage.db", File_BaseFilePath() .. module_path .. "/CurVersionInstall.db");
+                if (succeed)
+                {
+                    // 如果失败了，说明当前模块是通过直接下载的，安装包内部没有
+                    // 然后对比一下，两个db文件之间的版本信息
+                    var sqlite_out = lua.sqlite3.open(File_BaseFilePath() .. module_path .. "/CurVersion.db");
+                    if (sqlite_out != null)
+                    {
+                        var sqlite_in = lua.sqlite3.open(File_BaseFilePath() .. module_path .. "/CurVersionInstall.db");
+                        if (sqlite_in != null)
+                        {
+                            // 取出两个update和index最大的那么进行对比
+                            var sql = "SELECT c_update_time,c_update_index FROM SmallVersion ORDER BY c_update_time DESC,c_update_index DESC LIMIT 1";
+                            // 取里面的
+                            var stmt_in = sqlite_in.prepare(sql);
+                            var update_time_in:SmallVersionInfo = null;
+                            for (var row in stmt_in.nrows{SmallVersionInfo}())
+                                update_time_in = row;
+                            stmt_in.reset();
+
+                            // 取外面的
+                            var stmt_out = sqlite_out.prepare(sql);
+                            var update_time_out:SmallVersionInfo = null;
+                            for (var row in stmt_out.nrows{SmallVersionInfo}())
+                                update_time_out = row;
+                            stmt_out.reset();
+
+                            // 检查里面最大的比外面大
+                            var comp = VersionSystem.UpdateTimeIndexComp(update_time_in, update_time_out);
+                            if (comp > 0)
+                            {
+                                // 从sqlite_in文件里面获取比update_time_out大的所有信息
+                                var stmt = sqlite_in.prepare("SELECT * FROM SmallVersion WHERE c_update_time>? OR (c_update_time=? AND c_update_index>?)");
+                                stmt.bind_values(update_time_out.c_update_time, update_time_out.c_update_time, update_time_out.c_update_index);
+                                for (var row in stmt.nrows{SmallVersionInfo}())
+                                {
+                                    // 把对应的文件删掉
+                                    Log("安装包的版本比热更新版本高，删掉热更新文件:", File_BaseFilePath() .. module_path .. "/" .. row.c_file_path);
+                                    File_DeleteFile(File_BaseFilePath() .. module_path .. "/" .. row.c_file_path); // 删掉文件
+                                    change = true;
+                                }
+                                stmt.reset();
+                            
+                                // 取里面的大版本信息
+                                sql = "SELECT * FROM BigVersion";
+                                // 取里面的
+                                stmt_in = sqlite_in.prepare(sql);
+                                var big_version_in:BigVersionInfo = null;
+                                for (var row in stmt_in.nrows{BigVersionInfo}())
+                                    big_version_in = row;
+                                stmt_in.reset();
+
+                                // 取外面的
+                                stmt_out = sqlite_out.prepare(sql);
+                                var big_version_out:BigVersionInfo = null;
+                                for (var row in stmt_out.nrows{BigVersionInfo}())
+                                    big_version_out = row;
+                                stmt_out.reset();
+
+                                // 如果数据库版本不一致，那么就需要重新对比文件
+                                // 如果里面文件没有，外面文件有，那么说明外面属于残留文件
+                                if (big_version_in != null && big_version_out != null && big_version_in.c_db_version != big_version_out.c_db_version)
+                                {
+                                    change = true;
+                                    // 获取外面没有删除的所有文件信息
+                                    stmt_out = sqlite_out.prepare("SELECT * FROM SmallVersion WHERE c_is_delete=0");
+                                    // 然后到里面查询是否有该文件，如果里面没有该文件，就要删除
+                                    stmt_in = sqlite_in.prepare("SELECT * FROM SmallVersion WHERE c_is_delete=0 AND c_file_path=?");
+                                    for (var row in stmt_out.nrows{SmallVersionInfo}())
+                                    {
+                                        stmt_in.bind_values(row.c_file_path);
+                                        var has = false;
+                                        for (var _ in stmt_in.nrows{SmallVersionInfo}())
+                                        {
+                                            has = true;
+                                            break;
+                                        }
+                                        stmt_in.reset();
+                                        // 里面文件没有，那么就要删除
+                                        if (has == false)
+                                        {
+                                            Log("删掉残留文件:", File_BaseFilePath() .. module_path .. "/" .. row.c_file_path);
+                                            File_DeleteFile(File_BaseFilePath() .. module_path .. "/" .. row.c_file_path); // 删掉文件
+                                        }
+                                    }
+                                    stmt_out.reset();
+                                }
+                            }
+                            sqlite_in.close();
+                        }
+                        sqlite_out.close();
+                    }
+                }
+
+                    // 检查是否出现了版本更新
+                if (change == true)
+                {
+                    // 把原来的CurVersion.db删掉，然后把CurVersionInstall名字改为把原来的CurVersion
+                    File_DeleteFile(File_BaseFilePath() .. module_path .. "/CurVersion.db"); // 删掉文件
+                    File_RenameFile(File_BaseFilePath() .. module_path .. "/CurVersionInstall.db", File_BaseFilePath() .. module_path .. "/CurVersion.db");
+                }
+                else
+                {
+                    File_DeleteFile(File_BaseFilePath() .. module_path .. "/CurVersionInstall.db"); // 删掉文件
+                }
+            }
+        }
+    }
+
+    // 执行版本更新的所有操作
     public fun UpdateModule()
     {
-        // 检查Update目录是否有这个模块
+        // 获取更新目录
         var update_path = File_BaseFilePath() .. "Update/" .. this._module_name;
+        // 获取模块目录
         var module_path = File_BaseFilePath() .. "Module/" .. this._module_name;
 
-        // 把版本文件从安装包里面复制出来
-        if (File_GetFileAttr(module_path .. "/CurVersion.db") == null)
+        // 把版本文件从安装包或者安装目录里面复制出来
+        if (File_GetFileAttr(module_path .. "/"..this._cur_in_version) == null)
         {
             // 先复制，然后在改变名字。担心复制一般的时候app被关掉了，或者手机突然没电了。
-            // 文件改名速度比较快，如果这个都出错，就无语了
+            // 文件改名速度比较快，如果这个都出错，那就卸载重新安装吧~
             File_MakeDeepDir(module_path);
-            File_CopyFileFromAsset("Module/" .. this._module_name .. "/CurVersion.db", module_path .. "/CurVersionInstall.db");
-            File_RenameFile(module_path .. "/CurVersionInstall.db", module_path .. "/CurVersion.db");
+            File_CopyFile("Module/" .. this._module_name .. "/CurVersionPackage.db", module_path .. "/CurVersionInstall.db");
+            File_RenameFile(module_path .. "/CurVersionInstall.db", module_path .. "/"..this._cur_in_version);
         }
 
-        if (File_GetFileAttr(update_path) == null)
-            return;
+        // 检查更新目录是否存在，不存在就直接返回
+        if (File_GetFileAttr(update_path) == null) return;
 
-        // 检查是否有正在下载
+        // 检查是否有正在下载版本文件，如果正在下载说明还未准备完毕，直接返回
         var tmp_version = update_path .. "/" .. this._tmp_in_version;
-        if (File_GetFileAttr(tmp_version) != null)
-            return;
+        if (File_GetFileAttr(tmp_version) != null) return;
 
-        // 检查新旧版本
+        // 获取当前版本信息
         var cur_big_version, cur_small_version = this.GetCurVersion();
+        // 获取最新版本信息
         var new_big_version, new_small_version = this.GetNewVersion();
 
-        // 如果当前已经比新的版本文件新了，那么就直接返回
+        // 如果当前已经比新的版本文件一样或者更新了，那么就直接返回
         if (VersionSystem.UpdateTimeIndexComp(cur_small_version, new_small_version) >= 0)
         {
-            // 删除更新内容
+            // 删除更新目录，没有用了。也防止下次进行无效检查
             File_DeleteDeepDir(update_path, false);
             return;
         }
@@ -311,7 +445,7 @@ public class VersionSystem
         var install_path = update_path .. "/" .. this._install_name;
         if (File_GetFileAttr(install_path) != null)
         {
-            // 复制一份版本文件到临时文件，变成下载一半的状态，以便于下次进行更新检查的时候不会重新下载
+            // 复制一份版本文件到临时文件，故意变成下载一半的状态，以便于下次进行更新检查的时候不会重新下载
             File_CopyFile(update_path .. "/" .. this._new_in_version, update_path .. "/" .. this._tmp_in_version);
             // 没有安装包则直接复制内容
         }
@@ -334,16 +468,24 @@ public class VersionSystem
                 File_DeleteFile(module_path .. "/" .. row.c_file_path); // 删掉文件
             }
             stmt.reset();
-            // 检查当前版本和最新版本的大版本是否一致
+            // 执行到这里，最新的版本文件全部更新完成。
+
+            // 检查数据库版本是否一致，如果不一致就要进行全面比对检查
+            // 如果新版本文件没有，并且旧版本文件有。那么就要删除掉这种残留文件
             if (cur_big_version != null && cur_big_version.c_db_version != new_big_version.c_db_version)
             {
+                // 读取当前版本文件
                 var sqlite_cur = lua.sqlite3.open(module_path .. "/" .. this._cur_in_version);
                 if (sqlite_cur != null)
                 {
+                    // 获取当前版本所有有效文件路径
                     var stmt_cur = sqlite_cur.prepare("SELECT * FROM SmallVersion WHERE c_is_delete=0");
+                    // 获取最新版本所有有效文件路径
                     var stmt_new  = sqlite_new.prepare("SELECT * FROM SmallVersion WHERE c_is_delete=0 AND c_file_path=?");
+                    // 遍历当前版本信息
                     for (var row in stmt_cur.nrows{SmallVersionInfo}())
                     {
+                        // 把文件路径作为参数到最新版本文件里面查
                         stmt_new.bind_values(row.c_file_path);
                         var has = false;
                         for (var _ in stmt_new.nrows{SmallVersionInfo}())
@@ -352,6 +494,7 @@ public class VersionSystem
                             break;
                         }
                         stmt_new.reset();
+                        // 如果最新版本文件里面没有，那么就要删除该文件
                         if (has == false)
                         {
                             Log("删掉残留文件.", module_path .. "/" .. row.c_file_path);
@@ -365,6 +508,8 @@ public class VersionSystem
             sqlite_new.close();
 
             // 新版本文件复制到当前目录
+            // 这里先只一份临时版本文件，然后删除原来的版本文件，再改名
+            // 目的是为了防止期间app被关掉，或者断电等原因执行一半
             File_CopyFile(update_path .. "/" .. this._new_in_version, module_path .. "/" .. this._cur_in_version_tmp);
             File_DeleteFile(module_path .. "/" .. this._cur_in_version); // 删掉文件
             File_RenameFile(module_path .. "/" .. this._cur_in_version_tmp, module_path .. "/" .. this._cur_in_version);
@@ -511,7 +656,7 @@ public class VersionSystem
             var param = new VersionServer.QDownloadVersionFile();
             param.platform = System_GetPlatform();
             param.version_id = this._update_info.version_info.version_id;
-            param.file_path = "CurVersion.db";
+            param.file_path = "CurVersionPackage.db";
             this._current_request = new HttpFileSender(this._ip, this._port, File_BaseFilePath() .. this._update_path .. this._new_version_tmp, 0, null);
             var error = VersionServer.HandleHttpQDownloadVersionFile(this._current_request, param);
             this._current_request = null;
@@ -522,9 +667,9 @@ public class VersionSystem
                 return VersionProcess.UPDATE_VERSION_FAILED;
             }
 
-            // 更新版本文件名
+            // 将临时版本文件名改为正式的版本文件名
             File_RenameFile(File_BaseFilePath() .. this._update_path .. this._new_version_tmp, File_BaseFilePath() .. this._update_path .. this._new_in_version);
-            // 打开
+            // 打开最新版本文件
             var sqlite_new = lua.sqlite3.open(File_BaseFilePath() .. this._update_path .. this._new_in_version);
             if (sqlite_new != null)
             {
@@ -550,7 +695,7 @@ public class VersionSystem
                 // 这个情况出现的原因是在提交版本的时候出现错误才会发生
                 // 就是说服务器上面的版本文件，本身就不完整
                 Log("VersionSystem error. new_version_db open failed!");
-                // 删除掉Update里面对应的模块目录
+                // 删除掉Update里面对应的模块目录，等待下次执行更新
                 File_DeleteDeepDir(File_BaseFilePath() .. "Update/" .. this._module_name, false);
                 this._doing = false;
                 return VersionProcess.UPDATE_VERSION_FAILED;
@@ -652,12 +797,12 @@ public class VersionSystem
 
             // 因为程序刚打开的时候会马上加载引擎代码，所以这里必须先把引擎代码覆盖过去。
             // 所以不能在打开程序之后在处理引擎代码更新
-            if (File_GetFileAttr(File_BaseFilePath() .. this._update_path .. "Engine") != null)
+            if (File_GetFileAttr(File_BaseFilePath() .. this._update_path .. "CEngine") != null)
             {
                 // 创建Engine目录
-                File_MakeDir(File_BaseFilePath() .. this._module_path .. "Engine");
+                File_MakeDir(File_BaseFilePath() .. this._module_path .. "CEngine");
                 // 开始深度复制
-                File_CopyDeepDir(File_BaseFilePath() .. this._update_path .. "Engine", File_BaseFilePath() .. this._module_path .. "Engine", null, false);
+                File_CopyDeepDir(File_BaseFilePath() .. this._update_path .. "CEngine", File_BaseFilePath() .. this._module_path .. "CEngine", null, false);
             }
             // 提示重启更新
             return VersionProcess.UPDATE_VERSION_SUCCEED;
@@ -742,7 +887,6 @@ public class VersionSystem
         this._current_file_size = cur_size;
         this._callback(file_name, cur_size, total_size, this._cur_file_index, this._file_count);
     }
-
 
     public fun StopUpdate()
     {

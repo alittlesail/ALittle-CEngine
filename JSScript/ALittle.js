@@ -251,6 +251,7 @@ window.__ALITTLEAPI_SystemSaveFile = function(path) {
 }
 
 window.__ALITTLEAPI_SetupMainModule = function(base_path, module_name, debug_info) {
+	ALittle.VersionSystem.RefreshVersion();
 	A_ModuleSystem.MainSetup(base_path, module_name, debug_info);
 }
 

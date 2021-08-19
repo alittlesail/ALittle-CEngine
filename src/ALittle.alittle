@@ -327,7 +327,7 @@ public static __ALITTLEAPI_SetupMainModule(string base_path, string module_name,
     // 如果是debug模式，那么自动启动调试端口
     [Language(Lua)]
     if (debug_info != null && debug_info != "") carp_CarpLuaDebugServer.Start(carp_CarpScript, "", "0.0.0.0", 1001);
-
+    ALittle.VersionSystem.RefreshVersion();
     A_ModuleSystem.MainSetup(base_path, module_name, debug_info);
 }
 
