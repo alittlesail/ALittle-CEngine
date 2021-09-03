@@ -7125,7 +7125,6 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 	},
 	HandleMoveOut : function(event) {
 		this._move_in = false;
-		this._show.SetDisabled(!this._focus_in);
 		ALittle.System_SetNormalCursor();
 	},
 	set cursor_red(value) {
@@ -7651,7 +7650,6 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 	},
 	HandleMoveOut : function(event) {
 		this._move_in = false;
-		this._show.SetDisabled(!this._focus_in);
 		ALittle.System_SetNormalCursor();
 	},
 	set cursor_red(value) {

@@ -759,8 +759,8 @@ public class TextInput : DisplayObject
         [Language(JavaScript)]
         this._move_in = false;
         
-        [Language(JavaScript)]
-        cast<JavaScript.JTextInput>(this._show).SetDisabled(!this._focus_in);
+        // [Language(JavaScript)]
+        // cast<JavaScript.JTextInput>(this._show).SetDisabled(!this._focus_in);
 
         System_SetNormalCursor();
     }

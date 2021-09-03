@@ -832,8 +832,8 @@ public class TextEdit : DisplayObject
         [Language(JavaScript)]
         this._move_in = false;
         
-        [Language(JavaScript)]
-        cast<JavaScript.JTextEdit>(this._show).SetDisabled(!this._focus_in);
+        // [Language(JavaScript)]
+        // cast<JavaScript.JTextEdit>(this._show).SetDisabled(!this._focus_in);
 
         System_SetNormalCursor();
     }
