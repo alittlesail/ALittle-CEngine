@@ -228,15 +228,15 @@ function ALittle.ImageEdit.__getter:ims_padding()
 end
 
 function ALittle.ImageEdit:HandleFocusIn(event)
+	self:ShowDown()
 	event.target = self
 	self:DispatchEvent(___all_struct[-644464135], event)
-	self:ShowDown()
 end
 
 function ALittle.ImageEdit:HandleFocusOut(event)
+	self:ShowUp()
 	event.target = self
 	self:DispatchEvent(___all_struct[292776509], event)
-	self:ShowUp()
 end
 
 function ALittle.ImageEdit:HandleImageEditTransformLButtonDown(event)

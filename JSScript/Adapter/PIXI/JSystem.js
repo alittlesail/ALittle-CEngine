@@ -194,9 +194,6 @@ let JSystem_MouseOut = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	if (event.pageX - event.srcElement.offsetLeft > 0 && event.pageY - event.srcElement.offsetTop > 0) {
-		return;
-	}
 	func();
 }
 

@@ -253,15 +253,15 @@ function ALittle.ImageInput.__getter:ims_padding()
 end
 
 function ALittle.ImageInput:HandleFocusIn(event)
+	self:ShowDown()
 	event.target = self
 	self:DispatchEvent(___all_struct[-644464135], event)
-	self:ShowDown()
 end
 
 function ALittle.ImageInput:HandleFocusOut(event)
+	self:ShowUp()
 	event.target = self
 	self:DispatchEvent(___all_struct[292776509], event)
-	self:ShowUp()
 end
 
 function ALittle.ImageInput:HandleImageInputTransformLButtonDown(event)
@@ -335,19 +335,19 @@ function ALittle.ImageInput:HandleImageInputTransformLongButtonDown(event)
 end
 
 function ALittle.ImageInput:HandleMoveIn(event)
-	event.target = self
-	self:DispatchEvent(___all_struct[544684311], event)
 	if A_UISystem.focus ~= self._show_input then
 		self:ShowOver()
 	end
+	event.target = self
+	self:DispatchEvent(___all_struct[544684311], event)
 end
 
 function ALittle.ImageInput:HandleMoveOut(event)
-	event.target = self
-	self:DispatchEvent(___all_struct[-1202439334], event)
 	if A_UISystem.focus ~= self._show_input then
 		self:ShowUp()
 	end
+	event.target = self
+	self:DispatchEvent(___all_struct[-1202439334], event)
 end
 
 function ALittle.ImageInput:ShowUp()

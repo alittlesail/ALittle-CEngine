@@ -179,14 +179,14 @@ ALittle.ImageEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		return this._show_edit.ims_padding;
 	},
 	HandleFocusIn : function(event) {
+		this.ShowDown();
 		event.target = this;
 		this.DispatchEvent(___all_struct.get(-644464135), event);
-		this.ShowDown();
 	},
 	HandleFocusOut : function(event) {
+		this.ShowUp();
 		event.target = this;
 		this.DispatchEvent(___all_struct.get(292776509), event);
-		this.ShowUp();
 	},
 	HandleImageEditTransformLButtonDown : function(event) {
 		event.target = this;

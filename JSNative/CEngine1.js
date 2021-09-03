@@ -251,7 +251,6 @@ window.__ALITTLEAPI_SystemSaveFile = function(path) {
 }
 
 window.__ALITTLEAPI_SetupMainModule = function(base_path, module_name, debug_info) {
-	ALittle.VersionSystem.RefreshVersion();
 	A_ModuleSystem.MainSetup(base_path, module_name, debug_info);
 }
 
@@ -759,9 +758,6 @@ let JSystem_MouseWheel = function(event) {
 let JSystem_MouseOut = function(event) {
 	let func = window["__ALITTLEAPI_WindowLeave"];
 	if (func === undefined) {
-		return;
-	}
-	if (event.pageX - event.srcElement.offsetLeft > 0 && event.pageY - event.srcElement.offsetTop > 0) {
 		return;
 	}
 	func();
@@ -14660,14 +14656,14 @@ ALittle.ImageInput = JavaScript.Class(ALittle.DisplayLayout, {
 		return this._ims_padding;
 	},
 	HandleFocusIn : function(event) {
+		this.ShowDown();
 		event.target = this;
 		this.DispatchEvent(___all_struct.get(-644464135), event);
-		this.ShowDown();
 	},
 	HandleFocusOut : function(event) {
+		this.ShowUp();
 		event.target = this;
 		this.DispatchEvent(___all_struct.get(292776509), event);
-		this.ShowUp();
 	},
 	HandleImageInputTransformLButtonDown : function(event) {
 		event.target = this;
@@ -14726,18 +14722,18 @@ ALittle.ImageInput = JavaScript.Class(ALittle.DisplayLayout, {
 		this.DispatchEvent(___all_struct.get(-439548260), event);
 	},
 	HandleMoveIn : function(event) {
-		event.target = this;
-		this.DispatchEvent(___all_struct.get(544684311), event);
 		if (A_UISystem.focus !== this._show_input) {
 			this.ShowOver();
 		}
+		event.target = this;
+		this.DispatchEvent(___all_struct.get(544684311), event);
 	},
 	HandleMoveOut : function(event) {
-		event.target = this;
-		this.DispatchEvent(___all_struct.get(-1202439334), event);
 		if (A_UISystem.focus !== this._show_input) {
 			this.ShowUp();
 		}
+		event.target = this;
+		this.DispatchEvent(___all_struct.get(-1202439334), event);
 	},
 	ShowUp : function() {
 		if (this._abs_disabled || this._disabled) {
@@ -15156,14 +15152,14 @@ ALittle.ImageEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		return this._show_edit.ims_padding;
 	},
 	HandleFocusIn : function(event) {
+		this.ShowDown();
 		event.target = this;
 		this.DispatchEvent(___all_struct.get(-644464135), event);
-		this.ShowDown();
 	},
 	HandleFocusOut : function(event) {
+		this.ShowUp();
 		event.target = this;
 		this.DispatchEvent(___all_struct.get(292776509), event);
-		this.ShowUp();
 	},
 	HandleImageEditTransformLButtonDown : function(event) {
 		event.target = this;
