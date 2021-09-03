@@ -315,16 +315,16 @@ public class ImageInput : DisplayLayout
     // 处理焦点事件
     protected fun HandleFocusIn(UIFocusInEvent event)
     {
+        this.ShowDown();
         event.target = this;
         this.DispatchEvent(event);
-        this.ShowDown();
     }
     
     protected fun HandleFocusOut(UIFocusOutEvent event)
     {
+        this.ShowUp();
         event.target = this;
         this.DispatchEvent(event);
-        this.ShowUp();
     }
     
     // 处理发送事件
