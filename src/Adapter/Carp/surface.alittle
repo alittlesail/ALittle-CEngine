@@ -15,6 +15,8 @@ public static FreeCarpSurface(CarpSurface surface) {}
 public static GetCarpSurfaceWidth(CarpSurface surface) : int {}
 public static GetCarpSurfaceHeight(CarpSurface surface) : int {}
 // src源图片，dst目标图片。from和to都是字符串格式为： x,y,w,h
+// 如果from填null，那么表示整个surface
+// 如果to填null，那么表示整个surface
 public static CutBlitCarpSurface(CarpSurface src, CarpSurface dst, string from, string to) : bool {}
 public static SetCarpSurfacePixel(CarpSurface surface, int x, int y, int color) : bool {}
 public static SetCarpSurfacePixelRect(CarpSurface surface, Map<int, int> buffer) {}
